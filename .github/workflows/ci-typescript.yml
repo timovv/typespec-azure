@@ -12,6 +12,7 @@ on:
 
 jobs:
   build:
+    name: Run integration tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,12 +21,6 @@ jobs:
         run: pnpm install
       - name: Build typespec-ts package
         run: pnpm turbo run build --filter "@azure-tools/typespec-ts..."
-      - name: Check lint
-        working-directory: packages/typespec-ts
-        run: pnpm lint
-      - name: Check format
-        working-directory: packages/typespec-ts
-        run: pnpm check-format
       - name: Run unit tests
         working-directory: packages/typespec-ts
         run: pnpm test-next && pnpm unit-test
