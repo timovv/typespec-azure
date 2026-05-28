@@ -39,7 +39,7 @@ export default defineConfig(
       "@typescript-eslint/no-deprecated": "warn",
     },
   },
-  // TODO: remove exclusion and rename files once migration is compete.
+  // TODO: temporarily disabling this for typespec-ts while repo migration is still inflight
   {
     files: ["packages/typespec-ts/src/**/*.{ts,mjs}"],
     rules: {
