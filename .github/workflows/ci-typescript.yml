@@ -16,11 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: ./.github/actions/setup
       - name: Install dependencies
         run: pnpm install
       - name: Build typespec-ts package
-        run: pnpm turbo run build --filter "@azure-tools/typespec-ts..."
+        run: pnpm turbo run --filter "@azure-tools/typespec-ts..." build
       - name: Run unit tests
         working-directory: packages/typespec-ts
         run: pnpm test-next && pnpm unit-test

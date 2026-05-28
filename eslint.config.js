@@ -39,10 +39,11 @@ export default defineConfig(
       "@typescript-eslint/no-deprecated": "warn",
     },
   },
+  // TODO: remove exclusion and rename files once migration is compete.
   {
-    files: ["packages/typespec-ts/**/*.{ts,mjs}"],
+    files: ["packages/typespec-ts/src/**/*.{ts,mjs}"],
     rules: {
       "unicorn/filename-case": "off",
-    }
-  }
+    },
+  },
 );
