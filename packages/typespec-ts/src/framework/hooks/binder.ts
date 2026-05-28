@@ -196,7 +196,7 @@ class BinderImp implements Binder {
   private getPlatformImportSpecifier(declarationSourceFile: SourceFile): string | undefined {
     if (!this.useSubpathImports) return undefined;
     const filePath = declarationSourceFile.getFilePath();
-    const srcIndex = filePath.indexOf("/src/");
+    const srcIndex = filePath.lastIndexOf("/src/");
     if (srcIndex === -1) return undefined;
     // Check if a -browser.mts or -react-native.mts sibling exists
     const basePath = filePath.replace(/\.ts$/, "");
