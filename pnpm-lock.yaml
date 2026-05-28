@@ -3930,8 +3930,8 @@ importers:
         specifier: workspace:^
         version: link:../../core/packages/http
       '@typespec/http-specs':
-        specifier: 0.1.0-alpha.37-dev.6
-        version: 0.1.0-alpha.37-dev.6(@types/node@25.5.2)(@typespec/compiler@core+packages+compiler)(@typespec/http@core+packages+http)(@typespec/rest@core+packages+rest)(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))(@typespec/versioning@core+packages+versioning)(@typespec/xml@core+packages+xml)
+        specifier: workspace:^
+        version: link:../../core/packages/http-specs
       '@typespec/openapi':
         specifier: workspace:^
         version: link:../../core/packages/openapi
@@ -8051,9 +8051,6 @@ packages:
   '@types/node@24.12.0':
     resolution: {integrity: sha512-GYDxsZi3ChgmckRT9HPU0WEhKLP08ev/Yfcq2AstjrDASOYCSXeyjDsHg4v5t4jOj7cyDX3vmprafKlWIG9MXQ==}
 
-  '@types/node@25.3.5':
-    resolution: {integrity: sha512-oX8xrhvpiyRCQkG1MFchB09f+cXftgIXb3a7UUa4Y3wpmZPw5tyZGTLWhlESOLq1Rq6oDlc8npVU2/9xiCuXMA==}
-
   '@types/node@25.5.2':
     resolution: {integrity: sha512-tO4ZIRKNC+MDWV4qKVZe3Ql/woTnmHDr5JD8UI5hn2pwBrHEwOEMZK7WlNb5RKB6EoJ02gwmQS9OrjuFnZYdpg==}
 
@@ -8214,11 +8211,6 @@ packages:
     resolution: {integrity: sha512-y+vH7QE8ycjoa0bWciFg7OpFcipUuem1ujhrdLtq1gByKwfbC7bPeKsiny9e0urg93DqwGcHey+bGRKCnF1nZQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typespec/compiler@1.12.0':
-    resolution: {integrity: sha512-hKCkHEEDdCpXFyOU8ln+TzBBwonFMbkeUV0zIc+vBETyO8p/Upui3XvEyLOyB4CpKUReHzGeGm3gcFjNc73ygg==}
-    engines: {node: '>=22.0.0'}
-    hasBin: true
-
   '@typespec/http-client-python@0.29.2':
     resolution: {integrity: sha512-/rguS8z1Sjj0KJVQNuSF70Hvtq1kxDWlfJ7YFySBlfKAf364L0QkZK5J+GMPiw51k/scuxkhgGMelmB2rKmDRQ==}
     engines: {node: '>=22.0.0'}
@@ -8238,52 +8230,6 @@ packages:
       '@typespec/versioning': '>=0.82.0 <1.0.0'
       '@typespec/xml': '>=0.82.0 <1.0.0'
 
-  '@typespec/http-specs@0.1.0-alpha.37-dev.6':
-    resolution: {integrity: sha512-IGnly5R0lvVCAKeVSVn+nGqKqfnVcD2a1OS4xwW8/NgM/wEbvRiWWXx75GqWLUcmSfLTFQ1yAiYOJPAQXJLAZQ==}
-    engines: {node: '>=22.0.0'}
-    peerDependencies:
-      '@typespec/compiler': ^1.11.0 || >= 1.12.0-dev.11
-      '@typespec/http': ^1.11.0 || >= 1.12.0-dev.6
-      '@typespec/rest': ^0.81.0 || >= 0.82.0-dev.4
-      '@typespec/versioning': ^0.81.0 || >= 0.82.0-dev.2
-      '@typespec/xml': ^0.81.0 || >= 0.82.0-dev.2
-
-  '@typespec/http@1.12.0':
-    resolution: {integrity: sha512-3Bb1M6VSuEVPWOecXj3h3I/ddMpb9cmKRQQq34oq7LatiK4fwVBp+EdWbqzEzaRUGHm9mZtqsMsxZf5FndT8dg==}
-    engines: {node: '>=22.0.0'}
-    peerDependencies:
-      '@typespec/compiler': ^1.12.0
-      '@typespec/streams': ^0.82.0
-    peerDependenciesMeta:
-      '@typespec/streams':
-        optional: true
-
-  '@typespec/rest@0.81.0':
-    resolution: {integrity: sha512-qQXZRKEvq5aNlDFEUqBiiXXPIFyr/+PWgBY0kIrnhyZzMjfUqPInkB12QgXpVp2O2Wm3jmETJD45SaLHTCYBbg==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@typespec/compiler': ^1.11.0
-      '@typespec/http': ^1.11.0
-
-  '@typespec/spec-api@0.1.0-alpha.14':
-    resolution: {integrity: sha512-MpLVtJZMsONMB9Di9aiXRbbihqa/+4MmbDHpuwd3ka39wtRhcA3sbFQY/+oU5zVEfEAldGgVkenFd2wnoI/xkQ==}
-    engines: {node: '>=20.0.0'}
-
-  '@typespec/spec-coverage-sdk@0.1.0-alpha.16':
-    resolution: {integrity: sha512-qwSnuE+CXjv4mn2uhioTVlaO4GjypR4ZtbkSoLmWA677ggYmoAjIDpyNgT1tjsc1lDKVtSiPvGhM9XFKExVmbQ==}
-    engines: {node: '>=16.0.0'}
-
-  '@typespec/spector@0.1.0-alpha.25':
-    resolution: {integrity: sha512-KxMiwA/+XDWpZOdhr7TbnsR8ppXVi+edFa9hdUuerOGQzzALbSeQYUJLUr4RErRiHpqg2/P4FyJ2E0eiA2fTYA==}
-    engines: {node: '>=16.0.0'}
-    hasBin: true
-
-  '@typespec/streams@0.82.0':
-    resolution: {integrity: sha512-cr/6h6VV/6OJeG8RNcSd0SDes5iEXiuGUcKGrMN6wF8qKTTrY2hXNhfqCCn3lamDOg00wbi7ke+laz6pHWN3tg==}
-    engines: {node: '>=22.0.0'}
-    peerDependencies:
-      '@typespec/compiler': ^1.12.0
-
   '@typespec/ts-http-runtime@0.1.0':
     resolution: {integrity: sha512-0NspintCRrSIIZBUtVfWjJ5TpOjpP0mNsJXZOqzuxdY/q2yCr0amyUCEw+WLhRykP39XMNMG0f1F9LbC2+c+Rw==}
     engines: {node: '>=18.0.0'}
@@ -8291,12 +8237,6 @@ packages:
   '@typespec/ts-http-runtime@0.3.4':
     resolution: {integrity: sha512-CI0NhTrz4EBaa0U+HaaUZrJhPoso8sG7ZFya8uQoBA57fjzrjRSv87ekCjLZOFExN+gXE/z0xuN2QfH4H2HrLQ==}
     engines: {node: '>=20.0.0'}
-
-  '@typespec/versioning@0.81.0':
-    resolution: {integrity: sha512-5bha4t64xA85zLY8VGm/6jNd2kwPHzjPq/dlCUjtgGfGXv2R6Ow/YIukqhqZnwnIgNAIlZ7nguekRMRx+2oO2w==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@typespec/compiler': ^1.11.0
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -9798,10 +9738,6 @@ packages:
   deep-equal@1.0.1:
     resolution: {integrity: sha512-bHtC0iYvWhyaTzvV3CZgPeZQqCOBGyGsVV7v4eevpdkLHfiSrXUdBG+qAuSz4RI70sszvjQ1QSZ98An1yNwpSw==}
 
-  deep-equal@2.2.3:
-    resolution: {integrity: sha512-ZIwpnevOurS8bpT4192sqAowWM76JDKSHYzMLty3BZGSswgq6pBaH3DhCSW5xVAZICZyKdOBPjwww5wfgT/6PA==}
-    engines: {node: '>= 0.4'}
-
   deep-extend@0.6.0:
     resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
     engines: {node: '>=4.0.0'}
@@ -10071,9 +10007,6 @@ packages:
   es-errors@1.3.0:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
-
-  es-get-iterator@1.1.3:
-    resolution: {integrity: sha512-sPZmqHBe6JIiTfN5q2pEi//TwxmAFHwj/XEuYjTuse78i8KxaqMTTzxPoFKuzRpDpTJ+0NAbpfenkmH2rePtuw==}
 
   es-module-lexer@2.0.0:
     resolution: {integrity: sha512-5POEcUuZybH7IdmGsD8wlf0AI55wMecM9rVBTI/qEAy2c1kTOm3DjFYjrBdI2K3BaJjJYfYFeRtM0t9ssnRuxw==}
@@ -11043,10 +10976,6 @@ packages:
 
   is-alphanumerical@2.0.1:
     resolution: {integrity: sha512-hmbYhX/9MUMF5uh7tOXyK/n0ZvWpad5caBA17GsC6vyuCqaWliRG5K1qS9inmUhEMaOBIW7/whAnSwveW/LtZw==}
-
-  is-arguments@1.2.0:
-    resolution: {integrity: sha512-7bVbi0huj/wrIAOzb8U1aszg9kdi3KN/CyU19CTI7tAoZYEZoL9yCDXpbXN+uPsuWnP02cyug1gleqq+TU+YCA==}
-    engines: {node: '>= 0.4'}
 
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
@@ -12316,10 +12245,6 @@ packages:
 
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
-    engines: {node: '>= 0.4'}
-
-  object-is@1.1.6:
-    resolution: {integrity: sha512-F8cZ+KfGlSGi09lJT7/Nd6KJZ9ygtvYC0/UYYLI9nmQKLMnydpB9yvbv9K1uSkEu7FU9vYPmVwLg328tX+ot3Q==}
     engines: {node: '>= 0.4'}
 
   object-keys@1.1.1:
@@ -15010,10 +14935,6 @@ packages:
 
   xml2js@0.5.0:
     resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
-    engines: {node: '>=4.0.0'}
-
-  xml2js@0.6.2:
-    resolution: {integrity: sha512-T4rieHaC1EXcES0Kxxj4JWgaUQHDk+qwHcYOCFHfiwKz7tOVPLq7Hjq9dM1WCMhylqMEfP7hMcOIChvotiZegA==}
     engines: {node: '>=4.0.0'}
 
   xmlbuilder@11.0.1:
@@ -20497,10 +20418,6 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  '@types/node@25.3.5':
-    dependencies:
-      undici-types: 7.18.2
-
   '@types/node@25.5.2':
     dependencies:
       undici-types: 7.18.2
@@ -20698,27 +20615,6 @@ snapshots:
       '@typescript-eslint/types': 8.58.1
       eslint-visitor-keys: 5.0.1
 
-  '@typespec/compiler@1.12.0(@types/node@25.5.2)':
-    dependencies:
-      '@babel/code-frame': 7.29.0
-      '@inquirer/prompts': 8.4.1(@types/node@25.5.2)
-      ajv: 8.18.0
-      change-case: 5.4.4
-      env-paths: 4.0.0
-      is-unicode-supported: 2.1.0
-      mustache: 4.2.0
-      picocolors: 1.1.1
-      prettier: 3.8.1
-      semver: 7.7.4
-      tar: 7.5.13
-      temporal-polyfill: 0.3.2
-      vscode-languageserver: 9.0.1
-      vscode-languageserver-textdocument: 1.0.12
-      yaml: 2.8.3
-      yargs: 18.0.0
-    transitivePeerDependencies:
-      - '@types/node'
-
   '@typespec/http-client-python@0.29.2(@azure-tools/typespec-autorest@packages+typespec-autorest)(@azure-tools/typespec-azure-core@packages+typespec-azure-core)(@azure-tools/typespec-azure-resource-manager@packages+typespec-azure-resource-manager)(@azure-tools/typespec-azure-rulesets@packages+typespec-azure-rulesets)(@azure-tools/typespec-client-generator-core@packages+typespec-client-generator-core)(@typespec/compiler@core+packages+compiler)(@typespec/events@core+packages+events)(@typespec/http@core+packages+http)(@typespec/openapi@core+packages+openapi)(@typespec/rest@core+packages+rest)(@typespec/sse@core+packages+sse)(@typespec/streams@core+packages+streams)(@typespec/versioning@core+packages+versioning)(@typespec/xml@core+packages+xml)':
     dependencies:
       '@azure-tools/typespec-autorest': link:packages/typespec-autorest
@@ -20744,81 +20640,6 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@typespec/http-specs@0.1.0-alpha.37-dev.6(@types/node@25.5.2)(@typespec/compiler@core+packages+compiler)(@typespec/http@core+packages+http)(@typespec/rest@core+packages+rest)(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))(@typespec/versioning@core+packages+versioning)(@typespec/xml@core+packages+xml)':
-    dependencies:
-      '@typespec/compiler': link:core/packages/compiler
-      '@typespec/http': link:core/packages/http
-      '@typespec/rest': link:core/packages/rest
-      '@typespec/spec-api': 0.1.0-alpha.14
-      '@typespec/spector': 0.1.0-alpha.25(@types/node@25.5.2)(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))
-      '@typespec/versioning': link:core/packages/versioning
-      '@typespec/xml': link:core/packages/xml
-    transitivePeerDependencies:
-      - '@types/node'
-      - '@typespec/streams'
-      - supports-color
-
-  '@typespec/http@1.12.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))':
-    dependencies:
-      '@typespec/compiler': 1.12.0(@types/node@25.5.2)
-    optionalDependencies:
-      '@typespec/streams': 0.82.0(@typespec/compiler@core+packages+compiler)
-
-  '@typespec/rest@0.81.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/http@1.12.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler)))':
-    dependencies:
-      '@typespec/compiler': 1.12.0(@types/node@25.5.2)
-      '@typespec/http': 1.12.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))
-
-  '@typespec/spec-api@0.1.0-alpha.14':
-    dependencies:
-      deep-equal: 2.2.3
-      express: 5.2.1
-      xml2js: 0.6.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@typespec/spec-coverage-sdk@0.1.0-alpha.16':
-    dependencies:
-      '@azure/identity': 4.13.1
-      '@azure/storage-blob': 12.31.0
-      '@types/node': 25.3.5
-      '@types/semver': 7.7.1
-      semver: 7.7.4
-    transitivePeerDependencies:
-      - supports-color
-
-  '@typespec/spector@0.1.0-alpha.25(@types/node@25.5.2)(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))':
-    dependencies:
-      '@azure/identity': 4.13.1
-      '@typespec/compiler': 1.12.0(@types/node@25.5.2)
-      '@typespec/http': 1.12.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler))
-      '@typespec/rest': 0.81.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/http@1.12.0(@typespec/compiler@1.12.0(@types/node@25.5.2))(@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler)))
-      '@typespec/spec-api': 0.1.0-alpha.14
-      '@typespec/spec-coverage-sdk': 0.1.0-alpha.16
-      '@typespec/versioning': 0.81.0(@typespec/compiler@1.12.0(@types/node@25.5.2))
-      ajv: 8.18.0
-      body-parser: 2.2.2
-      deep-equal: 2.2.3
-      express: 5.2.1
-      globby: 16.1.1
-      micromatch: 4.0.8
-      morgan: 1.10.1
-      multer: 2.1.1
-      picocolors: 1.1.1
-      source-map-support: 0.5.21
-      xml2js: 0.6.2
-      yaml: 2.8.3
-      yargs: 18.0.0
-    transitivePeerDependencies:
-      - '@types/node'
-      - '@typespec/streams'
-      - supports-color
-
-  '@typespec/streams@0.82.0(@typespec/compiler@core+packages+compiler)':
-    dependencies:
-      '@typespec/compiler': link:core/packages/compiler
-    optional: true
-
   '@typespec/ts-http-runtime@0.1.0':
     dependencies:
       http-proxy-agent: 7.0.2
@@ -20834,10 +20655,6 @@ snapshots:
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
-
-  '@typespec/versioning@0.81.0(@typespec/compiler@1.12.0(@types/node@25.5.2))':
-    dependencies:
-      '@typespec/compiler': 1.12.0(@types/node@25.5.2)
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -22828,27 +22645,6 @@ snapshots:
 
   deep-equal@1.0.1: {}
 
-  deep-equal@2.2.3:
-    dependencies:
-      array-buffer-byte-length: 1.0.2
-      call-bind: 1.0.8
-      es-get-iterator: 1.1.3
-      get-intrinsic: 1.3.0
-      is-arguments: 1.2.0
-      is-array-buffer: 3.0.5
-      is-date-object: 1.1.0
-      is-regex: 1.2.1
-      is-shared-array-buffer: 1.0.4
-      isarray: 2.0.5
-      object-is: 1.1.6
-      object-keys: 1.1.1
-      object.assign: 4.1.7
-      regexp.prototype.flags: 1.5.4
-      side-channel: 1.1.0
-      which-boxed-primitive: 1.1.1
-      which-collection: 1.0.2
-      which-typed-array: 1.1.20
-
   deep-extend@0.6.0: {}
 
   deep-is@0.1.4: {}
@@ -23156,18 +22952,6 @@ snapshots:
   es-define-property@1.0.1: {}
 
   es-errors@1.3.0: {}
-
-  es-get-iterator@1.1.3:
-    dependencies:
-      call-bind: 1.0.8
-      get-intrinsic: 1.3.0
-      has-symbols: 1.1.0
-      is-arguments: 1.2.0
-      is-map: 2.0.3
-      is-set: 2.0.3
-      is-string: 1.1.1
-      isarray: 2.0.5
-      stop-iteration-iterator: 1.1.0
 
   es-module-lexer@2.0.0: {}
 
@@ -24532,11 +24316,6 @@ snapshots:
     dependencies:
       is-alphabetical: 2.0.1
       is-decimal: 2.0.1
-
-  is-arguments@1.2.0:
-    dependencies:
-      call-bound: 1.0.4
-      has-tostringtag: 1.0.2
 
   is-array-buffer@3.0.5:
     dependencies:
@@ -26094,11 +25873,6 @@ snapshots:
   object-assign@4.1.1: {}
 
   object-inspect@1.13.4: {}
-
-  object-is@1.1.6:
-    dependencies:
-      call-bind: 1.0.8
-      define-properties: 1.2.1
 
   object-keys@1.1.1: {}
 
@@ -29017,11 +28791,6 @@ snapshots:
   xml-name-validator@5.0.0: {}
 
   xml2js@0.5.0:
-    dependencies:
-      sax: 1.5.0
-      xmlbuilder: 11.0.1
-
-  xml2js@0.6.2:
     dependencies:
       sax: 1.5.0
       xmlbuilder: 11.0.1
