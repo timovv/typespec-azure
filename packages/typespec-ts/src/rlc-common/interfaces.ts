@@ -115,12 +115,7 @@ export interface ApiVersionInfo {
   required?: boolean;
 }
 
-export type ApiVersionPosition =
-  | "path"
-  | "query"
-  | "baseurl"
-  | "duplicate"
-  | "none";
+export type ApiVersionPosition = "path" | "query" | "baseurl" | "duplicate" | "none";
 export interface HelperFunctionDetails {
   hasPaging?: boolean;
   hasLongRunning?: boolean;
@@ -313,7 +308,7 @@ export enum SchemaContext {
   /** Schema is used as an output from an operation. */
   Output = "output",
   /** Schema is used as an exception from an operation. */
-  Exception = "exception"
+  Exception = "exception",
 }
 
 export interface Schema {
@@ -436,10 +431,7 @@ export type ContentBuilder = {
 
 export type SampleParameterPosition = "client" | "path" | "method";
 
-export type SampleParameters = Record<
-  SampleParameterPosition,
-  SampleParameter[]
->;
+export type SampleParameters = Record<SampleParameterPosition, SampleParameter[]>;
 
 export interface SampleParameter {
   name: string;

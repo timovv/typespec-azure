@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, assert } from "vitest";
+import { assert, beforeEach, describe, it } from "vitest";
 
 import AzureArmResourceClientFactory, {
   AzureArmResourceClient,
@@ -9,7 +9,7 @@ import AzureArmResourceClientFactory, {
   NestedProxyResourceOutput,
   paginate,
   SingletonTrackedResourceOutput,
-  TopLevelTrackedResourceOutput
+  TopLevelTrackedResourceOutput,
 } from "./generated/azure/resource-manager/resources/src/index.js";
 describe("Azure Arm Resources Rest Client", () => {
   let client: AzureArmResourceClient;
@@ -17,7 +17,7 @@ describe("Azure Arm Resources Rest Client", () => {
   beforeEach(() => {
     client = AzureArmResourceClientFactory({
       endpoint: "http://localhost:3000",
-      allowInsecureConnection: true
+      allowInsecureConnection: true,
     });
   });
   const SUBSCRIPTION_ID_EXPECTED = "00000000-0000-0000-0000-000000000000";
@@ -30,7 +30,7 @@ describe("Azure Arm Resources Rest Client", () => {
     location: "eastus",
     properties: {
       provisioningState: "Succeeded",
-      description: "valid"
+      description: "valid",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -38,8 +38,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
 
   const validNestedResource = {
@@ -48,7 +48,7 @@ describe("Azure Arm Resources Rest Client", () => {
     type: "Azure.ResourceManager.Resources/topLevelTrackedResources/top/nestedProxyResources",
     properties: {
       provisioningState: "Succeeded",
-      description: "valid"
+      description: "valid",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -56,8 +56,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
 
   const validSingletonResource = {
@@ -67,7 +67,7 @@ describe("Azure Arm Resources Rest Client", () => {
     location: "eastus",
     properties: {
       provisioningState: "Succeeded",
-      description: "valid"
+      description: "valid",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -75,8 +75,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
 
   const validLocationResource = {
@@ -85,7 +85,7 @@ describe("Azure Arm Resources Rest Client", () => {
     type: "Azure.ResourceManager.Resources/locationResources",
     properties: {
       description: "valid",
-      provisioningState: "Succeeded"
+      provisioningState: "Succeeded",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -93,8 +93,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
   const validResourceGroupExtensionsResource = {
     id: `/subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/extensionsResources/extension`,
@@ -102,7 +102,7 @@ describe("Azure Arm Resources Rest Client", () => {
     type: "Azure.ResourceManager.Resources/extensionsResources",
     properties: {
       description: "valid",
-      provisioningState: "Succeeded"
+      provisioningState: "Succeeded",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -110,8 +110,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
 
   const validSubscriptionExtensionsResource = {
@@ -120,7 +120,7 @@ describe("Azure Arm Resources Rest Client", () => {
     type: "Azure.ResourceManager.Resources/extensionsResources",
     properties: {
       description: "valid",
-      provisioningState: "Succeeded"
+      provisioningState: "Succeeded",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -128,8 +128,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
 
   const validTenantExtensionsResource = {
@@ -138,7 +138,7 @@ describe("Azure Arm Resources Rest Client", () => {
     type: "Azure.ResourceManager.Resources/extensionsResources",
     properties: {
       description: "valid",
-      provisioningState: "Succeeded"
+      provisioningState: "Succeeded",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -146,8 +146,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
 
   const validResourceExtensionsResource = {
@@ -156,7 +156,7 @@ describe("Azure Arm Resources Rest Client", () => {
     type: "Azure.ResourceManager.Resources/extensionsResources",
     properties: {
       description: "valid",
-      provisioningState: "Succeeded"
+      provisioningState: "Succeeded",
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -164,8 +164,8 @@ describe("Azure Arm Resources Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User"
-    }
+      lastModifiedByType: "User",
+    },
   };
   // singleton tracked resource
   it("should get singleton tracked resources by resourceGroup", async () => {
@@ -173,7 +173,7 @@ describe("Azure Arm Resources Rest Client", () => {
       .path(
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/singletonTrackedResources/default",
         "00000000-0000-0000-0000-000000000000",
-        "test-rg"
+        "test-rg",
       )
       .get();
 
@@ -185,10 +185,7 @@ describe("Azure Arm Resources Rest Client", () => {
       throw Error("Unexpected status code");
     }
     assert.strictEqual(result.status, "200");
-    assert.deepStrictEqual<SingletonTrackedResourceOutput>(
-      result.body,
-      validSingletonResource
-    );
+    assert.deepStrictEqual<SingletonTrackedResourceOutput>(result.body, validSingletonResource);
   });
 
   it("should createOrUpdate singleton tracked resources", async () => {
@@ -196,15 +193,15 @@ describe("Azure Arm Resources Rest Client", () => {
       .path(
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/singletonTrackedResources/default",
         "00000000-0000-0000-0000-000000000000",
-        "test-rg"
+        "test-rg",
       )
       .put({
         body: {
           location: "eastus",
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     const poller = await getLongRunningPoller(client, initialResponse);
     const result = await poller.pollUntilDone();
@@ -213,10 +210,7 @@ describe("Azure Arm Resources Rest Client", () => {
     if (isUnexpected(result)) {
       throw Error("Unexpected status code");
     }
-    assert.deepStrictEqual<SingletonTrackedResourceOutput>(
-      result.body,
-      validSingletonResource
-    );
+    assert.deepStrictEqual<SingletonTrackedResourceOutput>(result.body, validSingletonResource);
   });
 
   it("should update singleton tracked resources", async () => {
@@ -224,15 +218,15 @@ describe("Azure Arm Resources Rest Client", () => {
       .path(
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/singletonTrackedResources/default",
         "00000000-0000-0000-0000-000000000000",
-        "test-rg"
+        "test-rg",
       )
       .patch({
         body: {
           location: "eastus",
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     const poller = await getLongRunningPoller(client, initialResponse);
     const result = await poller.pollUntilDone();
@@ -245,8 +239,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validSingletonResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
   });
 
@@ -255,7 +249,7 @@ describe("Azure Arm Resources Rest Client", () => {
       .path(
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/singletonTrackedResources",
         "00000000-0000-0000-0000-000000000000",
-        "test-rg"
+        "test-rg",
       )
       .get();
     if (isUnexpected(initialResponse)) {
@@ -268,9 +262,7 @@ describe("Azure Arm Resources Rest Client", () => {
       result.push(item);
     }
     assert.strictEqual(initialResponse.status, "200");
-    assert.deepStrictEqual<SingletonTrackedResourceOutput[]>(result, [
-      validSingletonResource
-    ]);
+    assert.deepStrictEqual<SingletonTrackedResourceOutput[]>(result, [validSingletonResource]);
   });
 
   // top level tracked resource
@@ -280,13 +272,13 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/{topLevelTrackedResourceName}/actionSync",
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
-        "top"
+        "top",
       )
       .post({
         body: {
           message: "Resource action at top level.",
-          urgent: true
-        }
+          urgent: true,
+        },
       });
     assert.strictEqual(result.status, "204");
   });
@@ -297,7 +289,7 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/{topLevelTrackedResourceName}",
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
-        "top"
+        "top",
       )
       .get();
     const poller = await getLongRunningPoller(client, initialResponse);
@@ -307,10 +299,7 @@ describe("Azure Arm Resources Rest Client", () => {
     if (isUnexpected(result)) {
       throw Error("Unexpected status code");
     }
-    assert.deepStrictEqual<TopLevelTrackedResourceOutput>(
-      result.body,
-      validTopLevelResource
-    );
+    assert.deepStrictEqual<TopLevelTrackedResourceOutput>(result.body, validTopLevelResource);
   });
   it("should create or replace top level tracked resources", async () => {
     const initialResponse = await client
@@ -318,15 +307,15 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/{topLevelTrackedResourceName}",
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
-        "top"
+        "top",
       )
       .put({
         body: {
           location: "eastus",
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
 
     const poller = await getLongRunningPoller(client, initialResponse);
@@ -336,10 +325,7 @@ describe("Azure Arm Resources Rest Client", () => {
     if (isUnexpected(result)) {
       throw Error("Unexpected status code");
     }
-    assert.deepStrictEqual<TopLevelTrackedResourceOutput>(
-      result.body,
-      validTopLevelResource
-    );
+    assert.deepStrictEqual<TopLevelTrackedResourceOutput>(result.body, validTopLevelResource);
   });
   it.skip("should update top level tracked resources", async () => {
     const initialResponse = await client
@@ -347,15 +333,15 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/{topLevelTrackedResourceName}",
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
-        "top"
+        "top",
       )
       .patch({
         body: {
           location: "eastus",
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     const poller = await getLongRunningPoller(client, initialResponse);
     const result = await poller.pollUntilDone();
@@ -366,8 +352,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validTopLevelResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
   });
   it("should delete top level tracked resources", async () => {
@@ -376,14 +362,14 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/{topLevelTrackedResourceName}",
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
-        "top"
+        "top",
       )
       .delete({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     assert.strictEqual(result.status, "204");
   });
@@ -392,7 +378,7 @@ describe("Azure Arm Resources Rest Client", () => {
       .path(
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources",
         "00000000-0000-0000-0000-000000000000",
-        "test-rg"
+        "test-rg",
       )
       .get();
     if (isUnexpected(initialResponse)) {
@@ -405,15 +391,13 @@ describe("Azure Arm Resources Rest Client", () => {
       result.push(item);
     }
     assert.strictEqual(initialResponse.status, "200");
-    assert.deepStrictEqual<TopLevelTrackedResourceOutput[]>(result, [
-      validTopLevelResource
-    ]);
+    assert.deepStrictEqual<TopLevelTrackedResourceOutput[]>(result, [validTopLevelResource]);
   });
   it("should list top level tracked resources by subscription ", async () => {
     const initialResponse = await client
       .path(
         "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources",
-        "00000000-0000-0000-0000-000000000000"
+        "00000000-0000-0000-0000-000000000000",
       )
       .get();
     if (isUnexpected(initialResponse)) {
@@ -426,9 +410,7 @@ describe("Azure Arm Resources Rest Client", () => {
       result.push(item);
     }
     assert.strictEqual(initialResponse.status, "200");
-    assert.deepStrictEqual<TopLevelTrackedResourceOutput[]>(result, [
-      validTopLevelResource
-    ]);
+    assert.deepStrictEqual<TopLevelTrackedResourceOutput[]>(result, [validTopLevelResource]);
   });
 
   // nested proxy resource
@@ -439,7 +421,7 @@ describe("Azure Arm Resources Rest Client", () => {
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
         "top",
-        "nested"
+        "nested",
       )
       .get();
     const poller = await getLongRunningPoller(client, initialResponse);
@@ -449,10 +431,7 @@ describe("Azure Arm Resources Rest Client", () => {
     if (isUnexpected(result)) {
       throw Error("Unexpected status code");
     }
-    assert.deepStrictEqual<NestedProxyResourceOutput>(
-      result.body,
-      validNestedResource
-    );
+    assert.deepStrictEqual<NestedProxyResourceOutput>(result.body, validNestedResource);
   });
 
   it("should create or replace nested proxy resource", async () => {
@@ -462,14 +441,14 @@ describe("Azure Arm Resources Rest Client", () => {
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
         "top",
-        "nested"
+        "nested",
       )
       .put({
         body: {
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     const poller = await getLongRunningPoller(client, initialResponse);
     const result = await poller.pollUntilDone();
@@ -478,10 +457,7 @@ describe("Azure Arm Resources Rest Client", () => {
     if (isUnexpected(result)) {
       throw Error("Unexpected status code");
     }
-    assert.deepStrictEqual<NestedProxyResourceOutput>(
-      result.body,
-      validNestedResource
-    );
+    assert.deepStrictEqual<NestedProxyResourceOutput>(result.body, validNestedResource);
   });
 
   it("should update nested proxy resource", async () => {
@@ -491,14 +467,14 @@ describe("Azure Arm Resources Rest Client", () => {
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
         "top",
-        "nested"
+        "nested",
       )
       .patch({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     const poller = await getLongRunningPoller(client, initialResponse);
     const result = await poller.pollUntilDone();
@@ -511,8 +487,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validNestedResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
   });
 
@@ -523,7 +499,7 @@ describe("Azure Arm Resources Rest Client", () => {
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
         "top",
-        "nested"
+        "nested",
       )
       .delete();
     assert.strictEqual(result.status, "204");
@@ -535,7 +511,7 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/{topLevelTrackedResourceName}/nestedProxyResources",
         "00000000-0000-0000-0000-000000000000",
         "test-rg",
-        "top"
+        "top",
       )
       .get();
     if (isUnexpected(initialResponse)) {
@@ -548,9 +524,7 @@ describe("Azure Arm Resources Rest Client", () => {
       result.push(item);
     }
     assert.strictEqual(initialResponse.status, "200");
-    assert.deepStrictEqual<NestedProxyResourceOutput[]>(result, [
-      validNestedResource
-    ]);
+    assert.deepStrictEqual<NestedProxyResourceOutput[]>(result, [validNestedResource]);
   });
 
   // location resource
@@ -560,7 +534,7 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.Resources/locations/{location}/locationResources/{locationResourceName}",
         SUBSCRIPTION_ID_EXPECTED,
         LOCATION_EXPECTED,
-        "resource"
+        "resource",
       )
       .get();
     if (isUnexpected(result)) {
@@ -568,10 +542,7 @@ describe("Azure Arm Resources Rest Client", () => {
       assert.fail(error);
     }
     assert.strictEqual(result.status, "200");
-    assert.deepStrictEqual<LocationResourceOutput>(
-      result.body,
-      validLocationResource
-    );
+    assert.deepStrictEqual<LocationResourceOutput>(result.body, validLocationResource);
   });
 
   it("should createOrUpdate LocationResources ", async () => {
@@ -580,24 +551,21 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.Resources/locations/{location}/locationResources/{locationResourceName}",
         SUBSCRIPTION_ID_EXPECTED,
         LOCATION_EXPECTED,
-        "resource"
+        "resource",
       )
       .put({
         body: {
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     if (isUnexpected(result)) {
       const error = `Unexpected status code ${result.status}`;
       assert.fail(error);
     }
     assert.strictEqual(result.status, "200");
-    assert.deepStrictEqual<LocationResourceOutput>(
-      result.body,
-      validLocationResource
-    );
+    assert.deepStrictEqual<LocationResourceOutput>(result.body, validLocationResource);
   });
 
   it("should update LocationResources ", async () => {
@@ -606,14 +574,14 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.Resources/locations/{location}/locationResources/{locationResourceName}",
         SUBSCRIPTION_ID_EXPECTED,
         LOCATION_EXPECTED,
-        "resource"
+        "resource",
       )
       .patch({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     if (isUnexpected(result)) {
       const error = `Unexpected status code ${result.status}`;
@@ -624,8 +592,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validLocationResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
   });
 
@@ -635,7 +603,7 @@ describe("Azure Arm Resources Rest Client", () => {
         "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.Resources/locations/{location}/locationResources/{locationResourceName}",
         SUBSCRIPTION_ID_EXPECTED,
         LOCATION_EXPECTED,
-        "resource"
+        "resource",
       )
       .delete();
     assert.strictEqual(result.status, "204");
@@ -647,7 +615,7 @@ describe("Azure Arm Resources Rest Client", () => {
       .path(
         "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.Resources/locations/{location}/locationResources",
         SUBSCRIPTION_ID_EXPECTED,
-        LOCATION_EXPECTED
+        LOCATION_EXPECTED,
       )
       .get();
     if (isUnexpected(initialResponse)) {
@@ -660,9 +628,7 @@ describe("Azure Arm Resources Rest Client", () => {
       result.push(item);
     }
     assert.strictEqual(initialResponse.status, "200");
-    assert.deepStrictEqual<LocationResourceOutput[]>(result, [
-      validLocationResource
-    ]);
+    assert.deepStrictEqual<LocationResourceOutput[]>(result, [validLocationResource]);
   });
 
   // extension tracked resource
@@ -672,9 +638,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .get();
     if (isUnexpected(resourceGroupResult)) {
@@ -684,7 +650,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(resourceGroupResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       resourceGroupResult.body,
-      validResourceGroupExtensionsResource
+      validResourceGroupExtensionsResource,
     );
 
     const subscriptionResult = await client
@@ -692,9 +658,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .get();
     if (isUnexpected(subscriptionResult)) {
@@ -704,7 +670,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(subscriptionResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       subscriptionResult.body,
-      validSubscriptionExtensionsResource
+      validSubscriptionExtensionsResource,
     );
 
     const tenantResult = await client
@@ -712,9 +678,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: "",
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .get();
     if (isUnexpected(tenantResult)) {
@@ -724,7 +690,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(tenantResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       tenantResult.body,
-      validTenantExtensionsResource
+      validTenantExtensionsResource,
     );
 
     const resourceResult = await client
@@ -732,9 +698,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/top`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .get();
     if (isUnexpected(resourceResult)) {
@@ -744,7 +710,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(resourceResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       resourceResult.body,
-      validResourceExtensionsResource
+      validResourceExtensionsResource,
     );
   });
 
@@ -754,16 +720,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .put({
         body: {
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     if (isUnexpected(resourceGroupResult)) {
       const error = `Unexpected status code ${resourceGroupResult.status}`;
@@ -772,7 +738,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(resourceGroupResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       resourceGroupResult.body,
-      validResourceGroupExtensionsResource
+      validResourceGroupExtensionsResource,
     );
 
     const subscriptionResult = await client
@@ -780,16 +746,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .put({
         body: {
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     if (isUnexpected(subscriptionResult)) {
       const error = `Unexpected status code ${subscriptionResult.status}`;
@@ -798,7 +764,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(subscriptionResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       subscriptionResult.body,
-      validSubscriptionExtensionsResource
+      validSubscriptionExtensionsResource,
     );
 
     const tenantResult = await client
@@ -806,16 +772,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: "",
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .put({
         body: {
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     if (isUnexpected(tenantResult)) {
       const error = `Unexpected status code ${tenantResult.status}`;
@@ -824,7 +790,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(tenantResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       tenantResult.body,
-      validTenantExtensionsResource
+      validTenantExtensionsResource,
     );
 
     const resourceResult = await client
@@ -832,16 +798,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/top`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .put({
         body: {
           properties: {
-            description: "valid"
-          }
-        }
+            description: "valid",
+          },
+        },
       });
     if (isUnexpected(resourceResult)) {
       const error = `Unexpected status code ${resourceResult.status}`;
@@ -850,7 +816,7 @@ describe("Azure Arm Resources Rest Client", () => {
     assert.strictEqual(resourceResult.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput>(
       resourceResult.body,
-      validResourceExtensionsResource
+      validResourceExtensionsResource,
     );
   });
 
@@ -860,16 +826,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .patch({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     if (isUnexpected(resourceGroupResult)) {
       const error = `Unexpected status code ${resourceGroupResult.status}`;
@@ -880,8 +846,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validResourceGroupExtensionsResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
 
     const subscriptionResult = await client
@@ -889,16 +855,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .patch({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     if (isUnexpected(subscriptionResult)) {
       const error = `Unexpected status code ${subscriptionResult.status}`;
@@ -909,8 +875,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validSubscriptionExtensionsResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
 
     const tenantResult = await client
@@ -918,16 +884,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: "",
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .patch({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     if (isUnexpected(tenantResult)) {
       const error = `Unexpected status code ${tenantResult.status}`;
@@ -938,8 +904,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validTenantExtensionsResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
 
     const resourceResult = await client
@@ -947,16 +913,16 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/top`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .patch({
         body: {
           properties: {
-            description: "valid2"
-          }
-        }
+            description: "valid2",
+          },
+        },
       });
     if (isUnexpected(resourceResult)) {
       const error = `Unexpected status code ${resourceResult.status}`;
@@ -967,8 +933,8 @@ describe("Azure Arm Resources Rest Client", () => {
       ...validResourceExtensionsResource,
       properties: {
         provisioningState: "Succeeded",
-        description: "valid2"
-      }
+        description: "valid2",
+      },
     });
   });
 
@@ -978,9 +944,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .delete();
     assert.strictEqual(resourceGroupResult.status, "204");
@@ -991,9 +957,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .delete();
     assert.strictEqual(subscriptionResult.status, "204");
@@ -1004,9 +970,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: "",
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .delete();
     assert.strictEqual(tenantResult.status, "204");
@@ -1017,9 +983,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/top`,
-          allowReserved: true
+          allowReserved: true,
         },
-        "extension"
+        "extension",
       )
       .delete();
     assert.strictEqual(resourceResult.status, "204");
@@ -1028,13 +994,10 @@ describe("Azure Arm Resources Rest Client", () => {
 
   it("should list ExtensionsResources ", async () => {
     const resourceGroupResponse = await client
-      .path(
-        "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources",
-        {
-          value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
-          allowReserved: true
-        }
-      )
+      .path("/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources", {
+        value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
+        allowReserved: true,
+      })
       .get();
     if (isUnexpected(resourceGroupResponse)) {
       const error = `Unexpected status code ${resourceGroupResponse.status}`;
@@ -1047,17 +1010,14 @@ describe("Azure Arm Resources Rest Client", () => {
     }
     assert.strictEqual(resourceGroupResponse.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput[]>(resourceGroupResult, [
-      validResourceGroupExtensionsResource
+      validResourceGroupExtensionsResource,
     ]);
 
     const subscriptionResponse = await client
-      .path(
-        "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources",
-        {
-          value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}`,
-          allowReserved: true
-        }
-      )
+      .path("/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources", {
+        value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}`,
+        allowReserved: true,
+      })
       .get();
     if (isUnexpected(subscriptionResponse)) {
       const error = `Unexpected status code ${subscriptionResponse.status}`;
@@ -1070,17 +1030,14 @@ describe("Azure Arm Resources Rest Client", () => {
     }
     assert.strictEqual(subscriptionResponse.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput[]>(subscriptionIterResult, [
-      validSubscriptionExtensionsResource
+      validSubscriptionExtensionsResource,
     ]);
 
     const tenantResponse = await client
-      .path(
-        "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources",
-        {
-          value: "",
-          allowReserved: true
-        }
-      )
+      .path("/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources", {
+        value: "",
+        allowReserved: true,
+      })
       .get();
     if (isUnexpected(tenantResponse)) {
       const error = `Unexpected status code ${tenantResponse.status}`;
@@ -1093,17 +1050,14 @@ describe("Azure Arm Resources Rest Client", () => {
     }
     assert.strictEqual(tenantResponse.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput[]>(tenantResult, [
-      validTenantExtensionsResource
+      validTenantExtensionsResource,
     ]);
 
     const resourceResponse = await client
-      .path(
-        "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources",
-        {
-          value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/top`,
-          allowReserved: true
-        }
-      )
+      .path("/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources", {
+        value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.Resources/topLevelTrackedResources/top`,
+        allowReserved: true,
+      })
       .get();
     if (isUnexpected(resourceResponse)) {
       const error = `Unexpected status code ${resourceResponse.status}`;
@@ -1116,7 +1070,7 @@ describe("Azure Arm Resources Rest Client", () => {
     }
     assert.strictEqual(resourceResponse.status, "200");
     assert.deepStrictEqual<ExtensionsResourceOutput[]>(resourceResult, [
-      validResourceExtensionsResource
+      validResourceExtensionsResource,
     ]);
   });
 
@@ -1126,9 +1080,9 @@ describe("Azure Arm Resources Rest Client", () => {
         "/{resourceUri}/providers/Azure.ResourceManager.Resources/extensionsResources/{extensionsResourceName}",
         {
           value: `subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}`,
-          allowReserved: false as any
+          allowReserved: false as any,
         },
-        "extension"
+        "extension",
       )
       .get();
     if (isUnexpected(result)) {

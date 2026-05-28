@@ -81,7 +81,6 @@ This is to indicate the package information such as package name, package descri
 
       To enable credential in `tspconfig.yaml` and we need to provide more details to let codegen know types.
 
-
 ### `credential-scopes`
 
 **Type:** `array`
@@ -112,7 +111,6 @@ This option is used for special Key Auth, when the key has a shared prefix and t
 
       Whether to generate metadata files which includes package.json, README.md and tsconfig.json etc. Defaults to `undefined`. If there's not a package.json under package-dir, defaults to `true`. but if you'd like to disable this feature you could set it as `false`.
 
-
 ### `generate-test`
 
 **Type:** `boolean`
@@ -122,7 +120,6 @@ This option is used for special Key Auth, when the key has a shared prefix and t
       - If azure-sdk-for-js is `false`. Defaults to `false`.
       - If azure-sdk-for-js is `true` but there's a test folder under package-dir. Defaults to `false`.
       - If azure-sdk-for-js is `true` but there's not a test folder under package-dir. Defaults to `true`.
-
 
 ### `generate-sample`
 
@@ -280,7 +277,6 @@ By default, code generation uses the titles specified in the `@client` and `@ser
         AnomalyDetectorClient: AnomalyDetectorRest
         AnomalyDetectorClient2: AnomalyDetectorRest2
       ```
-
 
 ### `should-use-pnpm-dep`
 

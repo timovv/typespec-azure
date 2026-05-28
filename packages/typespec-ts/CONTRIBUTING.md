@@ -20,7 +20,6 @@ pnpm build
 ```
 
 3. There are also 3 test-suites in the RLC generator:
-
    1. Unit tests (which could be found at `test/unit/*`)
    2. Integration tests (which could be found at `test/integration/*`)
    3. Smoke tests (which could be found at `../../packages/typespec-test`)
@@ -107,7 +106,6 @@ If you would like to debug the `testUserCase.spec.ts` file (after the SDK is gen
 ### How to debug an unit test case
 
 - In VS Code, We have created a Debugging profile for UnitTests to start debugging:
-
   1. Go to the debugger tab
   2. Select the "[TypeSpec] - Unit Test" Profile
   3. Click the "Play" button
@@ -121,13 +119,11 @@ If you would like to debug the `testUserCase.spec.ts` file (after the SDK is gen
       npm run start-test-server:v1
 
 - Once the Test Server is running
-
   1. In VSCode go to the debugger tab
   2. Select the "[TypeSpec] - Integration Test" profile from the drop down
   3. Click the "Play" button
 
 - **\*\***IMPORTANT**\*\***: Running Integration Tests for debugging, does not re-generate the test clients so make sure that after each change you do:
-
   - Re-generate all the test swaggers
 
         npm run generate-tsp-only -- --build

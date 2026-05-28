@@ -6,15 +6,15 @@ export default defineConfig({
       {
         test: {
           name: "test-next",
-          include: ["test-next/**/*.test.ts"]
-        }
+          include: ["test-next/**/*.test.ts"],
+        },
       },
       {
         test: {
           name: "unit-rlc",
           include: ["test/unit/**/*.spec.ts"],
-          testTimeout: 36000
-        }
+          testTimeout: 36000,
+        },
       },
       {
         test: {
@@ -24,18 +24,18 @@ export default defineConfig({
           pool: "forks",
           poolOptions: {
             forks: {
-              execArgv: ["--max-old-space-size=8192"]
-            }
-          }
-        }
+              execArgv: ["--max-old-space-size=8192"],
+            },
+          },
+        },
       },
       {
         test: {
           name: "integration-rlc",
           include: ["test/integration/*.spec.ts"],
           exclude: ["test/integration/versioningRemoved.spec.ts"],
-          testTimeout: 36000
-        }
+          testTimeout: 36000,
+        },
       },
       {
         test: {
@@ -43,17 +43,17 @@ export default defineConfig({
           include: ["test/azureIntegration/*.spec.ts"],
           exclude: [
             "test/azureIntegration/versioningRemoved.spec.ts",
-            "test/azureIntegration/azureClientGeneratorCoreClientInitialization.spec.ts"
+            "test/azureIntegration/azureClientGeneratorCoreClientInitialization.spec.ts",
           ],
-          testTimeout: 36000
-        }
+          testTimeout: 36000,
+        },
       },
       {
         test: {
           name: "integration-modular",
           include: ["test/modularIntegration/*.spec.ts"],
-          testTimeout: 36000
-        }
+          testTimeout: 36000,
+        },
       },
       {
         test: {
@@ -63,11 +63,11 @@ export default defineConfig({
             "test/azureModularIntegration/clientStructureOperationGroup.spec.ts",
             "test/azureModularIntegration/clientStructureRenamed.spec.ts",
             "test/azureModularIntegration/clientStructureTwoGroup.spec.ts",
-            "test/azureModularIntegration/payloadMultipart.spec.ts"
+            "test/azureModularIntegration/payloadMultipart.spec.ts",
           ],
-          testTimeout: 36000
-        }
-      }
+          testTimeout: 36000,
+        },
+      },
     ],
     coverage: {
       provider: "istanbul",
@@ -75,9 +75,9 @@ export default defineConfig({
       include: [
         "src/modular/serialization/**/*.ts",
         "src/framework/**/*.ts",
-        "static/static-helpers/**/*.ts"
+        "static/static-helpers/**/*.ts",
       ],
-      exclude: ["**/*.spec.ts", "**/*.spec.tsx", ".next/*"]
-    }
-  }
+      exclude: ["**/*.spec.ts", "**/*.spec.tsx", ".next/*"],
+    },
+  },
 });

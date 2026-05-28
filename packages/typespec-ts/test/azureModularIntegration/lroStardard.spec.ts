@@ -1,12 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
-import {
-  StandardClient,
-  User
-} from "./generated/azure/core/lro/standard/src/index.js";
-import { assert, expect } from "chai";
-import { restorePoller } from "./generated/azure/core/lro/standard/src/restorePollerHelpers.js";
 import { OperationState } from "@azure/core-lro";
+import { assert } from "chai";
+import { StandardClient, User } from "./generated/azure/core/lro/standard/src/index.js";
+import { restorePoller } from "./generated/azure/core/lro/standard/src/restorePollerHelpers.js";
 
 describe("LROStandardClient Classical Client", () => {
   let client: StandardClient;
@@ -14,28 +11,24 @@ describe("LROStandardClient Classical Client", () => {
   beforeEach(() => {
     client = new StandardClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true
+      allowInsecureConnection: true,
     });
   });
 
   describe("createOrReplace", () => {
     it("should await poller result directly", async () => {
       const result = await client.createOrReplace("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       assert.deepEqual(result, { name: "madge", role: "contributor" });
     });
 
     it("serialize and rehydration", async () => {
       const poller = client.createOrReplace("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       const restoredPoller = await poller.serialize();
-      const newPoller = restorePoller(
-        client,
-        restoredPoller,
-        client.createOrReplace
-      );
+      const newPoller = restorePoller(client, restoredPoller, client.createOrReplace);
       const result = await newPoller.pollUntilDone();
       assert.strictEqual(result.name, "madge");
       assert.strictEqual(result.role, "contributor");
@@ -43,7 +36,7 @@ describe("LROStandardClient Classical Client", () => {
 
     it("should get in-the-middle values by onProgress/operationState", async () => {
       const poller = client.createOrReplace("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       const states: string[] = [];
       const operations: OperationState<User>[] = [];
@@ -65,11 +58,11 @@ describe("LROStandardClient Classical Client", () => {
       const poller = client.createOrReplace(
         "madge",
         {
-          role: "contributor"
+          role: "contributor",
         } as any,
         {
-          abortSignal: abortController.signal
-        }
+          abortSignal: abortController.signal,
+        },
       );
       abortController.abort();
       try {
@@ -85,11 +78,11 @@ describe("LROStandardClient Classical Client", () => {
       const poller = client.createOrReplace(
         "madge",
         {
-          role: "contributor"
+          role: "contributor",
         } as any,
         {
-          abortSignal: abortController.signal
-        }
+          abortSignal: abortController.signal,
+        },
       );
       try {
         await poller.submitted();
@@ -104,7 +97,7 @@ describe("LROStandardClient Classical Client", () => {
     it("should abort pollUntilDone request", async () => {
       const abortController = new AbortController();
       const poller = client.createOrReplace("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       abortController.abort();
       try {
@@ -121,11 +114,11 @@ describe("LROStandardClient Classical Client", () => {
       const poller = client.createOrReplace(
         "madge",
         {
-          role: "contributor"
+          role: "contributor",
         } as any,
         {
-          abortSignal: methodAbort.signal
-        }
+          abortSignal: methodAbort.signal,
+        },
       );
 
       try {
@@ -140,7 +133,7 @@ describe("LROStandardClient Classical Client", () => {
     it("submitted should catch the initial error", async () => {
       try {
         const poller = client.createOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.isNotNull(poller);
         await poller.submitted();
@@ -148,7 +141,7 @@ describe("LROStandardClient Classical Client", () => {
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -156,7 +149,7 @@ describe("LROStandardClient Classical Client", () => {
     it("poll should catch the initial error", async () => {
       try {
         const poller = client.createOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.isNotNull(poller);
         await poller.poll();
@@ -164,7 +157,7 @@ describe("LROStandardClient Classical Client", () => {
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -172,7 +165,7 @@ describe("LROStandardClient Classical Client", () => {
     it("pollUntilDone should catch the initial error", async () => {
       try {
         const poller = client.createOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.isNotNull(poller);
         await poller.pollUntilDone();
@@ -180,7 +173,7 @@ describe("LROStandardClient Classical Client", () => {
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -188,13 +181,13 @@ describe("LROStandardClient Classical Client", () => {
     it("await should catch initial exception", async () => {
       try {
         await client.createOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.fail("Expected an exception");
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -203,24 +196,24 @@ describe("LROStandardClient Classical Client", () => {
   describe("createOrReplace legacy", () => {
     it("should await beginCreateOrReplaceAndWait result directly", async () => {
       const result = await client.beginCreateOrReplaceAndWait("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       assert.deepEqual(result, { name: "madge", role: "contributor" });
     });
 
     it("should await beginCreateOrReplaceAndWait result directly", async () => {
       const poller = await client.beginCreateOrReplace("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       assert.deepEqual(await poller.pollUntilDone(), {
         name: "madge",
-        role: "contributor"
+        role: "contributor",
       });
     });
 
     it("should get in-the-middle values by onProgress/operationState", async () => {
       const poller = await client.beginCreateOrReplace("madge", {
-        role: "contributor"
+        role: "contributor",
       } as any);
       const states: string[] = [];
       const operations: OperationState<User>[] = [];
@@ -240,14 +233,14 @@ describe("LROStandardClient Classical Client", () => {
     it("submitted should catch the initial error", async () => {
       try {
         const poller = await client.beginCreateOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.isNotNull(poller);
         assert.fail("Expected an exception");
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -255,7 +248,7 @@ describe("LROStandardClient Classical Client", () => {
     it("poll should catch the initial error", async () => {
       try {
         const poller = await client.beginCreateOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.isNotNull(poller);
         await poller.poll();
@@ -263,7 +256,7 @@ describe("LROStandardClient Classical Client", () => {
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -271,7 +264,7 @@ describe("LROStandardClient Classical Client", () => {
     it("pollUntilDone should catch the initial error", async () => {
       try {
         const poller = await client.beginCreateOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.isNotNull(poller);
         await poller.pollUntilDone();
@@ -279,7 +272,7 @@ describe("LROStandardClient Classical Client", () => {
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -287,13 +280,13 @@ describe("LROStandardClient Classical Client", () => {
     it("await should catch initial exception", async () => {
       try {
         await client.beginCreateOrReplace("madge", {
-          role: "foo"
+          role: "foo",
         } as any);
         assert.fail("Expected an exception");
       } catch (err: any) {
         expect(err.message).to.match(
           /Body provided doesn't match expected body/i,
-          `Expected ${err.message} to match /Body provided doesn't match expected body/i`
+          `Expected ${err.message} to match /Body provided doesn't match expected body/i`,
         );
       }
     });
@@ -333,7 +326,7 @@ describe("LROStandardClient Classical Client", () => {
       const result = await client.export("madge", "json");
       assert.deepEqual(result, {
         name: "madge",
-        resourceUri: "/users/madge"
+        resourceUri: "/users/madge",
       });
     });
 
@@ -358,7 +351,7 @@ describe("LROStandardClient Classical Client", () => {
       const result = await newPoller.pollUntilDone();
       assert.deepEqual(result, {
         name: "madge",
-        resourceUri: "/users/madge"
+        resourceUri: "/users/madge",
       });
     });
   });
