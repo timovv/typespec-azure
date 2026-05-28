@@ -92,6 +92,7 @@ export function isSpecialUnionVariant(
         })
         ?.some(
           (p) =>
+            // eslint-disable-next-line @typescript-eslint/no-deprecated
             (p.kind === "property" && p.name !== p.serializedName) ||
             isSpecialUnionVariant(p.type, [...variantStack, p.type]),
         )) ||

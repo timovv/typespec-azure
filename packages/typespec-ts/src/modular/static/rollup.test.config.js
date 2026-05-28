@@ -9,6 +9,7 @@ import typescript from "@rollup/plugin-typescript";
 import shim from "rollup-plugin-shim";
 import sourcemaps from "rollup-plugin-sourcemaps";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const inputs = makeConfig(require("./package.json"));
 
 if (!process.env.ONLY_NODE) {
@@ -19,6 +20,7 @@ if (!process.env.ONLY_NODE) {
 }
 
 function makeBrowserTestConfigPatch() {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const config = { ...makeBrowserTestConfig(require("./package.json")) };
   config.plugins = [
     multiEntry({ exports: false }),

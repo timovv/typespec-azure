@@ -154,6 +154,7 @@ function hasPaging(context: SdkContext): boolean {
 function exportFileContentsType(context: SdkContext, rootIndexFile: SourceFile) {
   const hasMultipartFileParts = context.sdkPackage.models.some((x) =>
     x.properties.some(
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
       (y) => y.kind === "property" && y.multipartOptions?.isFilePart,
     ),
   );
@@ -294,7 +295,7 @@ function exportModules(
   },
 ) {
   const subfolder = options.subfolder ?? "";
-  let folders = [];
+  let folders: string[];
   if (options.recursive) {
     folders = project
       .getDirectories()
