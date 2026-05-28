@@ -20,6 +20,7 @@ export default defineConfig(
       "**/.scripts/**/*",
       "eng/scripts/**/*",
       "packages/*/scripts/**/*",
+      "packages/typespec-ts/test/*/generated/**/*", // Ignore generated typespec-ts files to prevent OOM.
     ],
   },
   ...TypeSpecCommonEslintConfigs,
