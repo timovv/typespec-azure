@@ -8,6 +8,7 @@ on:
     paths:
       - "packages/typespec-ts/**"
       - ".github/workflows/ci-typescript.yml"
+  merge_group:
 
 jobs:
   build:
