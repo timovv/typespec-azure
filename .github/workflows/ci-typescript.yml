@@ -38,7 +38,7 @@ jobs:
         run: pnpm turbo run --filter "@azure-tools/typespec-ts..." build
       - name: Run unit tests
         working-directory: packages/typespec-ts
-        run: pnpm test && pnpm test-next
+        run: pnpm unit-test && pnpm test-next
   e2e-test:
     name: Run end-to-end Spector tests
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
         run: pnpm integration-test-ci:azure-rlc
       - name: Check git tree is clean
         working-directory: packages/typespec-ts
-        run: pnpm check-tree
+        run: pnpm check:tree
   lint:
     name: Lint
     runs-on: ubuntu-latest
