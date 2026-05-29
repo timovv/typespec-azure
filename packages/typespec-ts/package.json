@@ -25,7 +25,7 @@
     "lint": "eslint src --ext .ts --max-warnings=0",
     "lint:fix": "eslint src --fix --ext .ts",
     "check:tree": "node --loader ts-node/esm ./test/commands/check-clean-tree.ts",
-    "test:e2e:ts": "npm run integration-test-ci",
+    "test:e2e:ts": "npm run integration-test-ci:azure-rlc && npm run integration-test-ci:azure-modular",
     "format": "npm run -s prettier -- --write",
     "check-format": "npm run prettier -- --check",
     "prettier": "prettier --config ./.prettierrc \"{src,test,static}/**/*.ts\" \"!test/**/generated/**/*.ts\"",

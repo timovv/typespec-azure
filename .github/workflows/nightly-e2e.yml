@@ -54,7 +54,7 @@ jobs:
             package-filter: "@azure-tools/typespec-ts"
             working-directory: packages/typespec-ts
             run-prepare: false
-            run-regenerate: true
+            run-regenerate: false
 
     env:
       TYPESPEC_VS_CI_BUILD: true
