@@ -1,14 +1,14 @@
-import { EncodingType } from "@typespec/ts-http-runtime";
-import { describe, expect, it, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
-  isPassthroughElement,
-  serializeArray,
-  serializeBytes,
-  serializePassthrough,
   serializeRecord,
+  serializePassthrough,
+  serializeArray,
   serializeUtcDateTime,
+  serializeBytes,
   withNullChecks,
+  isPassthroughElement
 } from "../../../static/static-helpers/serialization/serializers.js";
+import { EncodingType } from "@typespec/ts-http-runtime";
 
 describe("serializeRecord", () => {
   it("should serialize a record using the provided serializer", () => {
@@ -36,7 +36,9 @@ describe("serializeRecord", () => {
     console.warn = vi.fn(); // Mock console.warn
     const result = serializeRecord(input);
     expect(result).toEqual(input);
-    expect(console.warn).toHaveBeenCalledWith("Don't know how to serialize [object Object]");
+    expect(console.warn).toHaveBeenCalledWith(
+      "Don't know how to serialize [object Object]"
+    );
     expect(console.warn).toHaveBeenCalledWith("Don't know how to serialize ");
   });
 });
