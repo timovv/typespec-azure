@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, assert, expect, beforeEach } from "vitest";
 
 import {
   StandardClient,
   User
 } from "./generated/azure/core/lro/standard/src/index.js";
-import { assert, expect } from "chai";
 import { restorePoller } from "./generated/azure/core/lro/standard/src/restorePollerHelpers.js";
 import { OperationState } from "@azure/core-lro";
 
