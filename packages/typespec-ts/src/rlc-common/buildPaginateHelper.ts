@@ -12,20 +12,23 @@ export function buildPaginateHelper(model: RLCModel) {
     return;
   }
 
-  hbs.registerHelper("quoteWrap", function (value: string | number | boolean | string[]) {
-    if (Array.isArray(value)) {
-      return value.map((element) => `"${element}"`).join();
-    }
+  hbs.registerHelper(
+    "quoteWrap",
+    function (value: string | number | boolean | string[]) {
+      if (Array.isArray(value)) {
+        return value.map((element) => `"${element}"`).join();
+      }
 
-    return `"${value}"`;
-  });
+      return `"${value}"`;
+    }
+  );
 
   const { srcPath } = model;
   const paginateHelperContents = hbs.compile(paginateContent, {
-    noEscape: true,
+    noEscape: true
   });
   return {
     path: path.join(srcPath, "paginateHelper.ts"),
-    content: paginateHelperContents(pagingInfo.pageDetails),
+    content: paginateHelperContents(pagingInfo.pageDetails)
   };
 }

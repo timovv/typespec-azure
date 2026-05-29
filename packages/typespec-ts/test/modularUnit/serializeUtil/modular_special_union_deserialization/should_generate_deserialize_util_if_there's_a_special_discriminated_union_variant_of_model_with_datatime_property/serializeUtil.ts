@@ -6,7 +6,7 @@ function deserializeWidgetData1(obj: WidgetData1Output): WidgetData1 {
   return {
     kind: obj["kind"],
     start: new Date(obj["start"]),
-    end: obj["end"] !== undefined ? new Date(obj["end"]) : undefined,
+    end: obj["end"] !== undefined ? new Date(obj["end"]) : undefined
   };
 }
 

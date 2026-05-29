@@ -4,11 +4,14 @@ import {
   SdkEndpointParameter,
   SdkMethodParameter,
   SdkModelType,
-  SdkType,
+  SdkType
 } from "@azure-tools/typespec-client-generator-core";
 import { NameType, normalizeName } from "../../rlc-common/index.js";
 import { SdkContext } from "../../utils/interfaces.js";
-import { getPropertyWithOverrides, ModelOverrideOptions } from "../serialization/serializeUtils.js";
+import {
+  getPropertyWithOverrides,
+  ModelOverrideOptions
+} from "../serialization/serializeUtils.js";
 import { getAllAncestors, getAllProperties } from "./operationHelpers.js";
 
 export function getDirectSubtypes(type: SdkModelType) {
@@ -16,10 +19,14 @@ export function getDirectSubtypes(type: SdkModelType) {
     return [];
   }
   // Filter out subtypes that extend from other discriminated subtypes (hierarchical inheritance)
-  return Object.values(type.discriminatedSubtypes).filter((subtype) => subtype.baseModel === type);
+  return Object.values(type.discriminatedSubtypes).filter(
+    (subtype) => subtype.baseModel === type
+  );
 }
 
-export function getAdditionalPropertiesType(type: SdkType | undefined): SdkType | undefined {
+export function getAdditionalPropertiesType(
+  type: SdkType | undefined
+): SdkType | undefined {
   if (
     !type ||
     !(
@@ -68,7 +75,7 @@ const NumericTypeKinds = [
   "float32",
   "float64",
   "decimal",
-  "decimal128",
+  "decimal128"
 ];
 
 const DateTimeTypeKinds = ["plainTime"];
@@ -83,7 +90,7 @@ export function isDateTimeTypeKind(kind: string): boolean {
 }
 
 export function isCredentialType(
-  type: SdkEndpointParameter | SdkCredentialParameter | SdkMethodParameter,
+  type: SdkEndpointParameter | SdkCredentialParameter | SdkMethodParameter
 ): boolean {
   return type.kind === "credential";
 }
@@ -95,13 +102,17 @@ export function isCredentialType(
 export function buildPropertyNameMapper(
   context: SdkContext,
   model: SdkType,
-  overrides?: ModelOverrideOptions,
+  overrides?: ModelOverrideOptions
 ) {
   const mapper = new Map<string, string>();
   if (model.kind !== "model") {
     return mapper;
   }
-  const allProperties = getAllProperties(context, model, getAllAncestors(model));
+  const allProperties = getAllProperties(
+    context,
+    model,
+    getAllAncestors(model)
+  );
   for (const p of allProperties) {
     if (p.kind !== "property") {
       continue;
@@ -109,7 +120,7 @@ export function buildPropertyNameMapper(
     const prop = getPropertyWithOverrides(p, overrides);
     mapper.set(
       prop.serializationOptions.json?.name || prop.name,
-      normalizeName(prop.name, NameType.Property),
+      normalizeName(prop.name, NameType.Property)
     );
   }
   return mapper;

@@ -1,6 +1,9 @@
 import { assert, describe, it } from "vitest";
 
-import { emitModelsFromTypeSpec, emitParameterFromTypeSpec } from "../util/emitUtil.js";
+import {
+  emitModelsFromTypeSpec,
+  emitParameterFromTypeSpec
+} from "../util/emitUtil.js";
 import { assertEqualContent } from "../util/testUtil.js";
 describe("bytes", () => {
   describe("application/octet-stream", () => {
@@ -13,7 +16,7 @@ describe("bytes", () => {
               @encode("binary")
               @body body: bytes
             ): void;
-            `,
+            `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -37,7 +40,7 @@ describe("bytes", () => {
             export type UploadFileViaBodyParameters = UploadFileViaBodyMediaTypesParam &
             UploadFileViaBodyBodyParam &
               RequestParameters;
-            `,
+            `
       );
     });
 
@@ -49,7 +52,7 @@ describe("bytes", () => {
               @header contentType: "application/octet-stream",
               @body body: bytes
             ): void;
-            `,
+            `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -73,7 +76,7 @@ describe("bytes", () => {
             export type UploadFileViaBodyParameters = UploadFileViaBodyMediaTypesParam &
             UploadFileViaBodyBodyParam &
               RequestParameters;
-            `,
+            `
       );
     });
 
@@ -86,7 +89,7 @@ describe("bytes", () => {
       const parameters = await emitParameterFromTypeSpec(
         `
             @post op read(@header contentType: "application/json", @encode("base64") @body body: bytes): {};
-          `,
+          `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -102,14 +105,14 @@ describe("bytes", () => {
           }
           
           export type ReadParameters = ReadMediaTypesParam & ReadBodyParam & RequestParameters;
-          `,
+          `
       );
     });
     it("without encode - should be treated as base64 string", async () => {
       const parameters = await emitParameterFromTypeSpec(
         `
             @post op read(@body body: bytes): {};
-          `,
+          `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -126,7 +129,7 @@ describe("bytes", () => {
           }
           
           export type ReadParameters = ReadBodyParam & RequestParameters;
-          `,
+          `
       );
     });
     it("bytes & bytes[] in model - should be treated as base64 string", async () => {
@@ -146,7 +149,7 @@ describe("bytes", () => {
             field: string;
             fields: string[];
             encodedField: string;
-          }`,
+          }`
       );
       const parameters = await emitParameterFromTypeSpec(tsp);
       assert.ok(parameters);
@@ -160,7 +163,7 @@ describe("bytes", () => {
           }
           
           export type ReadParameters = ReadBodyParam & RequestParameters;
-          `,
+          `
       );
     });
   });
@@ -178,7 +181,7 @@ describe("bytes", () => {
                 files: HttpPart<bytes>[];
               }
             ): void;
-              `,
+              `
         );
         assert.ok(parameters);
         await assertEqualContent(
@@ -224,7 +227,7 @@ describe("bytes", () => {
             export type UploadFileParameters = UploadFileMediaTypesParam &
               UploadFileBodyParam &
               RequestParameters;
-              `,
+              `
         );
       });
 
@@ -240,7 +243,7 @@ describe("bytes", () => {
                 files: HttpPart<bytes>[];
               }
             ): void;
-              `,
+              `
         );
         assert.ok(parameters);
         await assertEqualContent(
@@ -286,7 +289,7 @@ describe("bytes", () => {
             export type UploadFileParameters = UploadFileMediaTypesParam &
               UploadFileBodyParam &
               RequestParameters;
-              `,
+              `
         );
       });
 
@@ -304,7 +307,7 @@ describe("bytes", () => {
                 }>;
               }
             ): void;
-              `,
+              `
         );
         assert.ok(parameters);
         await assertEqualContent(
@@ -328,7 +331,7 @@ describe("bytes", () => {
             export type UploadFileParameters = UploadFileMediaTypesParam &
               UploadFileBodyParam &
               RequestParameters;
-              `,
+              `
         );
       });
     });
@@ -350,7 +353,7 @@ describe("bytes", () => {
           @header contentType: "multipart/form-data",
           @multipartBody body: HttpPart<Foo>;
           ): void;
-          `,
+          `
         );
         assert.ok(models.inputModelFile);
         await assertEqualContent(
@@ -418,7 +421,7 @@ describe("bytes", () => {
                 | FooWithouEncodePartDescriptor
                 | FooFilesPartDescriptor
                 | FooUnionBytesPartDescriptor
-              >;`,
+              >;`
         );
       });
 
@@ -441,7 +444,7 @@ describe("bytes", () => {
           @header contentType: "multipart/form-data",
           @multipartBody body: HttpPart<Foo>;
           ): void;
-              `,
+              `
         );
         assert.ok(models);
         await assertEqualContent(
@@ -467,7 +470,7 @@ describe("bytes", () => {
 
           export type Foo =
             | FormData
-            | Array<FooNamePartDescriptor | FooBarPartDescriptor>;`,
+            | Array<FooNamePartDescriptor | FooBarPartDescriptor>;`
         );
       });
     });
@@ -485,7 +488,7 @@ describe("bytes", () => {
           protobuf: "text/vnd.ms.protobuf",
         }
         @post op read(@header contentType: SchemaContentTypeValues, @body body: bytes): {};
-        `,
+        `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -503,7 +506,7 @@ describe("bytes", () => {
       }
 
       export type ReadParameters = ReadMediaTypesParam & ReadBodyParam & RequestParameters;
-      `,
+      `
       );
     });
     it("binary content types mixing - should be treated as binary", async () => {
@@ -514,7 +517,7 @@ describe("bytes", () => {
           image: "image/jpeg",
         }
         @post op read(@header contentType: SchemaContentTypeValues, @body body: bytes): {};
-        `,
+        `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -533,7 +536,7 @@ describe("bytes", () => {
       }
 
       export type ReadParameters = ReadMediaTypesParam & ReadBodyParam & RequestParameters;
-      `,
+      `
       );
     });
     // TODO: we need more discussions about current behavior
@@ -542,7 +545,7 @@ describe("bytes", () => {
       const parameters = await emitParameterFromTypeSpec(
         `
         @post op read(@header contentType: "image/png" | "application/json", @body body: bytes): {};
-        `,
+        `
       );
       assert.ok(parameters);
       await assertEqualContent(
@@ -566,7 +569,7 @@ describe("bytes", () => {
         export type ReadParameters = ReadMediaTypesParam &
           ReadBodyParam &
           RequestParameters;
-        `,
+        `
       );
     });
   });

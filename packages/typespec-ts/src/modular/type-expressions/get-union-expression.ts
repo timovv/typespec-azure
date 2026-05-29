@@ -7,11 +7,11 @@ import { shouldEmitInline } from "./utils.js";
 export function getUnionExpression(
   context: SdkContext,
   type: SdkUnionType,
-  options: EmitTypeOptions = {},
+  options: EmitTypeOptions = {}
 ): string {
   if (shouldEmitInline(type, options)) {
     const variantTypes = new Set(
-      type.variantTypes.map((v) => `${getTypeExpression(context, v, options)}`),
+      type.variantTypes.map((v) => `${getTypeExpression(context, v, options)}`)
     );
     return `(${[...variantTypes].join(" | ")})`;
   } else {

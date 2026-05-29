@@ -7,7 +7,7 @@ import { hasPollingOperations } from "../helpers/operationHelpers.js";
 import {
   isAzureMonorepoPackage,
   isAzurePackage,
-  isAzureStandalonePackage,
+  isAzureStandalonePackage
 } from "../helpers/packageUtil.js";
 import { getRelativePartFromSrcPath } from "../helpers/pathUtils.js";
 import { RLCModel } from "../interfaces.js";
@@ -17,7 +17,7 @@ import { buildFlavorlessPackage } from "./packageJson/buildFlavorlessPackage.js"
 import {
   PackageCommonInfoConfig,
   getTshyConfig,
-  resolveWarpExports,
+  resolveWarpExports
 } from "./packageJson/packageCommon.js";
 import { getPackageName } from "./utils.js";
 
@@ -29,7 +29,7 @@ interface PackageFileOptions {
 
 export function buildPackageFile(
   model: RLCModel,
-  { exports, dependencies, clientContextPaths }: PackageFileOptions = {},
+  { exports, dependencies, clientContextPaths }: PackageFileOptions = {}
 ) {
   const config: PackageCommonInfoConfig = {
     description: getDescription(model),
@@ -43,7 +43,7 @@ export function buildPackageFile(
     azureArm: model.options?.azureArm,
     isModularLibrary: model.options?.isModularLibrary ?? false,
     azureSdkForJs: model.options?.azureSdkForJs,
-    generateReactNativeTarget: model.options?.generateReactNativeTarget,
+    generateReactNativeTarget: model.options?.generateReactNativeTarget
   };
 
   let packageInfo: Record<string, any> = buildFlavorlessPackage(config);
@@ -55,7 +55,7 @@ export function buildPackageFile(
     monorepoPackageDirectory: model.options?.azureOutputDirectory,
     specSource: model.options?.sourceFrom ?? "TypeSpec",
     dependencies,
-    clientContextPaths,
+    clientContextPaths
   };
 
   if (isAzureMonorepoPackage(model)) {
@@ -73,12 +73,16 @@ export function buildPackageFile(
     return;
   }
 
-  const packageFile = project.createSourceFile(filePath, JSON.stringify(packageInfo, null, 2), {
-    overwrite: true,
-  });
+  const packageFile = project.createSourceFile(
+    filePath,
+    JSON.stringify(packageInfo, null, 2),
+    {
+      overwrite: true
+    }
+  );
   return {
     path: filePath,
-    content: packageFile.getFullText(),
+    content: packageFile.getFullText()
   };
 }
 
@@ -94,13 +98,14 @@ export function buildPackageFile(
 export function updatePackageFile(
   model: RLCModel,
   existingFilePathOrContent: string | Record<string, any>,
-  { exports, clientContextPaths }: PackageFileOptions = {},
+  { exports, clientContextPaths }: PackageFileOptions = {}
 ) {
   const hasLro = hasPollingOperations(model);
   const isAzure = isAzurePackage(model);
   const needsLroUpdate = isAzure && hasLro;
   const needsExportsUpdate = exports;
-  const needsConstantPathsUpdate = clientContextPaths && clientContextPaths.length > 0;
+  const needsConstantPathsUpdate =
+    clientContextPaths && clientContextPaths.length > 0;
   const needsPlatformImportsUpdate =
     model.options?.azureSdkForJs && model.options?.moduleKind === "esm";
 
@@ -146,7 +151,7 @@ export function updatePackageFile(
   if (needsPlatformImportsUpdate) {
     const platformImports: Record<string, string> = {
       browser: "./src/*-browser.mts",
-      default: "./src/*.ts",
+      default: "./src/*.ts"
     };
     if (model.options?.generateReactNativeTarget) {
       // Insert `react-native` before `default` so Node's conditional
@@ -155,12 +160,12 @@ export function updatePackageFile(
         "#platform/*": {
           browser: platformImports["browser"],
           "react-native": "./src/*-react-native.mts",
-          default: platformImports["default"],
-        },
+          default: platformImports["default"]
+        }
       };
     } else {
       packageInfo.imports = {
-        "#platform/*": platformImports,
+        "#platform/*": platformImports
       };
     }
   }
@@ -169,13 +174,16 @@ export function updatePackageFile(
   if (needsExportsUpdate) {
     if (model.options?.azureSdkForJs) {
       // Warp: update resolved exports in package.json
-      packageInfo.exports = resolveWarpExports(exports, model.options?.generateReactNativeTarget);
+      packageInfo.exports = resolveWarpExports(
+        exports,
+        model.options?.generateReactNativeTarget
+      );
     } else if (packageInfo.tshy) {
       // Tshy: update tshy.exports in package.json
       const newTshy = getTshyConfig({
         exports,
         azureSdkForJs: model.options?.azureSdkForJs,
-        generateReactNativeTarget: model.options?.generateReactNativeTarget,
+        generateReactNativeTarget: model.options?.generateReactNativeTarget
       } as PackageCommonInfoConfig);
       packageInfo.tshy["exports"] = newTshy["exports"];
     }
@@ -195,7 +203,7 @@ export function updatePackageFile(
     packageInfo.dependencies = {
       ...packageInfo.dependencies,
       "@azure/core-lro": "^3.1.0",
-      "@azure/abort-controller": "^2.1.2",
+      "@azure/abort-controller": "^2.1.2"
     };
   }
 
@@ -204,19 +212,19 @@ export function updatePackageFile(
     const metadata = packageInfo["//metadata"];
     // Filter out existing userAgentInfo entries
     const nonUserAgentPaths = (metadata.constantPaths || []).filter(
-      (item: any) => item.prefix !== "userAgentInfo",
+      (item: any) => item.prefix !== "userAgentInfo"
     );
     // Add new userAgentInfo entries from clientContextPaths
     const newUserAgentPaths = clientContextPaths!.map((path) => ({
       path: path,
-      prefix: "userAgentInfo",
+      prefix: "userAgentInfo"
     }));
     metadata.constantPaths = [...nonUserAgentPaths, ...newUserAgentPaths];
   }
 
   return {
     path: "package.json",
-    content: JSON.stringify(packageInfo, null, 2),
+    content: JSON.stringify(packageInfo, null, 2)
   };
 }
 

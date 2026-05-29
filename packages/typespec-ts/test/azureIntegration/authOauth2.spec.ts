@@ -1,9 +1,12 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
-import { bearerTokenAuthenticationPolicyName, PipelinePolicy } from "@azure/core-rest-pipeline";
+import {
+  bearerTokenAuthenticationPolicyName,
+  PipelinePolicy
+} from "@azure/core-rest-pipeline";
 import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
 import Outh2ClientFactory, {
-  AuthOauth2Client,
+  AuthOauth2Client
 } from "./generated/authentication/oauth2/src/index.js";
 
 describe("AuthOauth2Client Rest Client", () => {
@@ -14,9 +17,9 @@ describe("AuthOauth2Client Rest Client", () => {
   beforeEach(() => {
     client = Outh2ClientFactory(
       {
-        getToken: async () => Promise.resolve(null),
+        getToken: async () => Promise.resolve(null)
       },
-      { allowInsecureConnection: true },
+      { allowInsecureConnection: true }
     );
     policy = customBearerTokenAuthenticationPolicy({
       scopes: defaultScope,
@@ -24,13 +27,13 @@ describe("AuthOauth2Client Rest Client", () => {
         getToken: async () => {
           return {
             token: defaultScope,
-            expiresOnTimestamp: Date.now(),
+            expiresOnTimestamp: Date.now()
           };
-        },
-      },
+        }
+      }
     });
     client.pipeline.removePolicy({
-      name: bearerTokenAuthenticationPolicyName,
+      name: bearerTokenAuthenticationPolicyName
     });
     client.pipeline.addPolicy(policy);
   });
@@ -42,7 +45,7 @@ describe("AuthOauth2Client Rest Client", () => {
 
   it("should return 403 when the token is invalid", async () => {
     client.pipeline.removePolicy({
-      name: bearerTokenAuthenticationPolicyName,
+      name: bearerTokenAuthenticationPolicyName
     });
     const result = await client.path("/authentication/oauth2/invalid").get();
     assert.strictEqual(result.status, "403");

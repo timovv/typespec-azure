@@ -7,7 +7,7 @@ describe("PathClient Client", () => {
   beforeEach(() => {
     client = new PathClient({
       allowInsecureConnection: true,
-      endpoint: "http://localhost:3002",
+      endpoint: "http://localhost:3002"
     });
   });
 

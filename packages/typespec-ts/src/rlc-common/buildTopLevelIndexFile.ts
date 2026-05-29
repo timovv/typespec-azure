@@ -21,12 +21,19 @@ export function buildTopLevelIndex(model: RLCModel) {
   if (srcPath) {
     const clientName = model.libraryName;
     const moduleName = normalizeName(clientName, NameType.File);
-    const relativePath = "./" + getRelativePartFromSrcPath(srcPath, model.options.isModularLibrary);
+    const relativePath =
+      "./" +
+      getRelativePartFromSrcPath(srcPath, model.options.isModularLibrary);
     batchOutputFolder.push([relativePath, clientName, moduleName]);
   }
-  if (multiClient && batch && batch.length > 1 && batchOutputFolder.length === batch.length) {
+  if (
+    multiClient &&
+    batch &&
+    batch.length > 1 &&
+    batchOutputFolder.length === batch.length
+  ) {
     const indexFile = project.createSourceFile("index.ts", undefined, {
-      overwrite: true,
+      overwrite: true
     });
     const allModules: string[] = [];
     batchOutputFolder.forEach((item) => {
@@ -36,21 +43,21 @@ export function buildTopLevelIndex(model: RLCModel) {
         moduleSpecifier: getImportModuleName(
           {
             cjsName: `${item[0]}`,
-            esModulesName: `${item[0]}/index.js`,
+            esModulesName: `${item[0]}/index.js`
           },
-          model,
-        ),
+          model
+        )
       });
       allModules.push(item[1]);
     });
     indexFile.addExportDeclaration({
-      namedExports: [...allModules],
+      namedExports: [...allModules]
     });
     const content = indexFile.getFullText();
     const filePath = path.join(
       srcPath.substring(0, srcPath.lastIndexOf("src") + 4),
       model.options.isModularLibrary ? "rest" : "",
-      `index.ts`,
+      `index.ts`
     );
     return { path: filePath, content };
   }

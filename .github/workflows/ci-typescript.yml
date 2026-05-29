@@ -35,3 +35,29 @@ jobs:
       - name: Check git tree is clean
         working-directory: packages/typespec-ts
         run: pnpm check-tree
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: ./.github/actions/setup
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run linters
+        working-directory: packages/typespec-ts
+        run: pnpm lint
+  format:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: ./.github/actions/setup
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check formatting
+        working-directory: packages/typespec-ts
+        run: pnpm check-format

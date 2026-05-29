@@ -20,7 +20,7 @@ export default defineConfig(
       "**/.scripts/**/*",
       "eng/scripts/**/*",
       "packages/*/scripts/**/*",
-      "packages/typespec-ts/test/*/generated/**/*", // Ignore generated typespec-ts files to prevent OOM.
+      "packages/typespec-ts/**/*", // typespec-ts has its own linting config and is very large, so ignore it here to avoid OOM
     ],
   },
   ...TypeSpecCommonEslintConfigs,
@@ -38,13 +38,6 @@ export default defineConfig(
       // Only put rules here that need typescript project information
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-deprecated": "warn",
-    },
-  },
-  // TODO: temporarily disabling this for typespec-ts while repo migration is still inflight
-  {
-    files: ["packages/typespec-ts/src/**/*.{ts,mjs}"],
-    rules: {
-      "unicorn/filename-case": "off",
     },
   },
 );

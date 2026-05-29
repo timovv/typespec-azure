@@ -8,14 +8,14 @@ import {
   hasMultiCollection,
   hasPipeCollection,
   hasSsvCollection,
-  hasTsvCollection,
+  hasTsvCollection
 } from "./helpers/operationHelpers.js";
 import {
   buildCsvCollectionContent,
   buildMultiCollectionContent,
   buildPipeCollectionContent,
   buildSsvCollectionContent,
-  buildTsvCollectionContent,
+  buildTsvCollectionContent
 } from "./static/serializeHelper.js";
 
 export function buildSerializeHelper(model: RLCModel) {
@@ -37,12 +37,12 @@ export function buildSerializeHelper(model: RLCModel) {
   }
   if (serializeHelperContent !== "") {
     const readmeFileContents = hbs.compile(serializeHelperContent, {
-      noEscape: true,
+      noEscape: true
     });
     const { srcPath } = model;
     return {
       path: path.join(srcPath, "serializeHelper.ts"),
-      content: readmeFileContents({}),
+      content: readmeFileContents({})
     };
   }
   return undefined;

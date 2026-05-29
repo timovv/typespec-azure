@@ -8,7 +8,7 @@ describe("Azure Client Generator Core - API Version Query (Modular)", () => {
   beforeEach(() => {
     client = new QueryClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

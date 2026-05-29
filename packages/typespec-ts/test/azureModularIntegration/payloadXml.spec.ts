@@ -8,7 +8,7 @@ describe("Payload XML Client", () => {
   beforeEach(() => {
     client = new XmlClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -28,7 +28,7 @@ describe("Payload XML Client", () => {
   describe("ModelWithSimpleArrays", () => {
     const expected = {
       colors: ["red", "green", "blue"],
-      counts: [1, 2],
+      counts: [1, 2]
     };
 
     it("should get model with simple arrays", async () => {
@@ -45,8 +45,8 @@ describe("Payload XML Client", () => {
     const expected = {
       items: [
         { name: "foo", age: 123 },
-        { name: "bar", age: 456 },
-      ],
+        { name: "bar", age: 456 }
+      ]
     };
 
     it("should get model with array of model", async () => {
@@ -76,7 +76,7 @@ describe("Payload XML Client", () => {
     const expected = {
       id1: 123,
       id2: "foo",
-      enabled: true,
+      enabled: true
     };
 
     it("should get model with attributes", async () => {
@@ -92,7 +92,7 @@ describe("Payload XML Client", () => {
   describe("ModelWithUnwrappedArray", () => {
     const expected = {
       colors: ["red", "green", "blue"],
-      counts: [1, 2],
+      counts: [1, 2]
     };
 
     it("should get model with unwrapped array", async () => {
@@ -108,7 +108,7 @@ describe("Payload XML Client", () => {
   describe("ModelWithRenamedArrays", () => {
     const expected = {
       colors: ["red", "green", "blue"],
-      counts: [1, 2],
+      counts: [1, 2]
     };
 
     it("should get model with renamed arrays", async () => {
@@ -124,7 +124,7 @@ describe("Payload XML Client", () => {
   describe("ModelWithRenamedFields", () => {
     const expected = {
       inputData: { name: "foo", age: 123 },
-      outputData: { name: "bar", age: 456 },
+      outputData: { name: "bar", age: 456 }
     };
 
     it("should get model with renamed fields", async () => {
@@ -153,7 +153,7 @@ describe("Payload XML Client", () => {
   describe("ModelWithText", () => {
     const expected = {
       language: "foo",
-      content: "\n  This is some text.\n",
+      content: "\n  This is some text.\n"
     };
 
     it("should get model with text", async () => {
@@ -171,8 +171,8 @@ describe("Payload XML Client", () => {
       metadata: {
         Color: "blue",
         Count: "123",
-        Enabled: "false",
-      },
+        Enabled: "false"
+      }
     };
 
     it("should get model with dictionary", async () => {
@@ -188,7 +188,7 @@ describe("Payload XML Client", () => {
   describe("ModelWithEncodedNames", () => {
     const expected = {
       modelData: { name: "foo", age: 123 },
-      colors: ["red", "green", "blue"],
+      colors: ["red", "green", "blue"]
     };
 
     it("should get model with encoded names", async () => {
@@ -204,15 +204,21 @@ describe("Payload XML Client", () => {
   describe("ModelWithDatetimeValue", () => {
     it("should get model with datetime value", async () => {
       const result = await client.modelWithDatetimeValue.get();
-      assert.strictEqual(result.rfc3339.toISOString(), "2022-08-26T18:38:00.000Z");
+      assert.strictEqual(
+        result.rfc3339.toISOString(),
+        "2022-08-26T18:38:00.000Z"
+      );
       // rfc7231: "Fri, 26 Aug 2022 14:38:00 GMT" = 2022-08-26T14:38:00.000Z UTC
-      assert.strictEqual(result.rfc7231.toUTCString(), "Fri, 26 Aug 2022 14:38:00 GMT");
+      assert.strictEqual(
+        result.rfc7231.toUTCString(),
+        "Fri, 26 Aug 2022 14:38:00 GMT"
+      );
     });
 
     it("should put model with datetime value", async () => {
       await client.modelWithDatetimeValue.put({
         rfc3339: new Date("2022-08-26T18:38:00.000Z"),
-        rfc7231: new Date("Fri, 26 Aug 2022 14:38:00 GMT"),
+        rfc7231: new Date("Fri, 26 Aug 2022 14:38:00 GMT")
       });
     });
   });
@@ -282,7 +288,8 @@ describe("Payload XML Client", () => {
     const expected = { tags: ["fiction", "classic"] };
 
     it("should get model with wrapped primitive custom item names", async () => {
-      const result = await client.modelWithWrappedPrimitiveCustomItemNamesValue.get();
+      const result =
+        await client.modelWithWrappedPrimitiveCustomItemNamesValue.get();
       assert.deepEqual(result, expected);
     });
 
@@ -295,8 +302,8 @@ describe("Payload XML Client", () => {
     const expected = {
       items: [
         { name: "foo", age: 123 },
-        { name: "bar", age: 456 },
-      ],
+        { name: "bar", age: 456 }
+      ]
     };
 
     it("should get model with unwrapped model array", async () => {
@@ -313,8 +320,8 @@ describe("Payload XML Client", () => {
     const expected = {
       items: [
         { name: "foo", age: 123 },
-        { name: "bar", age: 456 },
-      ],
+        { name: "bar", age: 456 }
+      ]
     };
 
     it("should get model with renamed wrapped model array", async () => {
@@ -331,12 +338,13 @@ describe("Payload XML Client", () => {
     const expected = {
       items: [
         { name: "foo", age: 123 },
-        { name: "bar", age: 456 },
-      ],
+        { name: "bar", age: 456 }
+      ]
     };
 
     it("should get model with renamed unwrapped model array", async () => {
-      const result = await client.modelWithRenamedUnwrappedModelArrayValue.get();
+      const result =
+        await client.modelWithRenamedUnwrappedModelArrayValue.get();
       assert.deepEqual(result, expected);
     });
 
@@ -347,11 +355,12 @@ describe("Payload XML Client", () => {
 
   describe("ModelWithRenamedWrappedAndItemModelArray", () => {
     const expected = {
-      books: [{ title: "The Great Gatsby" }, { title: "Les Miserables" }],
+      books: [{ title: "The Great Gatsby" }, { title: "Les Miserables" }]
     };
 
     it("should get model with renamed wrapped and item model array", async () => {
-      const result = await client.modelWithRenamedWrappedAndItemModelArrayValue.get();
+      const result =
+        await client.modelWithRenamedWrappedAndItemModelArrayValue.get();
       assert.deepEqual(result, expected);
     });
 
@@ -364,7 +373,7 @@ describe("Payload XML Client", () => {
     const expected = {
       id: 123,
       title: "The Great Gatsby",
-      author: "F. Scott Fitzgerald",
+      author: "F. Scott Fitzgerald"
     };
 
     it("should get model with renamed attribute", async () => {
@@ -394,7 +403,7 @@ describe("Payload XML Client", () => {
     const expected = {
       id: 123,
       title: "The Great Gatsby",
-      author: "F. Scott Fitzgerald",
+      author: "F. Scott Fitzgerald"
     };
 
     it("should get model with namespace on properties", async () => {

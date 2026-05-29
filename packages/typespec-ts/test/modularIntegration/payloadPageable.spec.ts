@@ -8,14 +8,14 @@ describe("PageableClient Classical Client", () => {
   beforeEach(() => {
     client = new PageableClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
   const pets = [
     { id: "1", name: "dog" },
     { id: "2", name: "cat" },
     { id: "3", name: "bird" },
-    { id: "4", name: "fish" },
+    { id: "4", name: "fish" }
   ];
   it("Payload Pageable ServerDriven Pagination link", async () => {
     const iter = client.serverDrivenPagination.link();

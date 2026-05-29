@@ -3,7 +3,7 @@ import { assert, beforeEach, describe, it } from "vitest";
 import {
   Dog,
   HierarchyBuildingClient,
-  Pet,
+  Pet
 } from "./generated/azure/client-generator-core/hierarchy-building/src/index.js";
 
 describe("Azure ClientGeneratorCore Hierarchy Building", () => {
@@ -12,19 +12,19 @@ describe("Azure ClientGeneratorCore Hierarchy Building", () => {
   beforeEach(() => {
     client = new HierarchyBuildingClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
   const samplePet: Pet = {
     kind: "pet",
     name: "Buddy",
-    trained: true,
+    trained: true
   };
   const sampleDog: Dog = {
     kind: "dog",
     name: "Rex",
     trained: true,
-    breed: "German Shepherd",
+    breed: "German Shepherd"
   };
   describe("Animal Operations", () => {
     it("should update pet as animal", async () => {

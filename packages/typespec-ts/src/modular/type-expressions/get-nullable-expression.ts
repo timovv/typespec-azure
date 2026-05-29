@@ -7,11 +7,12 @@ import { shouldEmitInline } from "./utils.js";
 export function getNullableExpression(
   context: SdkContext,
   type: SdkNullableType,
-  options: EmitTypeOptions = {},
+  options: EmitTypeOptions = {}
 ): string {
   if (shouldEmitInline(type, options)) {
     // Check if we should ignore null for optional properties
-    const ignoreNullableOnOptional = context.rlcOptions?.ignoreNullableOnOptional ?? false;
+    const ignoreNullableOnOptional =
+      context.rlcOptions?.ignoreNullableOnOptional ?? false;
     const isOptional = options.isOptional ?? false;
 
     const nonNullableType = getTypeExpression(context, type.type, options);

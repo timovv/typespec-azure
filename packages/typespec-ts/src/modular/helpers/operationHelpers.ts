@@ -16,7 +16,7 @@ import {
   SdkModelType,
   SdkPagingServiceMethod,
   SdkServiceResponseHeader,
-  SdkType,
+  SdkType
 } from "@azure-tools/typespec-client-generator-core";
 import { NoTarget, Program } from "@typespec/compiler";
 import { isHeader, isMetadata } from "@typespec/http";
@@ -25,7 +25,7 @@ import {
   OptionalKind,
   ParameterDeclarationStructure,
   StructureKind,
-  TypeAliasDeclarationStructure,
+  TypeAliasDeclarationStructure
 } from "ts-morph";
 import { useContext } from "../../contextManager.js";
 import { useSdkTypes } from "../../framework/hooks/sdkTypes.js";
@@ -46,27 +46,27 @@ import {
   isMultipartPayload,
   isXmlPayload,
   KnownCollectionFormat,
-  ServiceOperation,
+  ServiceOperation
 } from "../../utils/operationUtil.js";
 import { AzurePollingDependencies } from "../external-dependencies.js";
 import {
   buildModelDeserializer,
-  buildPropertyDeserializer,
+  buildPropertyDeserializer
 } from "../serialization/buildDeserializerFunction.js";
 import {
   buildModelSerializer,
-  buildPropertySerializer,
+  buildPropertySerializer
 } from "../serialization/buildSerializerFunction.js";
 import {
   buildXmlModelDeserializer,
   buildXmlModelSerializer,
-  hasXmlSerialization,
+  hasXmlSerialization
 } from "../serialization/buildXmlSerializerFunction.js";
 import {
   getPropertyWithOverrides,
   isNormalUnion,
   isSpecialHandledUnion,
-  ModelOverrideOptions,
+  ModelOverrideOptions
 } from "../serialization/serializeUtils.js";
 import {
   PagingHelpers,
@@ -75,23 +75,33 @@ import {
   SerializationHelpers,
   StorageCompatHelpers,
   UrlTemplateHelpers,
-  XmlHelpers,
+  XmlHelpers
 } from "../static-helpers-metadata.js";
 import { isExtensibleEnum } from "../type-expressions/get-enum-expression.js";
 import { emitInlineModel } from "../type-expressions/get-model-expression.js";
 import {
   getTypeExpression,
-  normalizeModelPropertyName,
+  normalizeModelPropertyName
 } from "../type-expressions/get-type-expression.js";
 import { getClientParameterName } from "./clientHelpers.js";
-import { getHeaderClientOptions, getRestErrorCodeHeader } from "./clientOptionHelpers.js";
-import { getDocsFromDescription, getFixmeForMultilineDocs } from "./docsHelpers.js";
+import {
+  getHeaderClientOptions,
+  getRestErrorCodeHeader
+} from "./clientOptionHelpers.js";
+import {
+  getDocsFromDescription,
+  getFixmeForMultilineDocs
+} from "./docsHelpers.js";
 import {
   generateLocallyUniqueName,
   getClassicalLayerPrefix,
-  getOperationName,
+  getOperationName
 } from "./namingHelpers.js";
-import { getNullableValidType, isSpreadBodyParameter, isTypeNullable } from "./typeHelpers.js";
+import {
+  getNullableValidType,
+  isSpreadBodyParameter,
+  isTypeNullable
+} from "./typeHelpers.js";
 
 /**
  * Checks whether a header should be skipped during serialization/deserialization.
@@ -99,7 +109,7 @@ import { getNullableValidType, isSpreadBodyParameter, isTypeNullable } from "./t
  * which indicates it uses a prefix-based dictionary pattern not handled by standard ser/deser.
  */
 function shouldSkipHeaderSerialization(
-  header: SdkHttpParameter | SdkServiceResponseHeader,
+  header: SdkHttpParameter | SdkServiceResponseHeader
 ): boolean {
   return getClientOptions(header, "headerCollectionPrefix") !== undefined;
 }
@@ -108,10 +118,14 @@ export function getSendPrivateFunction(
   dpgContext: SdkContext,
   method: [string[], ServiceOperation],
   clientType: string,
-  client?: SdkClientType<SdkHttpOperation>,
+  client?: SdkClientType<SdkHttpOperation>
 ): OptionalKind<FunctionDeclarationStructure> {
   const operation = method[1];
-  const parameters = getOperationSignatureParameters(dpgContext, method, clientType);
+  const parameters = getOperationSignatureParameters(
+    dpgContext,
+    method,
+    clientType
+  );
   const { name } = getOperationName(operation);
   const dependencies = useDependencies();
 
@@ -120,7 +134,7 @@ export function getSendPrivateFunction(
     isExported: true,
     name: `_${name}Send`,
     parameters,
-    returnType: resolveReference(dependencies.StreamableMethod),
+    returnType: resolveReference(dependencies.StreamableMethod)
   };
 
   const operationPath = operation.operation.path;
@@ -130,13 +144,15 @@ export function getSendPrivateFunction(
   let pathStr = `"${operationPath}"`;
   const urlTemplateParams = [
     ...getPathParameters(operation),
-    ...getQueryParameters(dpgContext, operation),
+    ...getQueryParameters(dpgContext, operation)
   ];
   if (urlTemplateParams.length > 0) {
     // Generate a unique local variable name that doesn't conflict with parameter names
     const paramNames = new Set(parameters.map((p) => p.name));
     const pathVarName = generateLocallyUniqueName("path", paramNames);
-    const includeRootSlash = client ? getClientOptions(client, "includeRootSlash") !== false : true;
+    const includeRootSlash = client
+      ? getClientOptions(client, "includeRootSlash") !== false
+      : true;
 
     const uriTemplate = includeRootSlash
       ? operation.operation.uriTemplate
@@ -154,24 +170,26 @@ export function getSendPrivateFunction(
     `return context.path(${pathStr}).${operationMethod}({...${resolveReference(dependencies.operationOptionsToRequestParameters)}(${optionalParamName}), ${getHeaderAndBodyParameters(
       dpgContext,
       operation,
-      optionalParamName,
-    )}});`,
+      optionalParamName
+    )}});`
   );
 
   return {
     ...functionStatement,
-    statements,
+    statements
   };
 }
 
 export function getDeserializePrivateFunction(
   context: SdkContext,
-  method: [string[], ServiceOperation],
+  method: [string[], ServiceOperation]
 ): OptionalKind<FunctionDeclarationStructure> {
   const operation = method[1];
   const { name } = getOperationName(operation);
   const dependencies = useDependencies();
-  const PathUncheckedResponseReference = resolveReference(dependencies.PathUncheckedResponse);
+  const PathUncheckedResponseReference = resolveReference(
+    dependencies.PathUncheckedResponse
+  );
 
   // Check if we need to wrap the non-model return type
   const { shouldWrap, isBinary } = checkWrapNonModelReturn(context, operation);
@@ -193,7 +211,7 @@ export function getDeserializePrivateFunction(
       // For LRO-only operations with non-model final result, wrap in a response type alias
       returnType = {
         name: getOperationResponseTypeName(method),
-        type: resolveReference(refkey(operation, "response")),
+        type: resolveReference(refkey(operation, "response"))
       };
     } else {
       returnType = buildLroReturnType(context, operation);
@@ -203,13 +221,13 @@ export function getDeserializePrivateFunction(
     // instead of just the array element type
     returnType = {
       name: (restResponse as any).name ?? "",
-      type: getTypeExpression(context, restResponse.type),
+      type: getTypeExpression(context, restResponse.type)
     };
   } else if (shouldWrap) {
     // Use the wrapper response type name (resolved via binder for cross-file imports)
     returnType = {
       name: getOperationResponseTypeName(method),
-      type: resolveReference(refkey(operation, "response")),
+      type: resolveReference(refkey(operation, "response"))
     };
   } else if (response.type) {
     // When response.optional is true, some HTTP responses have no body (e.g. 204), so
@@ -217,7 +235,7 @@ export function getDeserializePrivateFunction(
     const baseType = getTypeExpression(context, response.type);
     returnType = {
       name: (response as any).name ?? "",
-      type: response.optional ? `${baseType} | undefined` : baseType,
+      type: response.optional ? `${baseType} | undefined` : baseType
     };
   } else if (isHeadAsBooleanOperation(context, operation)) {
     returnType = { name: "", type: "boolean" };
@@ -232,23 +250,27 @@ export function getDeserializePrivateFunction(
   const parameters: OptionalKind<ParameterDeclarationStructure>[] = [
     {
       name: resultParamName,
-      type: resultParamType,
-    },
+      type: resultParamType
+    }
   ];
   const functionStatement: OptionalKind<FunctionDeclarationStructure> = {
     isAsync: true,
     isExported: true,
     name: `_${name}Deserialize`,
     parameters,
-    returnType: `Promise<${returnType.type}>`,
+    returnType: `Promise<${returnType.type}>`
   };
   const statements: string[] = [];
-  const createRestErrorReference = resolveReference(dependencies.createRestError);
-  statements.push(`const expectedStatuses = ${getExpectedStatuses(operation, context)};`);
+  const createRestErrorReference = resolveReference(
+    dependencies.createRestError
+  );
+  statements.push(
+    `const expectedStatuses = ${getExpectedStatuses(operation, context)};`
+  );
   statements.push(
     `if(!expectedStatuses.includes(result.status)){`,
     `${getExceptionThrowStatement(context, operation)}`,
-    "}",
+    "}"
   );
   const deserializedType =
     isLroOnly || isLroAndPaging
@@ -277,7 +299,7 @@ export function getDeserializePrivateFunction(
       `if(${deserializedRoot.split(".").join("?.")} === undefined) {
         throw ${createRestErrorReference}(\`Expected a result in the response at position "${deserializedRoot}"\`, result);
       }
-      `,
+      `
     );
   }
 
@@ -286,14 +308,17 @@ export function getDeserializePrivateFunction(
     // guard all body deserialization so we return undefined instead of throwing.
     // This only applies to non-LRO, non-paging operations where the deserialized type
     // comes from response.type (not from LRO metadata or paging).
-    const needsBodyGuard = response.optional && !isLroOnly && !isLroAndPaging && !isPagingOnly;
+    const needsBodyGuard =
+      response.optional && !isLroOnly && !isLroAndPaging && !isPagingOnly;
 
     const contentTypes = operation.operation.responses[0]?.contentTypes ?? [];
     const isXml = isXmlPayload(contentTypes);
     const isDualFormat = hasDualFormatSupport(contentTypes);
     const isMultipart = isMultipartPayload(contentTypes);
     const useXmlDeserialization =
-      isXml && deserializedType.kind === "model" && hasXmlSerialization(deserializedType);
+      isXml &&
+      deserializedType.kind === "model" &&
+      hasXmlSerialization(deserializedType);
 
     // Workaround for multipart response: cast return value as any due to lack of multipart response handling in core
     const multipartCastSuffix = isMultipart ? " as any" : "";
@@ -308,35 +333,51 @@ export function getDeserializePrivateFunction(
         statements.push(
           `if (!result.body) {
             return result.body as ${returnType.type};
-          }`,
+          }`
         );
       }
-      const xmlDeserializerName = buildXmlModelDeserializer(context, deserializedType, {
-        nameOnly: true,
-        skipDiscriminatedUnionSuffix: false,
-      }) as string | undefined;
-      const jsonDeserializerName = buildModelDeserializer(context, deserializedType, {
-        nameOnly: true,
-        skipDiscriminatedUnionSuffix: false,
-      });
+      const xmlDeserializerName = buildXmlModelDeserializer(
+        context,
+        deserializedType,
+        {
+          nameOnly: true,
+          skipDiscriminatedUnionSuffix: false
+        }
+      ) as string | undefined;
+      const jsonDeserializerName = buildModelDeserializer(
+        context,
+        deserializedType,
+        {
+          nameOnly: true,
+          skipDiscriminatedUnionSuffix: false
+        }
+      );
 
       if (xmlDeserializerName && jsonDeserializerName) {
-        const isXmlContentTypeRef = resolveReference(XmlHelpers.isXmlContentType);
+        const isXmlContentTypeRef = resolveReference(
+          XmlHelpers.isXmlContentType
+        );
         statements.push(
           `const responseContentType = result.headers?.["content-type"] ?? "";
           if (${isXmlContentTypeRef}(responseContentType)) {
             return ${xmlDeserializerName}(${deserializedRoot});
           }
-          return ${jsonDeserializerName}(${deserializedRoot});`,
+          return ${jsonDeserializerName}(${deserializedRoot});`
         );
       } else {
         // Fall back to JSON deserializer
-        const deserializeFunctionName = buildModelDeserializer(context, deserializedType, {
-          nameOnly: true,
-          skipDiscriminatedUnionSuffix: false,
-        });
+        const deserializeFunctionName = buildModelDeserializer(
+          context,
+          deserializedType,
+          {
+            nameOnly: true,
+            skipDiscriminatedUnionSuffix: false
+          }
+        );
         if (deserializeFunctionName) {
-          statements.push(`return ${deserializeFunctionName}(${deserializedRoot})`);
+          statements.push(
+            `return ${deserializeFunctionName}(${deserializedRoot})`
+          );
         }
       }
     } else if (useXmlDeserialization) {
@@ -345,34 +386,48 @@ export function getDeserializePrivateFunction(
         statements.push(
           `if (!result.body) {
             return result.body as ${returnType.type};
-          }`,
+          }`
         );
       }
-      const xmlDeserializerName = buildXmlModelDeserializer(context, deserializedType, {
-        nameOnly: true,
-        skipDiscriminatedUnionSuffix: false,
-      }) as string | undefined;
+      const xmlDeserializerName = buildXmlModelDeserializer(
+        context,
+        deserializedType,
+        {
+          nameOnly: true,
+          skipDiscriminatedUnionSuffix: false
+        }
+      ) as string | undefined;
 
       if (xmlDeserializerName) {
         statements.push(`return ${xmlDeserializerName}(${deserializedRoot})`);
       } else {
         // Fall back to JSON deserializer if XML deserializer is not available
-        const deserializeFunctionName = buildModelDeserializer(context, deserializedType, {
-          nameOnly: true,
-          skipDiscriminatedUnionSuffix: false,
-        });
+        const deserializeFunctionName = buildModelDeserializer(
+          context,
+          deserializedType,
+          {
+            nameOnly: true,
+            skipDiscriminatedUnionSuffix: false
+          }
+        );
         if (deserializeFunctionName) {
-          statements.push(`return ${deserializeFunctionName}(${deserializedRoot})`);
+          statements.push(
+            `return ${deserializeFunctionName}(${deserializedRoot})`
+          );
         } else {
           statements.push(`return ${deserializedRoot}`);
         }
       }
     } else {
       // JSON response (default) - also handles multipart responses
-      const deserializeFunctionName = buildModelDeserializer(context, deserializedType, {
-        nameOnly: true,
-        skipDiscriminatedUnionSuffix: false,
-      });
+      const deserializeFunctionName = buildModelDeserializer(
+        context,
+        deserializedType,
+        {
+          nameOnly: true,
+          skipDiscriminatedUnionSuffix: false
+        }
+      );
       // Handle wrap-non-model-return for non-LRO, non-paging and LRO-only operations
       if (shouldWrap) {
         if (isBinary) {
@@ -380,7 +435,7 @@ export function getDeserializePrivateFunction(
           // status check and error.details handling ran above.
           // Return the platform-specific stream properties.
           statements.push(
-            `return { blobBody: result.blobBody, readableStreamBody: result.readableStreamBody };`,
+            `return { blobBody: result.blobBody, readableStreamBody: result.readableStreamBody };`
           );
         } else if (isHeadAsBooleanOperation(context, operation)) {
           // HEAD has no body; derive boolean from status code
@@ -394,27 +449,29 @@ export function getDeserializePrivateFunction(
             deserializedType,
             deserializedRoot,
             true,
-            getEncodeForType(deserializedType),
+            getEncodeForType(deserializedType)
           );
           statements.push(`return { body: ${bodyValue} };`);
         }
         return {
           ...functionStatement,
-          statements,
+          statements
         };
       }
       if (deserializeFunctionName) {
         if (needsBodyGuard) {
           // Use ternary form: return result.body ? deserializer(result.body) : undefined
           statements.push(
-            `return ${deserializedRoot} ? ${deserializeFunctionName}(${deserializedRoot})${multipartCastSuffix} : undefined`,
+            `return ${deserializedRoot} ? ${deserializeFunctionName}(${deserializedRoot})${multipartCastSuffix} : undefined`
           );
         } else {
           statements.push(
-            `return ${deserializeFunctionName}(${deserializedRoot})${multipartCastSuffix}`,
+            `return ${deserializeFunctionName}(${deserializedRoot})${multipartCastSuffix}`
           );
         }
-      } else if (isAzureCoreErrorType(context.program, deserializedType.__raw)) {
+      } else if (
+        isAzureCoreErrorType(context.program, deserializedType.__raw)
+      ) {
         statements.push(`return ${deserializedRoot}${multipartCastSuffix}`);
       } else if (isHeadAsBooleanOperation(context, operation)) {
         // HEAD has no body; derive boolean from status code
@@ -430,11 +487,11 @@ export function getDeserializePrivateFunction(
               context,
               response.type!.__raw!,
               contentTypes,
-              getEncodeForType(response.type!),
+              getEncodeForType(response.type!)
             )
               ? "binary"
-              : getEncodeForType(deserializedType),
-          )}${multipartCastSuffix}`,
+              : getEncodeForType(deserializedType)
+          )}${multipartCastSuffix}`
         );
       }
     }
@@ -450,7 +507,7 @@ export function getDeserializePrivateFunction(
 
   return {
     ...functionStatement,
-    statements,
+    statements
   };
 }
 
@@ -461,26 +518,33 @@ export function getDeserializePrivateFunction(
  */
 export function getDeserializeHeadersPrivateFunction(
   context: SdkContext,
-  operation: ServiceOperation,
+  operation: ServiceOperation
 ): OptionalKind<FunctionDeclarationStructure> | undefined {
   const responseHeaders = getResponseHeaders(operation.operation.responses);
-  const isResponseHeadersEnabled = context.rlcOptions?.includeHeadersInResponse === true;
-  const isStorageCompatEnabled = context.rlcOptions?.enableStorageCompat === true;
+  const isResponseHeadersEnabled =
+    context.rlcOptions?.includeHeadersInResponse === true;
+  const isStorageCompatEnabled =
+    context.rlcOptions?.enableStorageCompat === true;
 
   // Only generate if headers exist and a relevant feature is enabled
-  if (responseHeaders.length === 0 || (!isResponseHeadersEnabled && !isStorageCompatEnabled)) {
+  if (
+    responseHeaders.length === 0 ||
+    (!isResponseHeadersEnabled && !isStorageCompatEnabled)
+  ) {
     return undefined;
   }
 
   const { name } = getOperationName(operation);
   const dependencies = useDependencies();
-  const PathUncheckedResponseReference = resolveReference(dependencies.PathUncheckedResponse);
+  const PathUncheckedResponseReference = resolveReference(
+    dependencies.PathUncheckedResponse
+  );
 
   const parameters: OptionalKind<ParameterDeclarationStructure>[] = [
     {
       name: "result",
-      type: PathUncheckedResponseReference,
-    },
+      type: PathUncheckedResponseReference
+    }
   ];
 
   const returnType = buildHeaderOnlyResponseType(context, responseHeaders);
@@ -490,15 +554,17 @@ export function getDeserializeHeadersPrivateFunction(
     isExported: true,
     name: `_${name}DeserializeHeaders`,
     parameters,
-    returnType,
+    returnType
   };
 
   const statements: string[] = [];
-  statements.push(`return ${buildHeaderOnlyResponseValue(context, responseHeaders)};`);
+  statements.push(
+    `return ${buildHeaderOnlyResponseValue(context, responseHeaders)};`
+  );
 
   return {
     ...functionStatement,
-    statements,
+    statements
   };
 }
 
@@ -521,7 +587,7 @@ interface OperationExceptionDetails {
 
 function getExceptionDetails(
   context: SdkContext,
-  operation: ServiceOperation,
+  operation: ServiceOperation
 ): OperationExceptionDetails {
   const customized: ExceptionThrowDetail[] = [];
   let defaultDeserializer: string | undefined;
@@ -532,11 +598,18 @@ function getExceptionDetails(
       continue;
     }
     const statusCode = exception.statusCodes;
-    const deserializeFunctionName = buildModelDeserializer(context, exception.type, {
-      nameOnly: true,
-      skipDiscriminatedUnionSuffix: false,
-    });
-    if (!deserializeFunctionName || typeof deserializeFunctionName !== "string") {
+    const deserializeFunctionName = buildModelDeserializer(
+      context,
+      exception.type,
+      {
+        nameOnly: true,
+        skipDiscriminatedUnionSuffix: false
+      }
+    );
+    if (
+      !deserializeFunctionName ||
+      typeof deserializeFunctionName !== "string"
+    ) {
       continue;
     }
 
@@ -545,13 +618,14 @@ function getExceptionDetails(
     const exceptionContentTypes = exception.contentTypes ?? [];
     const exceptionIsXml = isXmlPayload(exceptionContentTypes);
     const exceptionIsDualFormat = hasDualFormatSupport(exceptionContentTypes);
-    const typeHasXml = exception.type.kind === "model" && hasXmlSerialization(exception.type);
+    const typeHasXml =
+      exception.type.kind === "model" && hasXmlSerialization(exception.type);
 
     let xmlDeserializerName: string | undefined;
     if (exception.type.kind === "model" && (typeHasXml || exceptionIsXml)) {
       const xmlName = buildXmlModelDeserializer(context, exception.type, {
         nameOnly: true,
-        skipDiscriminatedUnionSuffix: false,
+        skipDiscriminatedUnionSuffix: false
       });
       if (typeof xmlName === "string") {
         xmlDeserializerName = xmlName;
@@ -559,7 +633,10 @@ function getExceptionDetails(
     }
 
     // XML-only when all content types are XML (no JSON support)
-    const isXmlOnly = xmlDeserializerName !== undefined && exceptionIsXml && !exceptionIsDualFormat;
+    const isXmlOnly =
+      xmlDeserializerName !== undefined &&
+      exceptionIsXml &&
+      !exceptionIsDualFormat;
 
     if (statusCode === "*") {
       defaultDeserializer = deserializeFunctionName;
@@ -570,7 +647,7 @@ function getExceptionDetails(
         start: statusCode,
         deserializer: deserializeFunctionName,
         xmlDeserializer: xmlDeserializerName,
-        isXmlOnly,
+        isXmlOnly
       });
     } else {
       customized.push({
@@ -578,7 +655,7 @@ function getExceptionDetails(
         end: statusCode.end,
         deserializer: deserializeFunctionName,
         xmlDeserializer: xmlDeserializerName,
-        isXmlOnly,
+        isXmlOnly
       });
     }
   }
@@ -586,7 +663,7 @@ function getExceptionDetails(
     customized,
     defaultDeserializer,
     defaultXmlDeserializer,
-    defaultIsXmlOnly,
+    defaultIsXmlOnly
   };
 }
 
@@ -594,7 +671,7 @@ function getExceptionDetails(
  * Collects and deduplicates all response headers from operation exceptions.
  */
 function getExceptionResponseHeaders(
-  exceptions: SdkHttpOperation["exceptions"],
+  exceptions: SdkHttpOperation["exceptions"]
 ): SdkServiceResponseHeader[] {
   const headerMap = new Map<string, SdkServiceResponseHeader>();
   for (const exception of exceptions ?? []) {
@@ -615,27 +692,32 @@ function getExceptionResponseHeaders(
  */
 export function getDeserializeExceptionHeadersPrivateFunction(
   context: SdkContext,
-  operation: ServiceOperation,
+  operation: ServiceOperation
 ): OptionalKind<FunctionDeclarationStructure> | undefined {
-  const isResponseHeadersEnabled = context.rlcOptions?.includeHeadersInResponse === true;
+  const isResponseHeadersEnabled =
+    context.rlcOptions?.includeHeadersInResponse === true;
   if (!isResponseHeadersEnabled) {
     return undefined;
   }
 
-  const exceptionHeaders = getExceptionResponseHeaders(operation.operation.exceptions);
+  const exceptionHeaders = getExceptionResponseHeaders(
+    operation.operation.exceptions
+  );
   if (exceptionHeaders.length === 0) {
     return undefined;
   }
 
   const { name } = getOperationName(operation);
   const dependencies = useDependencies();
-  const PathUncheckedResponseReference = resolveReference(dependencies.PathUncheckedResponse);
+  const PathUncheckedResponseReference = resolveReference(
+    dependencies.PathUncheckedResponse
+  );
 
   const parameters: OptionalKind<ParameterDeclarationStructure>[] = [
     {
       name: "result",
-      type: PathUncheckedResponseReference,
-    },
+      type: PathUncheckedResponseReference
+    }
   ];
 
   const returnType = buildHeaderOnlyResponseType(context, exceptionHeaders);
@@ -645,15 +727,17 @@ export function getDeserializeExceptionHeadersPrivateFunction(
     isExported: true,
     name: `_${name}DeserializeExceptionHeaders`,
     parameters,
-    returnType,
+    returnType
   };
 
   const statements: string[] = [];
-  statements.push(`return ${buildHeaderOnlyResponseValue(context, exceptionHeaders)};`);
+  statements.push(
+    `return ${buildHeaderOnlyResponseValue(context, exceptionHeaders)};`
+  );
 
   return {
     ...functionStatement,
-    statements,
+    statements
   };
 }
 
@@ -667,29 +751,50 @@ function getExceptionDeserializeExpr(exception: ExceptionThrowDetail): string {
   return `isXml ? ${exception.xmlDeserializer}(result.body) : ${exception.deserializer}(result.body)`;
 }
 
-function getExceptionThrowStatement(context: SdkContext, operation: ServiceOperation) {
+function getExceptionThrowStatement(
+  context: SdkContext,
+  operation: ServiceOperation
+) {
   const statements = [];
-  const createRestErrorReference = resolveReference(useDependencies().createRestError);
-  const { customized, defaultDeserializer, defaultXmlDeserializer, defaultIsXmlOnly } =
-    getExceptionDetails(context, operation);
+  const createRestErrorReference = resolveReference(
+    useDependencies().createRestError
+  );
+  const {
+    customized,
+    defaultDeserializer,
+    defaultXmlDeserializer,
+    defaultIsXmlOnly
+  } = getExceptionDetails(context, operation);
 
-  const isResponseHeadersEnabled = context.rlcOptions?.includeHeadersInResponse === true;
+  const isResponseHeadersEnabled =
+    context.rlcOptions?.includeHeadersInResponse === true;
 
   // Check if exception headers function exists and build the call
-  const exceptionHeaders = getExceptionResponseHeaders(operation.operation.exceptions);
-  const hasExceptionHeaders = isResponseHeadersEnabled && exceptionHeaders.length > 0;
+  const exceptionHeaders = getExceptionResponseHeaders(
+    operation.operation.exceptions
+  );
+  const hasExceptionHeaders =
+    isResponseHeadersEnabled && exceptionHeaders.length > 0;
   const { name: opName } = getOperationName(operation);
   const exceptionHeadersCall = hasExceptionHeaders
     ? `error.details = {...(error.details as any), ..._${opName}DeserializeExceptionHeaders(result)};`
     : undefined;
 
   // Build @clientOption("header", ...) extraction code (independent of include-headers-in-response)
-  const clientOptionHeadersCall = buildClientOptionHeadersCall(operation.operation.exceptions);
+  const clientOptionHeadersCall = buildClientOptionHeadersCall(
+    operation.operation.exceptions
+  );
 
   // Build @clientOption("restErrorCodeHeader", ...) code to set error.code from a header
-  const restErrorCodeAssignment = buildRestErrorCodeAssignment(operation.operation.exceptions);
+  const restErrorCodeAssignment = buildRestErrorCodeAssignment(
+    operation.operation.exceptions
+  );
 
-  const allHeaderCalls = [exceptionHeadersCall, clientOptionHeadersCall, restErrorCodeAssignment]
+  const allHeaderCalls = [
+    exceptionHeadersCall,
+    clientOptionHeadersCall,
+    restErrorCodeAssignment
+  ]
     .filter(Boolean)
     .join("\n");
 
@@ -702,8 +807,12 @@ function getExceptionThrowStatement(context: SdkContext, operation: ServiceOpera
     statements.push(`const error = ${createRestErrorReference}(result);`);
     if (hasAnyDualFormatXml) {
       const isXmlContentTypeRef = resolveReference(XmlHelpers.isXmlContentType);
-      statements.push(`const responseContentType = result.headers?.["content-type"] ?? "";`);
-      statements.push(`const isXml = ${isXmlContentTypeRef}(responseContentType);`);
+      statements.push(
+        `const responseContentType = result.headers?.["content-type"] ?? "";`
+      );
+      statements.push(
+        `const isXml = ${isXmlContentTypeRef}(responseContentType);`
+      );
     }
     statements.push(`const statusCode = Number.parseInt(result.status);`);
     const stats: string[] = customized.map((exception) => {
@@ -742,7 +851,9 @@ function getExceptionThrowStatement(context: SdkContext, operation: ServiceOpera
           if(result.body) { error.details = ${defaultXmlDeserializer}(result.body); }
           ${allHeaderCalls}`);
         } else {
-          const isXmlContentTypeRef = resolveReference(XmlHelpers.isXmlContentType);
+          const isXmlContentTypeRef = resolveReference(
+            XmlHelpers.isXmlContentType
+          );
           statements.push(`const error = ${createRestErrorReference}(result);
           const responseContentType = result.headers?.["content-type"] ?? "";
           if(result.body) { error.details = ${isXmlContentTypeRef}(responseContentType) ? ${defaultXmlDeserializer}(result.body) : ${defaultDeserializer}(result.body); }
@@ -766,7 +877,7 @@ function getExceptionThrowStatement(context: SdkContext, operation: ServiceOpera
  * on exception model types. This is independent of include-headers-in-response.
  */
 function buildClientOptionHeadersCall(
-  exceptions: SdkHttpOperation["exceptions"],
+  exceptions: SdkHttpOperation["exceptions"]
 ): string | undefined {
   const seenProperties = new Set<string>();
   const assignments: string[] = [];
@@ -781,7 +892,9 @@ function buildClientOptionHeadersCall(
         continue;
       }
       seenProperties.add(opt.propertyName);
-      assignments.push(`${opt.propertyName}: result.headers[${JSON.stringify(opt.headerName)}]`);
+      assignments.push(
+        `${opt.propertyName}: result.headers[${JSON.stringify(opt.headerName)}]`
+      );
     }
   }
 
@@ -797,7 +910,7 @@ function buildClientOptionHeadersCall(
  * based on @clientOption("restErrorCodeHeader", ...) on exception model types.
  */
 function buildRestErrorCodeAssignment(
-  exceptions: SdkHttpOperation["exceptions"],
+  exceptions: SdkHttpOperation["exceptions"]
 ): string | undefined {
   for (const exception of exceptions ?? []) {
     if (!exception.type || exception.type.kind !== "model") {
@@ -812,21 +925,27 @@ if (restErrorCodeValue !== undefined) { error.code = restErrorCodeValue; }`;
   return undefined;
 }
 
-function getOptionalParamsName(parameters: OptionalKind<ParameterDeclarationStructure>[]) {
+function getOptionalParamsName(
+  parameters: OptionalKind<ParameterDeclarationStructure>[]
+) {
   return (
-    parameters.filter((p) => p.type?.toString().endsWith("operationOptions__"))[0]?.name ??
-    "options"
+    parameters.filter((p) =>
+      p.type?.toString().endsWith("operationOptions__")
+    )[0]?.name ?? "options"
   );
 }
 
 function getOperationSignatureParameters(
   context: SdkContext,
   method: [string[], ServiceOperation],
-  clientType: string,
+  clientType: string
 ): OptionalKind<ParameterDeclarationStructure>[] {
   const operation = method[1];
   const optionsType = resolveReference(refkey(method[1], "operationOptions"));
-  const parameters: Map<string, OptionalKind<ParameterDeclarationStructure>> = new Map();
+  const parameters: Map<
+    string,
+    OptionalKind<ParameterDeclarationStructure>
+  > = new Map();
 
   operation.parameters
     .filter(
@@ -841,13 +960,16 @@ function getOperationSignatureParameters(
           );
         })[0]?.kind !== "cookie" &&
         !p.optional &&
-        !(p.isGeneratedName && (p.name === "contentType" || p.name === "accept")) && // skip tcgc generated contentType and accept header parameter
-        getClientOptions(p, "headerCollectionPrefix") === undefined, // skip headers with collection prefix
+        !(
+          p.isGeneratedName &&
+          (p.name === "contentType" || p.name === "accept")
+        ) && // skip tcgc generated contentType and accept header parameter
+        getClientOptions(p, "headerCollectionPrefix") === undefined // skip headers with collection prefix
     )
     .map((p) => {
       return {
         name: p.name,
-        type: getTypeExpression(context, p.type),
+        type: getTypeExpression(context, p.type)
       };
     })
     .forEach((p) => {
@@ -861,7 +983,7 @@ function getOperationSignatureParameters(
   const optionsParam = {
     name: parameters.has("options") ? "optionalParams" : "options",
     type: optionsType,
-    initializer: "{ requestOptions: {} }",
+    initializer: "{ requestOptions: {} }"
   };
 
   const finalParameters = [contextParam, ...parameters.values(), optionsParam];
@@ -875,7 +997,7 @@ function getOperationSignatureParameters(
 export function getOperationFunction(
   context: SdkContext,
   method: [string[], ServiceOperation],
-  clientType: string,
+  clientType: string
 ): FunctionDeclarationStructure & {
   propertyName?: string;
   isLro?: boolean;
@@ -885,22 +1007,23 @@ export function getOperationFunction(
 } {
   const operation = method[1];
   // Extract required parameters
-  const parameters: OptionalKind<ParameterDeclarationStructure>[] = getOperationSignatureParameters(
-    context,
-    method,
-    clientType,
-  );
+  const parameters: OptionalKind<ParameterDeclarationStructure>[] =
+    getOperationSignatureParameters(context, method, clientType);
   const optionalParamName = getOptionalParamsName(parameters);
   if (isPagingOnlyOperation(operation)) {
     // Case 1: paging-only operation
-    return getPagingOnlyOperationFunction(context, [method[0], operation], clientType);
+    return getPagingOnlyOperationFunction(
+      context,
+      [method[0], operation],
+      clientType
+    );
   } else if (isLroOnlyOperation(operation)) {
     // Case 2: lro-only operation
     return getLroOnlyOperationFunction(
       context,
       [method[0], operation],
       clientType,
-      optionalParamName,
+      optionalParamName
     );
   } else if (isLroAndPagingOperation(operation)) {
     // Case 3: both paging + lro operation
@@ -908,7 +1031,7 @@ export function getOperationFunction(
       context,
       [method[0], operation],
       clientType,
-      optionalParamName,
+      optionalParamName
     );
   }
 
@@ -916,8 +1039,10 @@ export function getOperationFunction(
   const response = operation.response;
   const responseHeaders = getResponseHeaders(operation.operation.responses);
   const hasHeaderOnlyResponse = !response.type && responseHeaders.length > 0;
-  const isResponseHeadersEnabled = context.rlcOptions?.includeHeadersInResponse === true;
-  const isStorageCompatEnabled = context.rlcOptions?.enableStorageCompat === true;
+  const isResponseHeadersEnabled =
+    context.rlcOptions?.includeHeadersInResponse === true;
+  const isStorageCompatEnabled =
+    context.rlcOptions?.enableStorageCompat === true;
 
   // Track the raw body type separately for storage-compat (before header merging)
   const hasResponseBody = !!response.type;
@@ -927,42 +1052,50 @@ export function getOperationFunction(
   }
 
   // Check if we need to wrap the non-model return type
-  const { shouldWrap: wrapReturn, isBinary: wrapReturnIsBinary } = checkWrapNonModelReturn(
-    context,
-    operation,
-  );
+  const { shouldWrap: wrapReturn, isBinary: wrapReturnIsBinary } =
+    checkWrapNonModelReturn(context, operation);
 
   let returnType = { name: "", type: "void" };
   if (wrapReturn) {
     // Use the wrapper response type name (resolved via binder for cross-file imports)
     returnType = {
       name: getOperationResponseTypeName(method),
-      type: resolveReference(refkey(operation, "response")),
+      type: resolveReference(refkey(operation, "response"))
     };
     bodyType = returnType.type;
   } else if (response.type) {
     const type = response.type;
 
     // If feature flag enabled, we'll append the response headers to the operation response type.
-    if (type.kind === "model" && responseHeaders.length > 0 && isResponseHeadersEnabled) {
+    if (
+      type.kind === "model" &&
+      responseHeaders.length > 0 &&
+      isResponseHeadersEnabled
+    ) {
       // Build a composite type that includes both model and additional header properties
-      const baseCompositeType = buildCompositeResponseType(context, type, responseHeaders);
+      const baseCompositeType = buildCompositeResponseType(
+        context,
+        type,
+        responseHeaders
+      );
       returnType = {
         name: (type as any).name ?? "",
-        type: response.optional ? `${baseCompositeType} | undefined` : baseCompositeType,
+        type: response.optional
+          ? `${baseCompositeType} | undefined`
+          : baseCompositeType
       };
     } else {
       const baseType = getTypeExpression(context, type!);
       returnType = {
         name: (type as any).name ?? "",
-        type: response.optional ? `${baseType} | undefined` : baseType,
+        type: response.optional ? `${baseType} | undefined` : baseType
       };
     }
   } else if (hasHeaderOnlyResponse && isResponseHeadersEnabled) {
     // Here we handle returning headers when the operation return type is void
     returnType = {
       name: "",
-      type: `${buildHeaderOnlyResponseType(context, responseHeaders)}`,
+      type: `${buildHeaderOnlyResponseType(context, responseHeaders)}`
     };
   } else if (isHeadAsBooleanOperation(context, operation)) {
     returnType = { name: "", type: "boolean" };
@@ -972,7 +1105,9 @@ export function getOperationFunction(
   // Use the raw body type (not the header-augmented return type) for TBody
   let finalReturnType = returnType.type;
   if (isStorageCompatEnabled) {
-    const storageCompatInfoRef = resolveReference(StorageCompatHelpers.StorageCompatResponseInfo);
+    const storageCompatInfoRef = resolveReference(
+      StorageCompatHelpers.StorageCompatResponseInfo
+    );
     const headersType =
       responseHeaders.length > 0
         ? buildHeaderOnlyResponseType(context, responseHeaders)
@@ -999,13 +1134,16 @@ export function getOperationFunction(
   const { name, fixme = [] } = getOperationName(operation, context);
   const functionStatement = {
     kind: StructureKind.Function,
-    docs: [...getDocsFromDescription(operation.doc), ...getFixmeForMultilineDocs(fixme)],
+    docs: [
+      ...getDocsFromDescription(operation.doc),
+      ...getFixmeForMultilineDocs(fixme)
+    ],
     isAsync: true,
     isExported: true,
     name,
     propertyName: normalizeName(operation.name, NameType.Property),
     parameters,
-    returnType: `Promise<${finalReturnType}>`,
+    returnType: `Promise<${finalReturnType}>`
   };
 
   const statements: string[] = [];
@@ -1016,13 +1154,16 @@ export function getOperationFunction(
 
   const parameterList = parameters.map((p) => p.name).join(", ");
   // When storage-compat is enabled, set up the onResponse interceptor before sending
-  const storageCompatVarName = generateLocallyUniqueName("_storageCompat", paramNames);
+  const storageCompatVarName = generateLocallyUniqueName(
+    "_storageCompat",
+    paramNames
+  );
   if (isStorageCompatEnabled) {
     const createOnResponseRef = resolveReference(
-      StorageCompatHelpers.createStorageCompatOnResponse,
+      StorageCompatHelpers.createStorageCompatOnResponse
     );
     statements.push(
-      `const ${storageCompatVarName} = ${createOnResponseRef}(${optionalParamName}.onResponse);`,
+      `const ${storageCompatVarName} = ${createOnResponseRef}(${optionalParamName}.onResponse);`
     );
   }
 
@@ -1030,7 +1171,7 @@ export function getOperationFunction(
   const sendParameterList = isStorageCompatEnabled
     ? parameterList.replace(
         optionalParamName,
-        `{...${optionalParamName}, onResponse: ${storageCompatVarName}.onResponse}`,
+        `{...${optionalParamName}, onResponse: ${storageCompatVarName}.onResponse}`
       )
     : parameterList;
 
@@ -1039,37 +1180,54 @@ export function getOperationFunction(
   // For binary wrap, use getBinaryStreamResponse which preserves blobBody/readableStreamBody properties.
   // For non-wrapped binary, use getBinaryResponse which buffers the body into Uint8Array.
   if (response?.type?.kind === "bytes" && response.type.encode === "bytes") {
-    const streamableMethodVarName = generateLocallyUniqueName("streamableMethod", paramNames);
-    statements.push(`const ${streamableMethodVarName} = _${name}Send(${sendParameterList});`);
+    const streamableMethodVarName = generateLocallyUniqueName(
+      "streamableMethod",
+      paramNames
+    );
+    statements.push(
+      `const ${streamableMethodVarName} = _${name}Send(${sendParameterList});`
+    );
     const binaryHelper =
       wrapReturn && wrapReturnIsBinary
         ? SerializationHelpers.getBinaryStreamResponse
         : SerializationHelpers.getBinaryResponse;
     statements.push(
-      `const ${resultVarName} = await ${resolveReference(binaryHelper)}(${streamableMethodVarName});`,
+      `const ${resultVarName} = await ${resolveReference(binaryHelper)}(${streamableMethodVarName});`
     );
   } else {
-    statements.push(`const ${resultVarName} = await _${name}Send(${sendParameterList});`);
+    statements.push(
+      `const ${resultVarName} = await _${name}Send(${sendParameterList});`
+    );
   }
 
   // If the response has headers and the feature flag to include headers in response is enabled, build the headers object and include it in the return value
   if (isStorageCompatEnabled) {
     // Storage-compat mode: wrap the return value with _response metadata using captured PipelineResponse
-    const addStorageCompatRef = resolveReference(StorageCompatHelpers.addStorageCompatResponse);
-    const parsedBodyVarName = generateLocallyUniqueName("parsedBody", paramNames);
-    const parsedHeadersVarName = generateLocallyUniqueName("parsedHeaders", paramNames);
+    const addStorageCompatRef = resolveReference(
+      StorageCompatHelpers.addStorageCompatResponse
+    );
+    const parsedBodyVarName = generateLocallyUniqueName(
+      "parsedBody",
+      paramNames
+    );
+    const parsedHeadersVarName = generateLocallyUniqueName(
+      "parsedHeaders",
+      paramNames
+    );
 
     // Deserialize body
     if (!hasResponseBody) {
       statements.push(`await _${name}Deserialize(${resultVarName});`);
     } else {
-      statements.push(`const ${parsedBodyVarName} = await _${name}Deserialize(${resultVarName});`);
+      statements.push(
+        `const ${parsedBodyVarName} = await _${name}Deserialize(${resultVarName});`
+      );
     }
 
     // Deserialize headers if present
     if (responseHeaders.length > 0) {
       statements.push(
-        `const ${parsedHeadersVarName} = _${name}DeserializeHeaders(${resultVarName});`,
+        `const ${parsedHeadersVarName} = _${name}DeserializeHeaders(${resultVarName});`
       );
     }
 
@@ -1077,11 +1235,13 @@ export function getOperationFunction(
     const bodyArg = !hasResponseBody ? "undefined" : parsedBodyVarName;
     const headersArg = responseHeaders.length > 0 ? parsedHeadersVarName : "{}";
     statements.push(
-      `return ${addStorageCompatRef}(${storageCompatVarName}.getRawResponse()!, ${bodyArg}, ${headersArg});`,
+      `return ${addStorageCompatRef}(${storageCompatVarName}.getRawResponse()!, ${bodyArg}, ${headersArg});`
     );
   } else if (responseHeaders.length > 0 && isResponseHeadersEnabled) {
     const headersVarName = generateLocallyUniqueName("headers", paramNames);
-    statements.push(`const ${headersVarName} = _${name}DeserializeHeaders(result);`);
+    statements.push(
+      `const ${headersVarName} = _${name}DeserializeHeaders(result);`
+    );
 
     // If there is no body payload just return the headers
     if (hasHeaderOnlyResponse) {
@@ -1089,7 +1249,9 @@ export function getOperationFunction(
       statements.push(`return {...${headersVarName} };`);
     } else {
       const payloadVarName = generateLocallyUniqueName("payload", paramNames);
-      statements.push(`const ${payloadVarName} = await _${name}Deserialize(${resultVarName});`);
+      statements.push(
+        `const ${payloadVarName} = await _${name}Deserialize(${resultVarName});`
+      );
       statements.push(`return { ...${payloadVarName}, ...${headersVarName} };`);
     }
   } else {
@@ -1098,7 +1260,7 @@ export function getOperationFunction(
 
   return {
     ...functionStatement,
-    statements,
+    statements
   } as FunctionDeclarationStructure & { propertyName?: string };
 }
 
@@ -1106,7 +1268,7 @@ function getLroOnlyOperationFunction(
   context: SdkContext,
   method: [string[], SdkLroServiceMethod<SdkHttpOperation>],
   clientType: string,
-  optionalParamName: string = "options",
+  optionalParamName: string = "options"
 ): FunctionDeclarationStructure & {
   propertyName?: string;
   isLro?: boolean;
@@ -1114,19 +1276,23 @@ function getLroOnlyOperationFunction(
 } {
   const operation = method[1];
   // Extract required parameters
-  const parameters: OptionalKind<ParameterDeclarationStructure>[] = getOperationSignatureParameters(
-    context,
-    method,
-    clientType,
-  );
+  const parameters: OptionalKind<ParameterDeclarationStructure>[] =
+    getOperationSignatureParameters(context, method, clientType);
   const returnType = buildLroReturnType(context, operation);
   const { name, fixme = [] } = getOperationName(operation, context);
-  const pollerLikeReference = resolveReference(AzurePollingDependencies.PollerLike);
-  const operationStateReference = resolveReference(AzurePollingDependencies.OperationState);
+  const pollerLikeReference = resolveReference(
+    AzurePollingDependencies.PollerLike
+  );
+  const operationStateReference = resolveReference(
+    AzurePollingDependencies.OperationState
+  );
 
   // When wrap-non-model-return is enabled and the LRO final result is a non-model type,
   // use the wrapper response type (e.g. GetIkeSasResponse) instead of the raw type (e.g. string).
-  const { shouldWrap } = checkWrapNonModelReturn(context, operation as ServiceOperation);
+  const { shouldWrap } = checkWrapNonModelReturn(
+    context,
+    operation as ServiceOperation
+  );
   const effectiveReturnTypeStr = shouldWrap
     ? (resolveReference(refkey(operation, "response")) as string)
     : returnType.type;
@@ -1136,7 +1302,10 @@ function getLroOnlyOperationFunction(
 
   const functionStatement = {
     kind: StructureKind.Function,
-    docs: [...getDocsFromDescription(operation.doc), ...getFixmeForMultilineDocs(fixme)],
+    docs: [
+      ...getDocsFromDescription(operation.doc),
+      ...getFixmeForMultilineDocs(fixme)
+    ],
     isAsync: false,
     isExported: true,
     name,
@@ -1144,20 +1313,25 @@ function getLroOnlyOperationFunction(
     isLro: true,
     lroFinalReturnType: effectiveReturnTypeName,
     parameters,
-    returnType: `${pollerLikeReference}<${operationStateReference}<${effectiveReturnTypeStr}>, ${effectiveReturnTypeStr}>`,
+    returnType: `${pollerLikeReference}<${operationStateReference}<${effectiveReturnTypeStr}>, ${effectiveReturnTypeStr}>`
   };
 
-  const getLongRunningPollerReference = resolveReference(PollingHelpers.GetLongRunningPoller);
+  const getLongRunningPollerReference = resolveReference(
+    PollingHelpers.GetLongRunningPoller
+  );
   const lroMetadata =
-    operation.kind === "lro" || operation.kind === "lropaging" ? operation.lroMetadata : undefined;
+    operation.kind === "lro" || operation.kind === "lropaging"
+      ? operation.lroMetadata
+      : undefined;
   const allowedFinalLocation = [
     "azure-async-operation",
     "location",
     "original-uri",
-    "operation-location",
+    "operation-location"
   ];
   const resourceLocationConfig =
-    lroMetadata?.finalStateVia && allowedFinalLocation.includes(lroMetadata?.finalStateVia)
+    lroMetadata?.finalStateVia &&
+    allowedFinalLocation.includes(lroMetadata?.finalStateVia)
       ? `resourceLocationConfig: "${lroMetadata?.finalStateVia}",`
       : "";
   const apiVersion = getApiVersionExpression(context, operation);
@@ -1166,7 +1340,7 @@ function getLroOnlyOperationFunction(
   statements.push(`
 
   return ${getLongRunningPollerReference}(context, _${name}Deserialize, ${getExpectedStatuses(
-    operation,
+    operation
   )}, {
     updateIntervalInMs: ${optionalParamName}?.updateIntervalInMs,
     abortSignal: ${optionalParamName}?.abortSignal,
@@ -1178,7 +1352,7 @@ function getLroOnlyOperationFunction(
 
   return {
     ...functionStatement,
-    statements,
+    statements
   } as FunctionDeclarationStructure & { propertyName?: string };
 }
 
@@ -1186,14 +1360,18 @@ function getLroAndPagingOperationFunction(
   context: SdkContext,
   method: [string[], SdkLroPagingServiceMethod<SdkHttpOperation>],
   clientType: string,
-  optionalParamName: string = "options",
+  optionalParamName: string = "options"
 ): FunctionDeclarationStructure & {
   isLroPaging?: boolean;
   propertyName?: string;
   lropagingFinalReturnType?: string;
 } {
   const operation = method[1];
-  const parameters = getOperationSignatureParameters(context, method, clientType);
+  const parameters = getOperationSignatureParameters(
+    context,
+    method,
+    clientType
+  );
   const { name, fixme = [] } = getOperationName(operation, context);
 
   const returnType = buildLroPagingReturnType(context, operation);
@@ -1209,7 +1387,7 @@ function getLroAndPagingOperationFunction(
       `nextLinkName: "${operation.pagingMetadata.nextLinkSegments.map((p) => p.name).join(".")}"`,
     operation.pagingMetadata.nextLinkVerb !== "GET" &&
       `nextLinkMethod: "${operation.pagingMetadata.nextLinkVerb}"`,
-    apiVersion && `apiVersion: ${apiVersion}`,
+    apiVersion && `apiVersion: ${apiVersion}`
   ].filter(Boolean);
 
   // Build LRO resource location config
@@ -1217,7 +1395,7 @@ function getLroAndPagingOperationFunction(
     "azure-async-operation",
     "location",
     "original-uri",
-    "operation-location",
+    "operation-location"
   ];
   const resourceLocationConfig =
     operation.lroMetadata?.finalStateVia &&
@@ -1232,16 +1410,20 @@ function getLroAndPagingOperationFunction(
     getLroPoller: resolveReference(PollingHelpers.GetLongRunningPoller),
     pollerLike: resolveReference(AzurePollingDependencies.PollerLike),
     operationState: resolveReference(AzurePollingDependencies.OperationState),
-    pathResponse: resolveReference(useDependencies().PathUncheckedResponse),
+    pathResponse: resolveReference(useDependencies().PathUncheckedResponse)
   };
 
   const expectedStatuses = getExpectedStatuses(operation);
   const paramList = parameters.map((p) => p.name).join(", ");
-  const pagingOptionsStr = pagingOptions.length > 0 ? `,\n    {${pagingOptions.join(", ")}}` : "";
+  const pagingOptionsStr =
+    pagingOptions.length > 0 ? `,\n    {${pagingOptions.join(", ")}}` : "";
 
   return {
     kind: StructureKind.Function,
-    docs: [...getDocsFromDescription(operation.doc), ...getFixmeForMultilineDocs(fixme)],
+    docs: [
+      ...getDocsFromDescription(operation.doc),
+      ...getFixmeForMultilineDocs(fixme)
+    ],
     isAsync: false,
     isExported: true,
     isLroPaging: true,
@@ -1268,21 +1450,23 @@ function getLroAndPagingOperationFunction(
     _${name}Deserialize,
     ${expectedStatuses}${pagingOptionsStr}
   );
-  `,
-    ],
+  `
+    ]
   };
 }
 
 function buildLroReturnType(
   context: SdkContext,
-  operation: SdkLroServiceMethod<SdkHttpOperation> | SdkLroPagingServiceMethod<SdkHttpOperation>,
+  operation:
+    | SdkLroServiceMethod<SdkHttpOperation>
+    | SdkLroPagingServiceMethod<SdkHttpOperation>
 ) {
   const metadata = operation.lroMetadata;
   if (metadata !== undefined && metadata.finalResponse !== undefined) {
     const type = metadata.finalResponse.result;
     return {
       name: type.name,
-      type: getTypeExpression(context, type),
+      type: getTypeExpression(context, type)
     };
   }
   return { name: "", type: "void" };
@@ -1290,12 +1474,12 @@ function buildLroReturnType(
 
 function buildLroPagingReturnType(
   context: SdkContext,
-  operation: SdkLroPagingServiceMethod<SdkHttpOperation>,
+  operation: SdkLroPagingServiceMethod<SdkHttpOperation>
 ) {
   if (operation.response.type?.kind === "array") {
     return {
       name: (operation.response.type.valueType as any).name ?? "",
-      type: getTypeExpression(context, operation.response.type.valueType),
+      type: getTypeExpression(context, operation.response.type.valueType)
     };
   }
   return { name: "", type: "void" };
@@ -1304,15 +1488,12 @@ function buildLroPagingReturnType(
 function getPagingOnlyOperationFunction(
   context: SdkContext,
   method: [string[], SdkPagingServiceMethod<SdkHttpOperation>],
-  clientType: string,
+  clientType: string
 ): FunctionDeclarationStructure & { propertyName?: string } {
   const operation = method[1];
   // Extract required parameters
-  const parameters: OptionalKind<ParameterDeclarationStructure>[] = getOperationSignatureParameters(
-    context,
-    method,
-    clientType,
-  );
+  const parameters: OptionalKind<ParameterDeclarationStructure>[] =
+    getOperationSignatureParameters(context, method, clientType);
 
   // TODO: Support operation overloads
   const response = operation.response;
@@ -1321,23 +1502,28 @@ function getPagingOnlyOperationFunction(
     const type = response.type;
     returnType = {
       name: (type.valueType as any).name ?? "",
-      type: getTypeExpression(context, type.valueType),
+      type: getTypeExpression(context, type.valueType)
     };
   }
   const { name, fixme = [] } = getOperationName(operation, context);
   const pagedAsyncIterableIteratorReference = resolveReference(
-    PagingHelpers.PagedAsyncIterableIterator,
+    PagingHelpers.PagedAsyncIterableIterator
   );
-  const buildPagedAsyncIteratorReference = resolveReference(PagingHelpers.BuildPagedAsyncIterator);
+  const buildPagedAsyncIteratorReference = resolveReference(
+    PagingHelpers.BuildPagedAsyncIterator
+  );
   const functionStatement = {
     kind: StructureKind.Function,
-    docs: [...getDocsFromDescription(operation.doc), ...getFixmeForMultilineDocs(fixme)],
+    docs: [
+      ...getDocsFromDescription(operation.doc),
+      ...getFixmeForMultilineDocs(fixme)
+    ],
     isAsync: false,
     isExported: true,
     name,
     propertyName: normalizeName(operation.name, NameType.Property),
     parameters,
-    returnType: `${pagedAsyncIterableIteratorReference}<${returnType.type}>`,
+    returnType: `${pagedAsyncIterableIteratorReference}<${returnType.type}>`
   };
 
   const statements: string[] = [];
@@ -1379,18 +1565,18 @@ function getPagingOnlyOperationFunction(
       () => _${name}Send(${parameters.map((p) => p.name).join(", ")}), 
       _${name}Deserialize,
       ${getExpectedStatuses(operation)}${options.length > 0 ? `,\n      {${options.join(", ")}}` : ""}
-      );`,
+      );`
   );
 
   return {
     ...functionStatement,
-    statements,
+    statements
   } as FunctionDeclarationStructure & { propertyName?: string };
 }
 
 export function getOperationOptionsName(
   method: [string[], ServiceOperation],
-  includeGroupName = false,
+  includeGroupName = false
 ) {
   const prefixes = method[0];
   const operation = method[1];
@@ -1410,21 +1596,24 @@ export function getOperationOptionsName(
 function getHeaderAndBodyParameters(
   dpgContext: SdkContext,
   operation: ServiceOperation,
-  optionalParamName: string = "options",
+  optionalParamName: string = "options"
 ): string {
   if (!operation.operation.parameters) {
     return "";
   }
-  const operationParameters = operation.operation.parameters.filter((p) => !isContentType(p));
+  const operationParameters = operation.operation.parameters.filter(
+    (p) => !isContentType(p)
+  );
 
-  const contentTypeParameter = operation.operation.parameters.find(isContentType);
+  const contentTypeParameter =
+    operation.operation.parameters.find(isContentType);
 
   const parametersImplementation: Record<
     "header" | "body",
     { paramMap: string; param: SdkHttpParameter; paramAccessor: string }[]
   > = {
     header: [],
-    body: [],
+    body: []
   };
 
   for (const param of operationParameters) {
@@ -1442,12 +1631,15 @@ function getHeaderAndBodyParameters(
         continue;
       }
       // Check if this parameter still exists in the corresponding method params (after override)
-      if (param.methodParameterSegments && param.methodParameterSegments.length > 0) {
+      if (
+        param.methodParameterSegments &&
+        param.methodParameterSegments.length > 0
+      ) {
         const paramAccessor = getParamAccessor(param, optionalParamName);
         parametersImplementation[param.kind].push({
           paramMap: getParameterMap(dpgContext, param, paramAccessor),
           param,
-          paramAccessor,
+          paramAccessor
         });
       }
     }
@@ -1461,10 +1653,20 @@ function getHeaderAndBodyParameters(
 
   if (parametersImplementation.header.length) {
     paramStr = `${paramStr}\nheaders: {${parametersImplementation.header
-      .map((i) => buildHeaderParameter(dpgContext.program, i.paramMap, i.param, i.paramAccessor))
+      .map((i) =>
+        buildHeaderParameter(
+          dpgContext.program,
+          i.paramMap,
+          i.param,
+          i.paramAccessor
+        )
+      )
       .join(",\n")}, ...${optionalParamName}.requestOptions?.headers },`;
   }
-  if (operation.operation.bodyParam === undefined && parametersImplementation.body.length) {
+  if (
+    operation.operation.bodyParam === undefined &&
+    parametersImplementation.body.length
+  ) {
     paramStr = `${paramStr}\nbody: {${parametersImplementation.body
       .map((i) => i.paramMap)
       .join(",\n")}}`;
@@ -1479,13 +1681,13 @@ function buildHeaderParameter(
   program: Program,
   paramMap: string,
   param: SdkHttpParameter,
-  paramAccessor: string,
+  paramAccessor: string
 ): string {
   const effectiveOptional = getEffectiveOptional(param);
   if (!effectiveOptional && isTypeNullable(param.type) === true) {
     reportDiagnostic(program, {
       code: "nullable-required-header",
-      target: NoTarget,
+      target: NoTarget
     });
     return paramMap;
   }
@@ -1493,7 +1695,8 @@ function buildHeaderParameter(
   // If the param has a clientDefaultValue that type-matches, the paramMap already contains
   // `?? defaultValue` from getOptional(). In this case, always send the header (do not
   // conditionally omit it when the accessor is undefined) so the default is always applied.
-  const hasEffectiveDefaultValue = effectiveOptional && hasEffectiveClientDefaultValue(param);
+  const hasEffectiveDefaultValue =
+    effectiveOptional && hasEffectiveClientDefaultValue(param);
 
   const conditions = [];
   if (effectiveOptional && !hasEffectiveDefaultValue) {
@@ -1502,13 +1705,15 @@ function buildHeaderParameter(
   if (isTypeNullable(param.type) === true) {
     conditions.push(`${paramAccessor} !== null`);
   }
-  return conditions.length > 0 ? `...(${conditions.join(" && ")} ? {${paramMap}} : {})` : paramMap;
+  return conditions.length > 0
+    ? `...(${conditions.join(" && ")} ? {${paramMap}} : {})`
+    : paramMap;
 }
 
 function buildBodyParameter(
   context: SdkContext,
   bodyParameter: SdkBodyParameter | undefined,
-  optionalParamName: string = "options",
+  optionalParamName: string = "options"
 ) {
   if (!bodyParameter || !bodyParameter.type) {
     return "";
@@ -1520,7 +1725,8 @@ function buildBodyParameter(
   const bodyType = getNullableValidType(bodyParameter.type);
 
   // Check if XML serialization is needed and available
-  const useXmlSerialization = isXml && bodyType.kind === "model" && hasXmlSerialization(bodyType);
+  const useXmlSerialization =
+    isXml && bodyType.kind === "model" && hasXmlSerialization(bodyType);
 
   let serializerFunctionName: string | undefined;
 
@@ -1528,24 +1734,27 @@ function buildBodyParameter(
     // Use XML serializer
     serializerFunctionName = buildXmlModelSerializer(context, bodyType, {
       nameOnly: true,
-      skipDiscriminatedUnionSuffix: false,
+      skipDiscriminatedUnionSuffix: false
     }) as string | undefined;
   } else {
     // Use JSON serializer (default)
     serializerFunctionName = buildModelSerializer(context, bodyType, {
       nameOnly: true,
-      skipDiscriminatedUnionSuffix: false,
+      skipDiscriminatedUnionSuffix: false
     }) as string | undefined;
   }
 
   let bodyNameExpression = getParamAccessor(bodyParameter, optionalParamName);
 
   // Check if body parameter has a client default value with matching type
-  const hasClientDefault = bodyParameter.optional && hasEffectiveClientDefaultValue(bodyParameter);
+  const hasClientDefault =
+    bodyParameter.optional && hasEffectiveClientDefaultValue(bodyParameter);
 
   // Apply client default value if present for optional body parameters
   if (hasClientDefault) {
-    const formattedDefault = formatDefaultValue(bodyParameter.clientDefaultValue);
+    const formattedDefault = formatDefaultValue(
+      bodyParameter.clientDefaultValue
+    );
     bodyNameExpression = `(${bodyNameExpression} ?? ${formattedDefault})`;
   }
 
@@ -1562,14 +1771,18 @@ function buildBodyParameter(
     : "";
 
   // For dual-format operations, check the contentType option at runtime
-  if (isDualFormat && bodyType.kind === "model" && hasXmlSerialization(bodyType)) {
+  if (
+    isDualFormat &&
+    bodyType.kind === "model" &&
+    hasXmlSerialization(bodyType)
+  ) {
     const xmlSerializerName = buildXmlModelSerializer(context, bodyType, {
       nameOnly: true,
-      skipDiscriminatedUnionSuffix: false,
+      skipDiscriminatedUnionSuffix: false
     }) as string | undefined;
     const jsonSerializerName = buildModelSerializer(context, bodyType, {
       nameOnly: true,
-      skipDiscriminatedUnionSuffix: false,
+      skipDiscriminatedUnionSuffix: false
     }) as string | undefined;
 
     if (xmlSerializerName && jsonSerializerName) {
@@ -1593,12 +1806,12 @@ function buildBodyParameter(
       context,
       bodyParameter.__raw!,
       bodyParameter.contentTypes,
-      getEncodeForType(bodyParameter.type),
+      getEncodeForType(bodyParameter.type)
     )
       ? "binary"
       : getEncodeForType(bodyParameter.type),
     undefined,
-    true,
+    true
   );
   return `\nbody: ${serializedBody.startsWith(nullOrUndefinedPrefix) ? "" : nullOrUndefinedPrefix}${serializedBody},`;
 }
@@ -1619,11 +1832,13 @@ function getEncodingFormat(type: { format?: string }) {
 export function getParameterMap(
   context: SdkContext,
   param: SdkHttpParameter,
-  paramAccessor: string,
+  paramAccessor: string
 ): string {
   // Use lowercase for header names since HTTP headers are case-insensitive
   const serializedName =
-    param.kind === "header" ? getHeaderSerializedName(param) : getPropertySerializedName(param);
+    param.kind === "header"
+      ? getHeaderSerializedName(param)
+      : getPropertySerializedName(param);
 
   if (isConstant(param.type) && !isOptional(param)) {
     return `"${serializedName}": ${getConstantValue(param.type)}`;
@@ -1639,7 +1854,12 @@ export function getParameterMap(
   }
 
   if (hasCollectionFormatInfo(param.kind, (param as any).collectionFormat)) {
-    return getCollectionFormatForParam(context, param, paramAccessor, serializedName);
+    return getCollectionFormatForParam(
+      context,
+      param,
+      paramAccessor,
+      serializedName
+    );
   }
 
   // if the parameter or property is optional, we don't need to handle the default value
@@ -1655,9 +1875,9 @@ export function getParameterMap(
     code: "unsupported-parameter-type",
     format: {
       paramName: param.name,
-      paramKind: param.kind,
+      paramKind: param.kind
     },
-    target: param.__raw || NoTarget,
+    target: param.__raw || NoTarget
   });
 
   // Return a fallback value to allow the emitter to continue
@@ -1668,7 +1888,7 @@ function getCollectionFormatForParam(
   context: SdkContext,
   param: SdkHttpParameter,
   paramAccessor: string,
-  serializedName: string,
+  serializedName: string
 ) {
   const format = (param as any).collectionFormat;
   return `"${serializedName}": ${serializeRequestValue(
@@ -1678,15 +1898,21 @@ function getCollectionFormatForParam(
     !param.optional,
     format,
     serializedName,
-    true,
+    true
   )}`;
 }
 
 function isContentType(param: SdkHttpParameter): boolean {
-  return param.kind === "header" && param.serializedName.toLowerCase() === "content-type";
+  return (
+    param.kind === "header" &&
+    param.serializedName.toLowerCase() === "content-type"
+  );
 }
 
-function getContentTypeValue(param: SdkHttpParameter, optionalParamName: string = "options") {
+function getContentTypeValue(
+  param: SdkHttpParameter,
+  optionalParamName: string = "options"
+) {
   const defaultValue = param.clientDefaultValue;
   // allow customers to customize the content type if it's guessed by tcgc.
   if (isConstant(param.type)) {
@@ -1737,13 +1963,13 @@ function getRequired(
   context: SdkContext,
   param: SdkHttpParameter,
   serializedName: string,
-  paramAccessor: string,
+  paramAccessor: string
 ) {
   if (param.type.kind === "model") {
     const propertiesStr = getRequestModelMapping(
       context,
       { ...param.type, optional: param.optional },
-      paramAccessor,
+      paramAccessor
     );
     return `"${serializedName}": { ${propertiesStr.join(",")} }`;
   }
@@ -1754,7 +1980,7 @@ function getRequired(
     true,
     getEncodeForType(param.type),
     serializedName,
-    true,
+    true
   )}`;
 }
 
@@ -1777,7 +2003,7 @@ function getOptional(
   context: SdkContext,
   param: SdkHttpParameter,
   serializedName: string,
-  paramAccessor: string,
+  paramAccessor: string
 ) {
   // Apply client default value if present and type matches
   const defaultSuffix = hasEffectiveClientDefaultValue(param)
@@ -1788,7 +2014,7 @@ function getOptional(
     const propertiesStr = getRequestModelMapping(
       context,
       { ...param.type, optional: param.optional },
-      paramAccessor + "?.",
+      paramAccessor + "?."
     );
     const serializeContent = `{${propertiesStr.join(",")}}`;
     return `"${serializedName}": ${serializeContent}`;
@@ -1800,7 +2026,7 @@ function getOptional(
     false,
     getEncodeForType(param.type),
     serializedName,
-    true,
+    true
   );
   return `"${serializedName}": ${serializedValue}${defaultSuffix}`;
 }
@@ -1808,14 +2034,18 @@ function getOptional(
 /**
  * Get the encode for SDK type
  */
-function getEncodeForType(type: SdkType | SdkHttpParameter | SdkModelPropertyType) {
+function getEncodeForType(
+  type: SdkType | SdkHttpParameter | SdkModelPropertyType
+) {
   return (type as any).encode;
 }
 
 /**
  * Get the optionality for SDK type
  */
-function getOptionalForType(type: SdkType | SdkHttpParameter | SdkModelPropertyType) {
+function getOptionalForType(
+  type: SdkType | SdkHttpParameter | SdkModelPropertyType
+) {
   return (type as any).optional;
 }
 
@@ -1829,7 +2059,10 @@ function getDefaultValue(param: SdkHttpParameter) {
 /**
  * Extracts the path parameters
  */
-function getPathParameters(operation: ServiceOperation, optionalParamName: string = "options") {
+function getPathParameters(
+  operation: ServiceOperation,
+  optionalParamName: string = "options"
+) {
   if (!operation.operation.parameters) {
     return [];
   }
@@ -1840,7 +2073,7 @@ function getPathParameters(operation: ServiceOperation, optionalParamName: strin
       const methodParam = param.methodParameterSegments[0]?.[0];
       if (methodParam) {
         pathParams.push(
-          `"${param.serializedName}": ${getPathParamExpr(param, getDefaultValue(param) as string, optionalParamName)}`,
+          `"${param.serializedName}": ${getPathParamExpr(param, getDefaultValue(param) as string, optionalParamName)}`
         );
       }
     }
@@ -1852,20 +2085,30 @@ function getPathParameters(operation: ServiceOperation, optionalParamName: strin
 /**
  * Extract the query parameters
  */
-function getQueryParameters(dpgContext: SdkContext, operation: ServiceOperation): string[] {
+function getQueryParameters(
+  dpgContext: SdkContext,
+  operation: ServiceOperation
+): string[] {
   if (!operation.parameters) {
     return [];
   }
-  const operationParameters = operation.operation.parameters.filter((p) => !isContentType(p));
-  const parametersImplementation: Record<"query", { paramMap: string; param: SdkHttpParameter }[]> =
-    {
-      query: [],
-    };
+  const operationParameters = operation.operation.parameters.filter(
+    (p) => !isContentType(p)
+  );
+  const parametersImplementation: Record<
+    "query",
+    { paramMap: string; param: SdkHttpParameter }[]
+  > = {
+    query: []
+  };
 
   for (const param of operationParameters) {
     if (param.kind === "query") {
       // Check if this parameter still exists in the corresponding method params (after override)
-      if (param.methodParameterSegments && param.methodParameterSegments.length > 0) {
+      if (
+        param.methodParameterSegments &&
+        param.methodParameterSegments.length > 0
+      ) {
         const paramAccessor = getParamAccessor(param);
         parametersImplementation[param.kind].push({
           paramMap: getParameterMap(
@@ -1874,17 +2117,19 @@ function getQueryParameters(dpgContext: SdkContext, operation: ServiceOperation)
               ...param,
               // TODO: remember to remove this hack once compiler gives us a name
               // https://github.com/microsoft/typespec/issues/6743
-              serializedName: getUriTemplateQueryParamName(param.serializedName),
+              serializedName: getUriTemplateQueryParamName(param.serializedName)
             },
-            paramAccessor,
+            paramAccessor
           ),
-          param,
+          param
         });
       }
     }
   }
 
-  const paramStr: string[] = parametersImplementation.query.map((i) => i.paramMap);
+  const paramStr: string[] = parametersImplementation.query.map(
+    (i) => i.paramMap
+  );
 
   return paramStr;
 }
@@ -1905,14 +2150,19 @@ function escapeUriTemplateParamName(name: string) {
  *    built from those segments (e.g. `options?.ocpDate`, `body.nested`).
  * 3. Fallback: returns the parameter name directly, with optional chaining if optional.
  */
-function getParamAccessor(param: SdkHttpParameter, optionalParamName: string = "options"): string {
+function getParamAccessor(
+  param: SdkHttpParameter,
+  optionalParamName: string = "options"
+): string {
   if (param.isGeneratedName) {
     return param.name;
   }
   const methodParamExpr = getMethodParamExpr(param, optionalParamName);
   const clientPrefix = "context.";
   if (methodParamExpr) {
-    return param.onClient ? `${clientPrefix}${methodParamExpr}` : methodParamExpr;
+    return param.onClient
+      ? `${clientPrefix}${methodParamExpr}`
+      : methodParamExpr;
   }
   if (param.onClient) {
     return `${clientPrefix}${getClientParameterName(param)}`;
@@ -1930,7 +2180,7 @@ function getParamAccessor(param: SdkHttpParameter, optionalParamName: string = "
  */
 function getMethodParamExpr(
   param: SdkHttpParameter,
-  optionalParamName: string = "options",
+  optionalParamName: string = "options"
 ): string | undefined {
   const segments = param.methodParameterSegments;
   if (segments.length === 0) {
@@ -1970,7 +2220,7 @@ function getMethodParamExpr(
 function getPathParamExpr(
   param: SdkHttpParameter,
   defaultValue?: string,
-  optionalParamName: string = "options",
+  optionalParamName: string = "options"
 ) {
   if (isConstant(param.type)) {
     return getConstantValue(param.type);
@@ -1999,7 +2249,7 @@ function getNullableCheck(name: string, type: SdkType) {
  */
 function getEncodeForModelProperty(
   context: SdkContext,
-  property: SdkModelPropertyType,
+  property: SdkModelPropertyType
 ): string | undefined {
   if (property.encode && property.type.kind === "array") {
     // Only arrays of string type or string-based enum type can have collectionFormat encoding
@@ -2008,15 +2258,20 @@ function getEncodeForModelProperty(
         code: "un-supported-array-encoding",
         format: {
           arrayName: property.name,
-          arrayType: property.type.valueType.kind,
+          arrayType: property.type.valueType.kind
         },
-        target: NoTarget,
+        target: NoTarget
       });
       return getEncodeForType(property.type);
     }
 
-    const collectionFormat = getCollectionFormatFromArrayEncoding(property.encode);
-    if (collectionFormat && hasCollectionFormatInfo(property.kind, collectionFormat)) {
+    const collectionFormat = getCollectionFormatFromArrayEncoding(
+      property.encode
+    );
+    if (
+      collectionFormat &&
+      hasCollectionFormatInfo(property.kind, collectionFormat)
+    ) {
       return collectionFormat;
     }
   }
@@ -2033,7 +2288,10 @@ function isStringEncodableArrayValueType(valueType: SdkType): boolean {
     return true;
   }
   // String-based enum type
-  if (valueType.kind === "enum" && (valueType as SdkEnumType).valueType.kind === "string") {
+  if (
+    valueType.kind === "enum" &&
+    (valueType as SdkEnumType).valueType.kind === "string"
+  ) {
     return true;
   }
   return false;
@@ -2042,11 +2300,11 @@ function isStringEncodableArrayValueType(valueType: SdkType): boolean {
 function getSerializationExpressionForFlatten(
   context: SdkContext,
   property: SdkModelPropertyType,
-  propertyPath: string,
+  propertyPath: string
 ): string {
   const serializeFunctionName = buildPropertySerializer(context, property, {
     nameOnly: true,
-    skipDiscriminatedUnionSuffix: false,
+    skipDiscriminatedUnionSuffix: false
   });
   if (!serializeFunctionName) {
     return property.optional ? `undefined` : `{}`;
@@ -2054,9 +2312,12 @@ function getSerializationExpressionForFlatten(
   const validProps = getAllProperties(
     context,
     property.type,
-    getAllAncestors(property.type),
+    getAllAncestors(property.type)
   ).filter(
-    (p) => p.kind === "property" && !isReadOnly(p) && !isMetadata(context.program, p.__raw!),
+    (p) =>
+      p.kind === "property" &&
+      !isReadOnly(p) &&
+      !isMetadata(context.program, p.__raw!)
   );
   const optionalPrefix = property.optional
     ? `${resolveReference(SerializationHelpers.areAllPropsUndefined)}(${propertyPath}, [${validProps
@@ -2070,20 +2331,32 @@ export function getSerializationExpression(
   context: SdkContext,
   property: SdkModelPropertyType,
   propertyPath: string,
-  enableFlatten: boolean = true,
+  enableFlatten: boolean = true
 ): string {
   if (property.flatten && property.type.kind === "model" && enableFlatten) {
     return getSerializationExpressionForFlatten(context, property, "item");
   }
   const dot = propertyPath.endsWith("?") ? "." : "";
   const propertyPathWithDot = `${propertyPath ? `${propertyPath}${dot}` : `${dot}`}`;
-  const nullOrUndefinedPrefix = getPropertySerializationPrefix(context, property, propertyPath);
+  const nullOrUndefinedPrefix = getPropertySerializationPrefix(
+    context,
+    property,
+    propertyPath
+  );
 
-  const propertyFullName = getPropertyFullName(context, property, propertyPathWithDot);
-  const serializeFunctionName = buildModelSerializer(context, getNullableValidType(property.type), {
-    nameOnly: true,
-    skipDiscriminatedUnionSuffix: false,
-  });
+  const propertyFullName = getPropertyFullName(
+    context,
+    property,
+    propertyPathWithDot
+  );
+  const serializeFunctionName = buildModelSerializer(
+    context,
+    getNullableValidType(property.type),
+    {
+      nameOnly: true,
+      skipDiscriminatedUnionSuffix: false
+    }
+  );
 
   // Apply clientDefaultValue for model properties that have one
   const defaultValueSuffix = hasEffectiveClientDefaultValue(property)
@@ -2102,7 +2375,7 @@ export function getSerializationExpression(
       !property.optional,
       getEncodeForModelProperty(context, property),
       getPropertySerializedName(property),
-      propertyPath === "" ? true : false,
+      propertyPath === "" ? true : false
     );
     return `${baseExpr}${defaultValueSuffix}`;
   }
@@ -2113,7 +2386,7 @@ export function getRequestModelProperties(
   modelPropertyType: SdkModelType & { optional?: boolean },
   propertyPath: string = "body",
   overrides?: ModelOverrideOptions,
-  enableFlatten: boolean = true,
+  enableFlatten: boolean = true
 ): Array<[string, string]> {
   const props: [string, string][] = [];
   const allParents = getAllAncestors(modelPropertyType);
@@ -2132,7 +2405,7 @@ export function getRequestModelProperties(
     const property = getPropertyWithOverrides(prop, overrides);
     props.push([
       getPropertySerializedName(property)!,
-      getSerializationExpression(context, property, propertyPath, enableFlatten),
+      getSerializationExpression(context, property, propertyPath, enableFlatten)
     ]);
   }
 
@@ -2149,18 +2422,20 @@ export function getRequestModelMapping(
   modelPropertyType: SdkModelType & { optional?: boolean },
   propertyPath: string = "body",
   overrides?: ModelOverrideOptions,
-  enableFlatten: boolean = true,
+  enableFlatten: boolean = true
 ): string[] {
   return getRequestModelProperties(
     context,
     modelPropertyType,
     propertyPath,
     overrides,
-    enableFlatten,
+    enableFlatten
   ).map(([name, value]) => `"${name}": ${value}`);
 }
 
-export function getPropertySerializedName(property: SdkHttpParameter | SdkModelPropertyType) {
+export function getPropertySerializedName(
+  property: SdkHttpParameter | SdkModelPropertyType
+) {
   return (
     (property.kind === "property"
       ? property.serializationOptions.json?.name
@@ -2185,10 +2460,11 @@ export function getResponseMapping(
   type: SdkType,
   propertyPath: string = "result.body",
   overrides?: ModelOverrideOptions,
-  enableFlatten: boolean = true,
+  enableFlatten: boolean = true
 ) {
   const allParents = type.kind === "model" ? getAllAncestors(type) : [];
-  const properties = type.kind === "model" ? getAllProperties(context, type, allParents) : [];
+  const properties =
+    type.kind === "model" ? getAllProperties(context, type, allParents) : [];
   const props: string[] = [];
   for (const prop of properties) {
     if (isMetadata(context.program, prop.__raw!)) {
@@ -2200,25 +2476,30 @@ export function getResponseMapping(
     const restValue = `${propertyPath ? `${propertyPath}${dot}` : `${dot}`}["${serializedName}"]`;
 
     const nullOrUndefinedPrefix =
-      property.optional || isTypeNullable(property.type) ? `!${restValue}? ${restValue}: ` : "";
-    const flattenContext = useContext("sdkTypes").flattenProperties.get(property);
+      property.optional || isTypeNullable(property.type)
+        ? `!${restValue}? ${restValue}: `
+        : "";
+    const flattenContext =
+      useContext("sdkTypes").flattenProperties.get(property);
     const isSupportedFlatten = flattenContext && enableFlatten;
     const deserializeFunctionName = isSupportedFlatten
       ? buildPropertyDeserializer(context, property, {
           nameOnly: true,
-          skipDiscriminatedUnionSuffix: false,
+          skipDiscriminatedUnionSuffix: false
         })
       : buildModelDeserializer(context, getNullableValidType(property.type), {
           nameOnly: true,
-          skipDiscriminatedUnionSuffix: false,
+          skipDiscriminatedUnionSuffix: false
         });
     const propertyName = normalizeModelPropertyName(context, property);
     if (deserializeFunctionName) {
       if (isSupportedFlatten) {
-        props.push(`...${nullOrUndefinedPrefix}${deserializeFunctionName}(${restValue})`);
+        props.push(
+          `...${nullOrUndefinedPrefix}${deserializeFunctionName}(${restValue})`
+        );
       } else {
         props.push(
-          `${propertyName}: ${nullOrUndefinedPrefix}${deserializeFunctionName}(${restValue})`,
+          `${propertyName}: ${nullOrUndefinedPrefix}${deserializeFunctionName}(${restValue})`
         );
       }
     } else if (isAzureCoreErrorType(context.program, property.type.__raw)) {
@@ -2229,7 +2510,7 @@ export function getResponseMapping(
         property.type,
         `${propertyPath}${dot}["${serializedName}"]`,
         !property.optional,
-        getEncodeForModelProperty(context, property),
+        getEncodeForModelProperty(context, property)
       );
       props.push(`${propertyName}: ${deserializeValue}`);
     }
@@ -2247,7 +2528,7 @@ export function serializeRequestValue(
   required: boolean,
   format?: string,
   serializedName?: string,
-  isTopLevel: boolean = false,
+  isTopLevel: boolean = false
 ): string {
   const getSdkType = useSdkTypes();
   const dependencies = useDependencies();
@@ -2273,18 +2554,22 @@ export function serializeRequestValue(
       if (type.valueType) {
         const prefix = nullOrUndefinedPrefix + clientValue;
         const elementNullOrUndefinedPrefix =
-          isTypeNullable(type.valueType) || getOptionalForType(type.valueType) ? "!p ? p : " : "";
+          isTypeNullable(type.valueType) || getOptionalForType(type.valueType)
+            ? "!p ? p : "
+            : "";
         const serializeFunctionName = buildModelSerializer(
           context,
           getNullableValidType(type.valueType),
           {
             nameOnly: true,
-            skipDiscriminatedUnionSuffix: false,
-          },
+            skipDiscriminatedUnionSuffix: false
+          }
         );
         if (serializeFunctionName) {
           return `${prefix}.map((p: any) => { return ${elementNullOrUndefinedPrefix}${serializeFunctionName}(p)})`;
-        } else if (isAzureCoreErrorType(context.program, type.valueType.__raw)) {
+        } else if (
+          isAzureCoreErrorType(context.program, type.valueType.__raw)
+        ) {
           return `${prefix}.map((p: any) => { return ${elementNullOrUndefinedPrefix}p})`;
         } else {
           const serializedValue = `${clientValue}.map((p: any) => { return ${elementNullOrUndefinedPrefix}${serializeRequestValue(context, type.valueType, "p", true, getEncodeForType(type.valueType))}})`;
@@ -2305,11 +2590,13 @@ export function serializeRequestValue(
     case "bytes":
       // TODO https://github.com/Azure/typespec-azure/issues/1999
       if (format !== "binary" && format !== "bytes") {
-        const uint8ArrayToStringReference = resolveReference(dependencies.uint8ArrayToString);
+        const uint8ArrayToStringReference = resolveReference(
+          dependencies.uint8ArrayToString
+        );
         return required
           ? `${getNullableCheck(
               clientValue,
-              type,
+              type
             )} ${uint8ArrayToStringReference}(${clientValue}, "${
               getEncodingFormat({ format }) ?? "base64"
             }")`
@@ -2324,7 +2611,8 @@ export function serializeRequestValue(
       } else if (
         isSpecialHandledUnion({
           ...type,
-          isNonExhaustive: context.rlcOptions?.experimentalExtensibleEnums ?? false,
+          isNonExhaustive:
+            context.rlcOptions?.experimentalExtensibleEnums ?? false
         })
       ) {
         const sdkType = getSdkType(type.__raw!);
@@ -2347,7 +2635,7 @@ export function serializeRequestValue(
         type.type,
         clientValue,
         false,
-        getEncodeForType(type.type),
+        getEncodeForType(type.type)
       );
     default:
       if (clientValue === "constructorParam") {
@@ -2367,7 +2655,7 @@ export function deserializeResponseHeadersValue(
   restValue: string,
   required: boolean,
   format?: string,
-  recursionDepth: number = 0,
+  recursionDepth: number = 0
 ) {
   const nullOrUndefinedPrefix =
     isTypeNullable(type) || getOptionalForType(type) || !required
@@ -2403,7 +2691,7 @@ export function deserializeResponseHeadersValue(
         const deserializeFunctionName = type
           ? buildModelDeserializer(context, getNullableValidType(type), {
               nameOnly: true,
-              skipDiscriminatedUnionSuffix: false,
+              skipDiscriminatedUnionSuffix: false
             })
           : undefined;
         if (deserializeFunctionName) {
@@ -2415,7 +2703,14 @@ export function deserializeResponseHeadersValue(
         return `${restValue} as any`;
       }
     default: {
-      const val = deserializeResponseValue(context, type, restValue, true, format, recursionDepth);
+      const val = deserializeResponseValue(
+        context,
+        type,
+        restValue,
+        true,
+        format,
+        recursionDepth
+      );
       return `${nullOrUndefinedPrefix} ${val}`;
     }
   }
@@ -2432,10 +2727,12 @@ export function deserializeResponseValue(
   restValue: string,
   required: boolean,
   format?: string,
-  recursionDepth: number = 0,
+  recursionDepth: number = 0
 ): string {
   const dependencies = useDependencies();
-  const stringToUint8ArrayReference = resolveReference(dependencies.stringToUint8Array);
+  const stringToUint8ArrayReference = resolveReference(
+    dependencies.stringToUint8Array
+  );
   const nullOrUndefinedPrefix =
     isTypeNullable(type) || getOptionalForType(type) || !required
       ? `!${restValue}? ${restValue}: `
@@ -2457,14 +2754,21 @@ export function deserializeResponseValue(
         elementNullOrUndefinedPrefix = `!${varName} ? ${varName} :`;
       }
       const deserializeFunctionName = type.valueType
-        ? buildModelDeserializer(context, getNullableValidType(type.valueType), {
-            nameOnly: true,
-            skipDiscriminatedUnionSuffix: false,
-          })
+        ? buildModelDeserializer(
+            context,
+            getNullableValidType(type.valueType),
+            {
+              nameOnly: true,
+              skipDiscriminatedUnionSuffix: false
+            }
+          )
         : undefined;
       if (deserializeFunctionName) {
         return `${prefix}.map((${varName}: any) => { return ${elementNullOrUndefinedPrefix}${deserializeFunctionName}(${varName})})`;
-      } else if (type.valueType && isAzureCoreErrorType(context.program, type.valueType.__raw)) {
+      } else if (
+        type.valueType &&
+        isAzureCoreErrorType(context.program, type.valueType.__raw)
+      ) {
         return `${prefix}.map((${varName}: any) => { return ${elementNullOrUndefinedPrefix}${varName}})`;
       } else if (type.valueType) {
         if (format) {
@@ -2475,7 +2779,10 @@ export function deserializeResponseValue(
               isTypeNullable(type) || getOptionalForType(type) || !required
                 ? `${restValue} === null || ${restValue} === undefined ? ${restValue}: `
                 : "";
-            if (type.valueType.kind === "enum" && !isExtensibleEnum(context, type.valueType)) {
+            if (
+              type.valueType.kind === "enum" &&
+              !isExtensibleEnum(context, type.valueType)
+            ) {
               // Special handling for non-extensible enums to cast the result to the correct type
               return `${optionalPrefixForString}${parseHelper}(${restValue}) as ${getTypeExpression(context, type)}`;
             } else {
@@ -2499,14 +2806,21 @@ export function deserializeResponseValue(
         elementNullOrUndefinedPrefix = `!${valueVar} ? ${valueVar} :`;
       }
       const deserializeFunctionName = type.valueType
-        ? buildModelDeserializer(context, getNullableValidType(type.valueType), {
-            nameOnly: true,
-            skipDiscriminatedUnionSuffix: false,
-          })
+        ? buildModelDeserializer(
+            context,
+            getNullableValidType(type.valueType),
+            {
+              nameOnly: true,
+              skipDiscriminatedUnionSuffix: false
+            }
+          )
         : undefined;
       if (deserializeFunctionName) {
         return `${nullOrUndefinedPrefix}Object.fromEntries(Object.entries(${restValue}).map(([${keyVar}, ${valueVar}]: [string, any]) => [${keyVar}, ${elementNullOrUndefinedPrefix}${deserializeFunctionName}(${valueVar})]))`;
-      } else if (type.valueType && isAzureCoreErrorType(context.program, type.valueType.__raw)) {
+      } else if (
+        type.valueType &&
+        isAzureCoreErrorType(context.program, type.valueType.__raw)
+      ) {
         return `${nullOrUndefinedPrefix}Object.fromEntries(Object.entries(${restValue}).map(([${keyVar}, ${valueVar}]: [string, any]) => [${keyVar}, ${elementNullOrUndefinedPrefix}${valueVar}]))`;
       } else if (type.valueType) {
         return `${nullOrUndefinedPrefix}Object.fromEntries(Object.entries(${restValue}).map(([${keyVar}, ${valueVar}]: [string, any]) => [${keyVar}, ${elementNullOrUndefinedPrefix}${deserializeResponseValue(context, type.valueType, valueVar, true, getEncodeForType(type.valueType), recursionDepth + 1)}]))`;
@@ -2528,7 +2842,7 @@ export function deserializeResponseValue(
         const deserializeFunctionName = type
           ? buildModelDeserializer(context, getNullableValidType(type), {
               nameOnly: true,
-              skipDiscriminatedUnionSuffix: false,
+              skipDiscriminatedUnionSuffix: false
             })
           : undefined;
         if (deserializeFunctionName) {
@@ -2548,7 +2862,7 @@ export function deserializeResponseValue(
         restValue,
         false,
         getEncodeForType(type.type),
-        recursionDepth + 1,
+        recursionDepth + 1
       );
     default:
       return restValue;
@@ -2556,19 +2870,19 @@ export function deserializeResponseValue(
 }
 
 export function isLroAndPagingOperation(
-  op: SdkMethod<SdkHttpOperation>,
+  op: SdkMethod<SdkHttpOperation>
 ): op is SdkLroPagingServiceMethod<SdkHttpOperation> {
   return op.kind === "lropaging";
 }
 
 export function isLroOnlyOperation(
-  op: SdkMethod<SdkHttpOperation>,
+  op: SdkMethod<SdkHttpOperation>
 ): op is SdkLroServiceMethod<SdkHttpOperation> {
   return op.kind === "lro";
 }
 
 export function isPagingOnlyOperation(
-  op: SdkMethod<SdkHttpOperation>,
+  op: SdkMethod<SdkHttpOperation>
 ): op is SdkPagingServiceMethod<SdkHttpOperation> {
   return op.kind === "paging";
 }
@@ -2576,7 +2890,7 @@ export function isPagingOnlyOperation(
 export function getAllProperties(
   context: SdkContext,
   type: SdkType,
-  parents?: SdkType[],
+  parents?: SdkType[]
 ): SdkModelPropertyType[] {
   const propertiesMap: Map<string, SdkModelPropertyType> = new Map();
   if (!type) {
@@ -2615,7 +2929,7 @@ export function getAllAncestors(type: SdkType): SdkType[] {
  * safely into generated code.
  */
 function hasEffectiveClientDefaultValue(
-  param: SdkHttpParameter | SdkBodyParameter | SdkModelPropertyType,
+  param: SdkHttpParameter | SdkBodyParameter | SdkModelPropertyType
 ): boolean {
   return (
     param.clientDefaultValue !== undefined &&
@@ -2629,7 +2943,7 @@ function hasEffectiveClientDefaultValue(
  */
 function isDefaultValueTypeMatch(
   param: SdkHttpParameter | SdkBodyParameter | SdkModelPropertyType,
-  defaultValue: unknown,
+  defaultValue: unknown
 ): boolean {
   const defaultType = typeof defaultValue;
   const paramType = param.type;
@@ -2672,7 +2986,7 @@ function formatDefaultValue(defaultValue: unknown): string {
 export function getPropertySerializationPrefix(
   context: SdkContext,
   property: SdkHttpParameter | SdkModelPropertyType,
-  propertyPath?: string,
+  propertyPath?: string
 ) {
   const propertyFullName = getPropertyFullName(context, property, propertyPath);
 
@@ -2686,12 +3000,14 @@ export function getPropertySerializationPrefix(
 export function getPropertyFullName(
   context: SdkContext,
   property: SdkHttpParameter | SdkModelPropertyType,
-  propertyPath?: string,
+  propertyPath?: string
 ) {
   const normalizedPropertyName =
     propertyPath === ""
       ? normalizeName(property.name, NameType.Parameter, true)
-      : normalizeModelPropertyName(context, property).replace(/^"/g, "").replace(/"$/g, "");
+      : normalizeModelPropertyName(context, property)
+          .replace(/^"/g, "")
+          .replace(/"$/g, "");
 
   let fullName = normalizedPropertyName;
   if (propertyPath === "" && property.optional) {
@@ -2707,10 +3023,17 @@ export function getPropertyFullName(
  * Get an expression representing an array of expected status codes for the operation
  * @param operation The operation
  */
-export function getExpectedStatuses(operation: ServiceOperation, context?: SdkContext): string {
+export function getExpectedStatuses(
+  operation: ServiceOperation,
+  context?: SdkContext
+): string {
   let statusCodes = operation.operation.responses.map((x) => x.statusCodes);
   // For HEAD + @responseAsBool / head-as-boolean, 404 is a valid "false" response.
-  if (context && isHeadAsBooleanOperation(context, operation) && !statusCodes.includes(404)) {
+  if (
+    context &&
+    isHeadAsBooleanOperation(context, operation) &&
+    !statusCodes.includes(404)
+  ) {
     statusCodes = [...statusCodes, 404];
   }
   // LROs may call the same path but with GET to get the operation status.
@@ -2741,10 +3064,10 @@ export function getExpectedStatuses(operation: ServiceOperation, context?: SdkCo
  */
 function getApiVersionExpression(
   dpgContext: SdkContext,
-  operation: ServiceOperation,
+  operation: ServiceOperation
 ): string | undefined {
   const queryApiVersionParam = operation.operation.parameters.find(
-    (p) => p.kind === "query" && p.isApiVersionParam,
+    (p) => p.kind === "query" && p.isApiVersionParam
   );
   if (!queryApiVersionParam) {
     return undefined;
@@ -2768,7 +3091,7 @@ function getApiVersionExpression(
  * @returns Array of unique response headers
  */
 export function getResponseHeaders(
-  responses: SdkHttpOperation["responses"],
+  responses: SdkHttpOperation["responses"]
 ): SdkServiceResponseHeader[] {
   const headerMap = new Map<string, SdkServiceResponseHeader>();
   for (const response of responses ?? []) {
@@ -2794,24 +3117,23 @@ export function getResponseHeaders(
 function buildCompositeResponseType(
   context: SdkContext,
   modelType: SdkModelType,
-  headers: SdkServiceResponseHeader[],
+  headers: SdkServiceResponseHeader[]
 ): string {
   const allParents = getAllAncestors(modelType);
-  const modelProps: (SdkModelPropertyType | SdkServiceResponseHeader)[] = getAllProperties(
-    context,
-    modelType,
-    allParents,
-  ).filter((property) => {
-    // Skip model properties that are headers with headerCollectionPrefix
-    if (
-      property.__raw &&
-      isHeader(context.program, property.__raw) &&
-      shouldSkipHeaderSerialization(property as SdkModelPropertyType & SdkServiceResponseHeader)
-    ) {
-      return false;
-    }
-    return true;
-  });
+  const modelProps: (SdkModelPropertyType | SdkServiceResponseHeader)[] =
+    getAllProperties(context, modelType, allParents).filter((property) => {
+      // Skip model properties that are headers with headerCollectionPrefix
+      if (
+        property.__raw &&
+        isHeader(context.program, property.__raw) &&
+        shouldSkipHeaderSerialization(
+          property as SdkModelPropertyType & SdkServiceResponseHeader
+        )
+      ) {
+        return false;
+      }
+      return true;
+    });
 
   // Collect header property names already in the model to avoid duplicates
   const modelHeaderNames = new Set<string>();
@@ -2840,7 +3162,7 @@ function buildCompositeResponseType(
  */
 function buildHeaderOnlyResponseType(
   context: SdkContext,
-  headers: SdkServiceResponseHeader[],
+  headers: SdkServiceResponseHeader[]
 ): string {
   const properties: string[] = [];
 
@@ -2863,7 +3185,7 @@ function buildHeaderOnlyResponseType(
  */
 function buildHeaderOnlyResponseValue(
   context: SdkContext,
-  headers: SdkServiceResponseHeader[],
+  headers: SdkServiceResponseHeader[]
 ): string {
   const props = headers.map((header) => {
     const headerName = (header.serializedName ?? header.name).toLowerCase();
@@ -2874,7 +3196,7 @@ function buildHeaderOnlyResponseValue(
       `result.headers[${JSON.stringify(headerName)}]`,
       !header.optional,
       getEncodeForType(header.type),
-      0,
+      0
     );
 
     return `${key}: ${value}`;
@@ -2888,7 +3210,9 @@ function buildHeaderOnlyResponseValue(
  * The name follows the pattern: {OperationGroupName}{MethodName}Response
  * @param method - The method tuple [prefixes, operation]
  */
-export function getOperationResponseTypeName(method: [string[], ServiceOperation]): string {
+export function getOperationResponseTypeName(
+  method: [string[], ServiceOperation]
+): string {
   const prefixes = method[0];
   const operation = method[1];
   const prefix = !operation.name.includes("_")
@@ -2918,7 +3242,8 @@ export function getOperationResponseTypeName(method: [string[], ServiceOperation
 function isWrappableType(context: SdkContext, type: SdkType): boolean {
   if (type.kind === "array" && type.valueType.kind === "model") return false;
   if (type.kind === "dict" || type.kind === "model") return false;
-  if (type.kind === "unknown" && context.rlcOptions?.treatUnknownAsRecord) return false;
+  if (type.kind === "unknown" && context.rlcOptions?.treatUnknownAsRecord)
+    return false;
   return true;
 }
 
@@ -2929,7 +3254,10 @@ function isHeadOperation(operation: ServiceOperation): boolean {
   return operation.operation.verb.toLowerCase() === "head";
 }
 
-function isHeadAsBooleanOperation(context: SdkContext, operation: ServiceOperation): boolean {
+function isHeadAsBooleanOperation(
+  context: SdkContext,
+  operation: ServiceOperation
+): boolean {
   if (!isHeadOperation(operation)) return false;
   // @responseAsBool: TCGC promotes response.type to SdkBuiltInType { kind: "boolean" }
   if ((operation.response.type as any)?.kind === "boolean") return true;
@@ -2943,7 +3271,7 @@ function isHeadAsBooleanOperation(context: SdkContext, operation: ServiceOperati
  */
 export function checkWrapNonModelReturn(
   context: SdkContext,
-  operation: ServiceOperation,
+  operation: ServiceOperation
 ): { shouldWrap: boolean; isBinary: boolean } {
   const noWrap = { shouldWrap: false, isBinary: false };
 
@@ -2965,7 +3293,7 @@ export function checkWrapNonModelReturn(
     }
     return {
       shouldWrap: isWrappableType(context, lroResultType),
-      isBinary: false,
+      isBinary: false
     };
   }
 
@@ -2983,7 +3311,10 @@ export function checkWrapNonModelReturn(
 
   // bytes with binary content type → binary wrap (isBinary=true)
   //   HLC: bytes → binary payload → separate binary handling
-  if (type.__raw && isBinaryPayload(context, type.__raw, contentTypes, getEncodeForType(type))) {
+  if (
+    type.__raw &&
+    isBinaryPayload(context, type.__raw, contentTypes, getEncodeForType(type))
+  ) {
     return { shouldWrap: true, isBinary: true };
   }
 
@@ -2998,14 +3329,16 @@ export function checkWrapNonModelReturn(
 export function buildNonModelResponseTypeDeclaration(
   context: SdkContext,
   method: [string[], ServiceOperation],
-  isBinary: boolean,
+  isBinary: boolean
 ): TypeAliasDeclarationStructure {
   const typeName = getOperationResponseTypeName(method);
   const operation = method[1];
   let typeBody: string;
 
   if (isBinary) {
-    const nodeReadableStreamRef = resolveReference(PlatformTypeHelpers.NodeReadableStream);
+    const nodeReadableStreamRef = resolveReference(
+      PlatformTypeHelpers.NodeReadableStream
+    );
     typeBody = `{
       /**
        * BROWSER ONLY
@@ -3036,6 +3369,6 @@ export function buildNonModelResponseTypeDeclaration(
     name: typeName,
     type: typeBody,
     isExported: true,
-    leadingTrivia: "\n",
+    leadingTrivia: "\n"
   };
 }

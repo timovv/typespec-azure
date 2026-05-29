@@ -7,7 +7,7 @@ describe("AzureExampleClient Client", () => {
   beforeEach(() => {
     client = new AzureExampleClient({
       allowInsecureConnection: true,
-      endpoint: "http://localhost:3002",
+      endpoint: "http://localhost:3002"
     });
   });
 
@@ -17,12 +17,12 @@ describe("AzureExampleClient Client", () => {
       modelProperty: {
         int32Property: 1,
         float32Property: 1.5,
-        enumProperty: "EnumValue1",
+        enumProperty: "EnumValue1"
       },
       arrayProperty: ["item"],
       recordProperty: {
-        record: "value",
-      },
+        record: "value"
+      }
     });
 
     assert.strictEqual(result.stringProperty, "text");

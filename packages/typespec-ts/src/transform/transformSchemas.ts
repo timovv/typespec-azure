@@ -1,7 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { SdkClient, getHttpOperationWithCache } from "@azure-tools/typespec-client-generator-core";
+import {
+  SdkClient,
+  getHttpOperationWithCache
+} from "@azure-tools/typespec-client-generator-core";
 import { Model, Type } from "@typespec/compiler";
 import { HttpOperation, getServers } from "@typespec/http";
 import { KnownMediaType, extractMediaTypes } from "../utils/mediaTypes.js";
@@ -11,7 +14,7 @@ import {
   getSchemaForType,
   includeDerivedModel,
   isAzureCoreErrorType,
-  trimUsage,
+  trimUsage
 } from "../utils/modelUtils.js";
 
 import { useContext } from "../contextManager.js";
@@ -22,7 +25,10 @@ import { SdkContext } from "../utils/interfaces.js";
 export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
   const program = dpgContext.program;
   const metatree = useContext("rlcMetaTree");
-  const schemas: Map<string, SchemaContext[]> = new Map<string, SchemaContext[]>();
+  const schemas: Map<string, SchemaContext[]> = new Map<
+    string,
+    SchemaContext[]
+  >();
   const schemaMap: Map<any, any> = new Map<any, any>();
   const usageMap = new Map<Type, SchemaContext[]>();
   const requestBodySet = new Set<Type>();
@@ -44,11 +50,13 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
     const bodyModel = getBodyType(route);
     if (
       bodyModel &&
-      (bodyModel.kind === "Model" || bodyModel.kind === "Union" || bodyModel.kind === "Enum")
+      (bodyModel.kind === "Model" ||
+        bodyModel.kind === "Union" ||
+        bodyModel.kind === "Enum")
     ) {
       requestBodySet.add(bodyModel);
       const contentTypes: KnownMediaType[] = extractMediaTypes(
-        route.parameters.body?.contentTypes ?? [],
+        route.parameters.body?.contentTypes ?? []
       );
       if (contentTypes.length > 0) {
         contentTypeMap.set(bodyModel, contentTypes);
@@ -67,7 +75,10 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
           }
         }
         if (resps.body?.contentTypeProperty) {
-          getGeneratedModels(resps.body.contentTypeProperty, SchemaContext.Output);
+          getGeneratedModels(
+            resps.body.contentTypeProperty,
+            SchemaContext.Output
+          );
         }
         const respModel = resps?.body?.type;
         if (!respModel) {
@@ -78,7 +89,10 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
     }
   }
   function transformHostParameters() {
-    const serviceNs = getDefaultService(program, dpgContext.rlcOptions?.isModularLibrary)?.type;
+    const serviceNs = getDefaultService(
+      program,
+      dpgContext.rlcOptions?.isModularLibrary
+    )?.type;
     if (serviceNs) {
       const host = getServers(program, serviceNs);
       if (host && host?.[0] && host?.[0]?.parameters) {
@@ -98,7 +112,7 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
       usage: context,
       isRequestBody: requestBodySet.has(tspModel),
       isParentRequestBody: false,
-      mediaTypes: contentTypeMap.get(tspModel),
+      mediaTypes: contentTypeMap.get(tspModel)
     });
     if (model) {
       model.usage = context;
@@ -130,7 +144,8 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
       const indexer = (model as Model).indexer;
       if (
         indexer?.value &&
-        (!usageMap.get(indexer?.value) || !usageMap.get(indexer?.value)?.includes(context))
+        (!usageMap.get(indexer?.value) ||
+          !usageMap.get(indexer?.value)?.includes(context))
       ) {
         getGeneratedModels(indexer.value, context);
       }
@@ -151,7 +166,8 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
               (variant.type.kind === "Model" ||
                 variant.type.kind === "Union" ||
                 variant.type.kind === "Enum") &&
-              (!usageMap.get(variant.type) || !usageMap.get(variant.type)?.includes(context))
+              (!usageMap.get(variant.type) ||
+                !usageMap.get(variant.type)?.includes(context))
             ) {
               getGeneratedModels(variant.type, context);
             }
@@ -168,7 +184,8 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
       if (
         baseModel &&
         baseModel.kind === "Model" &&
-        (!usageMap.get(baseModel) || !usageMap.get(baseModel)?.includes(context))
+        (!usageMap.get(baseModel) ||
+          !usageMap.get(baseModel)?.includes(context))
       ) {
         getGeneratedModels(baseModel, context);
       }
@@ -190,7 +207,8 @@ export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
       for (const variant of variants) {
         if (
           (variant.type.kind === "Model" || variant.type.kind === "Union") &&
-          (!usageMap.get(variant.type) || !usageMap.get(variant.type)?.includes(context))
+          (!usageMap.get(variant.type) ||
+            !usageMap.get(variant.type)?.includes(context))
         ) {
           getGeneratedModels(variant.type, context);
         }

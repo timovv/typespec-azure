@@ -4,10 +4,14 @@
 import {
   SdkClient,
   getHttpOperationWithCache,
-  isApiVersion,
+  isApiVersion
 } from "@azure-tools/typespec-client-generator-core";
 import { NoTarget, Type, isVoidType } from "@typespec/compiler";
-import { HttpOperation, HttpOperationParameter, HttpOperationParameters } from "@typespec/http";
+import {
+  HttpOperation,
+  HttpOperationParameter,
+  HttpOperationParameters
+} from "@typespec/http";
 import { reportDiagnostic } from "../lib.js";
 import {
   ApiVersionInfo,
@@ -17,7 +21,7 @@ import {
   ParameterBodyMetadata,
   ParameterMetadata,
   Schema,
-  SchemaContext,
+  SchemaContext
 } from "../rlc-common/index.js";
 import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
@@ -25,7 +29,7 @@ import {
   KnownMediaType,
   extractMediaTypes,
   hasMediaType,
-  isMediaTypeJsonMergePatch,
+  isMediaTypeJsonMergePatch
 } from "../utils/mediaTypes.js";
 import {
   getBodyType,
@@ -35,12 +39,12 @@ import {
   getSchemaForType,
   getTypeName,
   isArrayType,
-  isBodyRequired,
+  isBodyRequired
 } from "../utils/modelUtils.js";
 import {
   getOperationGroupName,
   getOperationName,
-  getSpecialSerializeInfo,
+  getSpecialSerializeInfo
 } from "../utils/operationUtil.js";
 import { getParameterSerializationInfo } from "../utils/parameterUtils.js";
 
@@ -55,7 +59,7 @@ export function transformToParameterTypes(
   client: SdkClient,
   dpgContext: SdkContext,
   importDetails: Imports,
-  apiVersionInfo?: ApiVersionInfo,
+  apiVersionInfo?: ApiVersionInfo
 ): OperationParameter[] {
   const rlcParameters: OperationParameter[] = [];
   const outputImportedSet = new Set<string>();
@@ -76,22 +80,30 @@ export function transformToParameterTypes(
     const rlcParameter: OperationParameter = {
       operationGroup: getOperationGroupName(dpgContext, route),
       operationName: getOperationName(dpgContext, route.operation),
-      parameters: [],
+      parameters: []
     };
     const options = {
       apiVersionInfo,
       operationGroupName: rlcParameter.operationGroup,
       operationName: rlcParameter.operationName,
-      importModels: outputImportedSet,
+      importModels: outputImportedSet
     };
     // transform query param
-    const queryParams = transformQueryParameters(dpgContext, parameters, options);
+    const queryParams = transformQueryParameters(
+      dpgContext,
+      parameters,
+      options
+    );
     // transform path param
     const pathParams = transformPathParameters(dpgContext, parameters, options);
     // TODO: support cookie parameters, https://github.com/Azure/autorest.typescript/issues/2898
     transformCookieParameters(dpgContext, parameters);
     // transform header param including content-type
-    const headerParams = transformHeaderParameters(dpgContext, parameters, options);
+    const headerParams = transformHeaderParameters(
+      dpgContext,
+      parameters,
+      options
+    );
     // transform body
     const bodyType = getBodyType(route);
     let bodyParameter = undefined;
@@ -101,12 +113,12 @@ export function transformToParameterTypes(
         parameters,
         headerParams,
         outputImportedSet,
-        bodyType,
+        bodyType
       );
     }
     rlcParameter.parameters.push({
       parameters: [...queryParams, ...pathParams, ...headerParams],
-      body: bodyParameter,
+      body: bodyParameter
     });
     rlcParameters.push(rlcParameter);
   }
@@ -117,7 +129,7 @@ function getParameterMetadata(
   dpgContext: SdkContext,
   paramType: "query" | "path" | "header",
   parameter: HttpOperationParameter,
-  options: ParameterTransformationOptions,
+  options: ParameterTransformationOptions
 ): ParameterMetadata {
   const program = dpgContext.program;
   const importedModels = options.importModels ?? new Set<string>();
@@ -125,18 +137,23 @@ function getParameterMetadata(
   const schema = getSchemaForType(dpgContext, parameter.param.type, {
     usage: schemaContext,
     needRef: false,
-    relevantProperty: parameter.param,
+    relevantProperty: parameter.param
   }) as Schema;
   const name = getParameterName(parameter.name);
-  let description = getFormattedPropertyDoc(program, parameter.param, schema) ?? "";
+  let description =
+    getFormattedPropertyDoc(program, parameter.param, schema) ?? "";
   const format = getCollectionFormat(dpgContext, parameter as any);
   if (isArrayType(schema) && format) {
-    const serializeInfo = getSpecialSerializeInfo(dpgContext, parameter.type, format);
+    const serializeInfo = getSpecialSerializeInfo(
+      dpgContext,
+      parameter.type,
+      format
+    );
     if (serializeInfo.hasMultiCollection || serializeInfo.hasCsvCollection) {
       description += `${description ? "\n" : ""}This parameter could be formatted as ${serializeInfo.collectionInfo.join(
-        ", ",
+        ", "
       )} collection string, we provide ${serializeInfo.descriptions.join(
-        ", ",
+        ", "
       )} from serializeHelper.ts to help${
         serializeInfo.hasMultiCollection
           ? ", you will probably need to set skipUrlEncoding as true when sending the request"
@@ -148,13 +165,16 @@ function getParameterMetadata(
     }
   }
 
-  getImportedModelName(schema, schemaContext)?.forEach(importedModels.add, importedModels);
+  getImportedModelName(schema, schemaContext)?.forEach(
+    importedModels.add,
+    importedModels
+  );
   const serializationType = getParameterSerializationInfo(
     dpgContext,
     parameter,
     schema,
     options.operationGroupName,
-    options.operationName,
+    options.operationName
   );
   return {
     type: paramType,
@@ -165,8 +185,8 @@ function getParameterMetadata(
       typeName: serializationType.typeName,
       required: !parameter.param.optional,
       description,
-      wrapperType: serializationType.wrapperType,
-    },
+      wrapperType: serializationType.wrapperType
+    }
   };
 }
 
@@ -177,7 +197,10 @@ function getParameterName(name: string) {
   return `"${name}"`;
 }
 
-function transformCookieParameters(dpgContext: SdkContext, parameters: HttpOperationParameters) {
+function transformCookieParameters(
+  dpgContext: SdkContext,
+  parameters: HttpOperationParameters
+) {
   // TODO: support cookie parameters, https://github.com/Azure/autorest.typescript/issues/2898
   parameters.parameters
     .filter((p) => p.type === "cookie")
@@ -186,9 +209,9 @@ function transformCookieParameters(dpgContext: SdkContext, parameters: HttpOpera
         code: "parameter-type-not-supported",
         format: {
           paramName: p.name,
-          paramType: p.type,
+          paramType: p.type
         },
-        target: NoTarget,
+        target: NoTarget
       });
     });
 }
@@ -196,17 +219,22 @@ function transformCookieParameters(dpgContext: SdkContext, parameters: HttpOpera
 function transformQueryParameters(
   dpgContext: SdkContext,
   parameters: HttpOperationParameters,
-  options: ParameterTransformationOptions,
+  options: ParameterTransformationOptions
 ): ParameterMetadata[] {
   const queryParameters = parameters.parameters.filter(
     (p) =>
       p.type === "query" &&
-      !(isApiVersion(dpgContext, p.param) && options.apiVersionInfo?.definedPosition === "query"),
+      !(
+        isApiVersion(dpgContext, p.param) &&
+        options.apiVersionInfo?.definedPosition === "query"
+      )
   );
   if (!queryParameters.length) {
     return [];
   }
-  return queryParameters.map((qp) => getParameterMetadata(dpgContext, "query", qp, options));
+  return queryParameters.map((qp) =>
+    getParameterMetadata(dpgContext, "query", qp, options)
+  );
 }
 
 /**
@@ -216,7 +244,7 @@ function transformQueryParameters(
 function transformPathParameters(
   dpgContext: SdkContext,
   parameters: HttpOperationParameters,
-  options: ParameterTransformationOptions,
+  options: ParameterTransformationOptions
 ) {
   // build wrapper path parameters
   const pathParameters = parameters.parameters.filter((p) => p.type === "path");
@@ -233,13 +261,17 @@ function transformPathParameters(
 export function transformHeaderParameters(
   dpgContext: SdkContext,
   parameters: HttpOperationParameters,
-  options: ParameterTransformationOptions,
+  options: ParameterTransformationOptions
 ): ParameterMetadata[] {
-  const headerParameters = parameters.parameters.filter((p) => p.type === "header");
+  const headerParameters = parameters.parameters.filter(
+    (p) => p.type === "header"
+  );
   if (!headerParameters.length) {
     return [];
   }
-  return headerParameters.map((qp) => getParameterMetadata(dpgContext, "header", qp, options));
+  return headerParameters.map((qp) =>
+    getParameterMetadata(dpgContext, "header", qp, options)
+  );
 }
 
 function transformBodyParameters(
@@ -247,13 +279,20 @@ function transformBodyParameters(
   parameters: HttpOperationParameters,
   headers: ParameterMetadata[],
   importedModels: Set<string>,
-  inputBodyType?: Type,
+  inputBodyType?: Type
 ): ParameterBodyMetadata | undefined {
-  const bodyType = parameters.body && inputBodyType ? inputBodyType : parameters.body?.type;
+  const bodyType =
+    parameters.body && inputBodyType ? inputBodyType : parameters.body?.type;
   if (!bodyType || isVoidType(bodyType)) {
     return;
   }
-  return transformRequestBody(dpgContext, bodyType, parameters, importedModels, headers);
+  return transformRequestBody(
+    dpgContext,
+    bodyType,
+    parameters,
+    importedModels,
+    headers
+  );
 }
 
 function transformRequestBody(
@@ -261,13 +300,13 @@ function transformRequestBody(
   bodyType: Type,
   parameters: HttpOperationParameters,
   importedModels: Set<string>,
-  headers: ParameterMetadata[],
+  headers: ParameterMetadata[]
 ) {
   const contentTypes = extractMediaTypes(parameters.body?.contentTypes ?? []);
   const schema = getSchemaForType(dpgContext, bodyType, {
     mediaTypes: contentTypes,
     isRequestBody: true,
-    usage: [SchemaContext.Input, SchemaContext.Exception],
+    usage: [SchemaContext.Input, SchemaContext.Exception]
   });
 
   const descriptions = getBodyDescriptions(dpgContext, schema, parameters);
@@ -284,26 +323,33 @@ function transformRequestBody(
         required: isBodyRequired(parameters),
         description: descriptions.join("\n\n"),
         isMultipartBody:
-          hasMediaType(KnownMediaType.MultipartFormData, contentTypes) && contentTypes.length === 1,
-        oriSchema: schema,
-      },
-    ],
+          hasMediaType(KnownMediaType.MultipartFormData, contentTypes) &&
+          contentTypes.length === 1,
+        oriSchema: schema
+      }
+    ]
   };
 }
 
 function getRequestBodyType(
   bodySchema: Schema,
   importedModels: Set<string>,
-  headers?: ParameterMetadata[],
+  headers?: ParameterMetadata[]
 ) {
   const schemaUsage = [SchemaContext.Input, SchemaContext.Exception];
   const importedNames = getImportedModelName(bodySchema, schemaUsage) ?? [];
   importedNames.forEach(importedModels.add, importedModels);
 
   let typeName = getTypeName(bodySchema, schemaUsage);
-  const contentTypes = headers?.filter((h) => h.name === "contentType").map((h) => h.param.type);
+  const contentTypes = headers
+    ?.filter((h) => h.name === "contentType")
+    .map((h) => h.param.type);
   const hasMergeAndPatchType = isMediaTypeJsonMergePatch(contentTypes ?? []);
-  if (hasMergeAndPatchType && Boolean(bodySchema.name) && (bodySchema as ObjectSchema).properties) {
+  if (
+    hasMergeAndPatchType &&
+    Boolean(bodySchema.name) &&
+    (bodySchema as ObjectSchema).properties
+  ) {
     typeName = `${typeName}ResourceMergeAndPatch`;
   }
   return typeName;
@@ -312,10 +358,14 @@ function getRequestBodyType(
 function getBodyDescriptions(
   dpgContext: SdkContext,
   bodySchema: Schema,
-  parameters: HttpOperationParameters,
+  parameters: HttpOperationParameters
 ) {
   const description = parameters.body?.property
-    ? getFormattedPropertyDoc(dpgContext.program, parameters.body.property, bodySchema)
+    ? getFormattedPropertyDoc(
+        dpgContext.program,
+        parameters.body.property,
+        bodySchema
+      )
     : "";
   return description ? [description] : [];
 }

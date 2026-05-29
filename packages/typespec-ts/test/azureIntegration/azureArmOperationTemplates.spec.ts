@@ -4,7 +4,7 @@ import OperationTemplatesClientFactory, {
   OperationTemplatesClient,
   getLongRunningPoller,
   isUnexpected,
-  paginate,
+  paginate
 } from "./generated/azure/resource-manager/operation-templates/src/index.js";
 
 describe("Azure ARM Operation Templates Rest Client", () => {
@@ -13,7 +13,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
   beforeEach(() => {
     client = OperationTemplatesClientFactory({
       endpoint: "http://localhost:3000",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -26,16 +26,17 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       provider: "Microsoft Compute",
       resource: "Virtual Machines",
       operation: "Create or Update Virtual Machine.",
-      description: "Add or modify virtual machines.",
+      description: "Add or modify virtual machines."
     },
     origin: "user,system",
-    actionType: "Internal",
+    actionType: "Internal"
   };
 
   const checkNameAvailabilityResponse = {
     nameAvailable: false,
     reason: "AlreadyExists",
-    message: "Hostname 'checkName' already exists. Please select a different name.",
+    message:
+      "Hostname 'checkName' already exists. Please select a different name."
   };
   const validOrder = {
     id: `/subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.OperationTemplates/orders/order1`,
@@ -45,7 +46,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
     properties: {
       provisioningState: "Succeeded",
       productId: "product1",
-      amount: 1,
+      amount: 1
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -53,8 +54,8 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User",
-    },
+      lastModifiedByType: "User"
+    }
   };
   const validWidget = {
     id: `/subscriptions/${SUBSCRIPTION_ID_EXPECTED}/resourceGroups/${RESOURCE_GROUP_EXPECTED}/providers/Azure.ResourceManager.OperationTemplates/widgets/widget1`,
@@ -64,7 +65,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
     properties: {
       name: "widget1",
       description: "A test widget",
-      provisioningState: "Succeeded",
+      provisioningState: "Succeeded"
     },
     systemData: {
       createdBy: "AzureSDK",
@@ -72,8 +73,8 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       createdAt: "2024-10-04T00:56:07.442Z",
       lastModifiedBy: "AzureSDK",
       lastModifiedAt: "2024-10-04T00:56:07.442Z",
-      lastModifiedByType: "User",
-    },
+      lastModifiedByType: "User"
+    }
   };
 
   describe("Operations", () => {
@@ -97,13 +98,13 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       const response = await client
         .path(
           "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.OperationTemplates/checkNameAvailability",
-          SUBSCRIPTION_ID_EXPECTED,
+          SUBSCRIPTION_ID_EXPECTED
         )
         .post({
           body: {
             name: "checkName",
-            type: "Microsoft.Web/site",
-          },
+            type: "Microsoft.Web/site"
+          }
         });
 
       if (isUnexpected(response)) {
@@ -119,13 +120,13 @@ describe("Azure ARM Operation Templates Rest Client", () => {
         .path(
           "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.OperationTemplates/locations/{location}/checkNameAvailability",
           SUBSCRIPTION_ID_EXPECTED,
-          "westus",
+          "westus"
         )
         .post({
           body: {
             name: "checkName",
-            type: "Microsoft.Web/site",
-          },
+            type: "Microsoft.Web/site"
+          }
         });
 
       if (isUnexpected(response)) {
@@ -147,16 +148,16 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/orders/{orderName}",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          orderName,
+          orderName
         )
         .put({
           body: {
             location: "eastus",
             properties: {
               productId: "product1",
-              amount: 1,
-            },
-          },
+              amount: 1
+            }
+          }
         });
 
       if (isUnexpected(initialResponse)) {
@@ -178,12 +179,12 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/orders/{orderName}/export",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          orderName,
+          orderName
         )
         .post({
           body: {
-            format: "csv",
-          },
+            format: "csv"
+          }
         });
 
       if (isUnexpected(initialResponse)) {
@@ -205,7 +206,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/orders/{orderName}",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          orderName,
+          orderName
         )
         .delete();
 
@@ -229,7 +230,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/products/{productName}/postPagingLro",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          productName,
+          productName
         )
         .post({});
 
@@ -278,7 +279,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/widgets/{widgetName}",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          widgetName,
+          widgetName
         )
         .get();
 
@@ -296,7 +297,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/widgets/{widgetName}",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          widgetName,
+          widgetName
         )
         .patch();
 
@@ -313,16 +314,16 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/widgets/{widgetName}",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          widgetName,
+          widgetName
         )
         .patch({
           body: {
             location: "eastus",
             properties: {
               name: "updated-widget",
-              description: "Updated description",
-            },
-          },
+              description: "Updated description"
+            }
+          }
         });
 
       if (isUnexpected(response)) {
@@ -332,7 +333,10 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       assert.strictEqual(response.status, "200");
       assert.strictEqual(response.body.name, widgetName);
       assert.strictEqual(response.body.properties?.name, "updated-widget");
-      assert.strictEqual(response.body.properties?.description, "Updated description");
+      assert.strictEqual(
+        response.body.properties?.description,
+        "Updated description"
+      );
     });
 
     it("should post widget action with empty body", async () => {
@@ -341,7 +345,7 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/widgets/{widgetName}/post",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          widgetName,
+          widgetName
         )
         .post();
 
@@ -358,13 +362,13 @@ describe("Azure ARM Operation Templates Rest Client", () => {
           "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Azure.ResourceManager.OperationTemplates/widgets/{widgetName}/post",
           SUBSCRIPTION_ID_EXPECTED,
           resourceGroupName,
-          widgetName,
+          widgetName
         )
         .post({
           body: {
             actionType: "perform",
-            parameters: "test-parameters",
-          },
+            parameters: "test-parameters"
+          }
         });
 
       if (isUnexpected(response)) {
@@ -372,14 +376,17 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       }
 
       assert.strictEqual(response.status, "200");
-      assert.strictEqual(response.body.result, "Action completed successfully with parameters");
+      assert.strictEqual(
+        response.body.result,
+        "Action completed successfully with parameters"
+      );
     });
 
     it("should perform provider post action with empty body", async () => {
       const response = await client
         .path(
           "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.OperationTemplates/providerPost",
-          SUBSCRIPTION_ID_EXPECTED,
+          SUBSCRIPTION_ID_EXPECTED
         )
         .post();
 
@@ -394,13 +401,13 @@ describe("Azure ARM Operation Templates Rest Client", () => {
       const response = await client
         .path(
           "/subscriptions/{subscriptionId}/providers/Azure.ResourceManager.OperationTemplates/providerPost",
-          SUBSCRIPTION_ID_EXPECTED,
+          SUBSCRIPTION_ID_EXPECTED
         )
         .post({
           body: {
             totalAllowed: 100,
-            reason: "Increased demand",
-          },
+            reason: "Increased demand"
+          }
         });
 
       if (isUnexpected(response)) {

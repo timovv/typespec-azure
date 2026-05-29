@@ -11,11 +11,17 @@ export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
   CrossLanguagePackageId: string;
   CrossLanguageDefinitionId: Record<string, string>;
 } {
-  const modularSourcesRoot = dpgContext.generationPathDetail?.modularSourcesDir ?? "src";
-  const emitterOptions = transformModularEmitterOptions(dpgContext, modularSourcesRoot, {
-    casing: "camel",
-  });
-  const packageName = emitterOptions.options?.packageDetails?.name ?? "package-name";
+  const modularSourcesRoot =
+    dpgContext.generationPathDetail?.modularSourcesDir ?? "src";
+  const emitterOptions = transformModularEmitterOptions(
+    dpgContext,
+    modularSourcesRoot,
+    {
+      casing: "camel"
+    }
+  );
+  const packageName =
+    emitterOptions.options?.packageDetails?.name ?? "package-name";
   const CrossLanguageDefinitionId: Record<string, string> = {};
 
   for (const model of dpgContext.sdkPackage.models) {
@@ -24,7 +30,10 @@ export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
   }
   for (const enm of dpgContext.sdkPackage.enums) {
     // Skip api version enum for multi-service scenarios since each service may have different versions
-    if (dpgContext.rlcOptions?.isMultiService && enm.usage === UsageFlags.ApiVersionEnum) {
+    if (
+      dpgContext.rlcOptions?.isMultiService &&
+      enm.usage === UsageFlags.ApiVersionEnum
+    ) {
       continue;
     }
     CrossLanguageDefinitionId[`${packageName}!Known${enm.name}:enum`] =
@@ -36,7 +45,9 @@ export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
   }
 
   for (const subClient of dpgContext.sdkPackage.clients) {
-    const clientName = emitterOptions.options?.typespecTitleMap?.[subClient.name] ?? subClient.name;
+    const clientName =
+      emitterOptions.options?.typespecTitleMap?.[subClient.name] ??
+      subClient.name;
     const methodMap = getMethodHierarchiesMap(dpgContext, subClient);
     for (const [prefixKey, operations] of methodMap) {
       const prefixes = prefixKey.split("/");
@@ -44,16 +55,21 @@ export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
         for (const operation of operations) {
           const { name } = operation;
           const operationName = `${packageName}!${clientName}#${name}:member(1)`;
-          CrossLanguageDefinitionId[operationName] = operation.crossLanguageDefinitionId;
+          CrossLanguageDefinitionId[operationName] =
+            operation.crossLanguageDefinitionId;
         }
       } else {
         // e,g., @azure/ai-client!ConnectionsOperations#getConnectionWithSecrets:member": "Azure.AI.Projects.Connections.getConnectionWithSecrets"
-        const rawGroupName = normalizeName(prefixes[0] ?? "", NameType.Interface);
+        const rawGroupName = normalizeName(
+          prefixes[0] ?? "",
+          NameType.Interface
+        );
         const propertyType = `${normalizeName(rawGroupName, NameType.OperationGroup)}Operations`;
         for (const operation of operations) {
           const { name } = operation;
           const operationName = `${packageName}!${propertyType}#${name}:member`;
-          CrossLanguageDefinitionId[operationName] = operation.crossLanguageDefinitionId;
+          CrossLanguageDefinitionId[operationName] =
+            operation.crossLanguageDefinitionId;
         }
       }
     }
@@ -61,6 +77,6 @@ export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
 
   return {
     CrossLanguagePackageId: dpgContext.sdkPackage.crossLanguagePackageId,
-    CrossLanguageDefinitionId,
+    CrossLanguageDefinitionId
   };
 }

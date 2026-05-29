@@ -5,12 +5,15 @@ import {
   ImportSpecifierStructure,
   Project,
   SourceFile,
-  StructureKind,
+  StructureKind
 } from "ts-morph";
 import { provideContext, useContext } from "../../contextManager.js";
 import { generateLocallyUniqueName } from "../../modular/helpers/namingHelpers.js";
 import { ReferenceableSymbol } from "../dependency.js";
-import { SourceFileSymbol, StaticHelperMetadata } from "../load-static-helpers.js";
+import {
+  SourceFileSymbol,
+  StaticHelperMetadata
+} from "../load-static-helpers.js";
 import { refkey } from "../refkey.js";
 import { provideDependencies, useDependencies } from "./useDependencies.js";
 
@@ -36,7 +39,11 @@ export interface Binder {
    * @param sourceFile - The source file where the declaration is made.
    * @returns The tracked declaration name.
    */
-  trackDeclaration(refkey: unknown, name: string, sourceFile: SourceFile): string;
+  trackDeclaration(
+    refkey: unknown,
+    name: string,
+    sourceFile: SourceFile
+  ): string;
   resolveReference(refkey: unknown): string;
   resolveAllReferences(sourceRoot: string, testRoot?: string): void;
 }
@@ -62,8 +69,15 @@ class BinderImp implements Binder {
     this.useSubpathImports = options.useSubpathImports ?? false;
   }
 
-  trackDeclaration(refkey: unknown, name: string, sourceFile: SourceFile): string {
-    const uniqueName = this.generateLocallyUniqueDeclarationName(name, sourceFile);
+  trackDeclaration(
+    refkey: unknown,
+    name: string,
+    sourceFile: SourceFile
+  ): string {
+    const uniqueName = this.generateLocallyUniqueDeclarationName(
+      name,
+      sourceFile
+    );
     const declarationInfo: DeclarationInfo = { name: uniqueName, sourceFile };
     this.declarations.set(refkey, declarationInfo);
 
@@ -82,8 +96,12 @@ class BinderImp implements Binder {
    * @param sourceFile - The source file where the declaration is made.
    * @returns A unique name for the declaration within the file.
    */
-  private generateLocallyUniqueDeclarationName(name: string, sourceFile: SourceFile): string {
-    const existingNamesInFile = this.symbolsBySourceFile.get(sourceFile) ?? new Set<string>();
+  private generateLocallyUniqueDeclarationName(
+    name: string,
+    sourceFile: SourceFile
+  ): string {
+    const existingNamesInFile =
+      this.symbolsBySourceFile.get(sourceFile) ?? new Set<string>();
     return generateLocallyUniqueName(name, existingNamesInFile);
   }
 
@@ -93,7 +111,10 @@ class BinderImp implements Binder {
    * @param sourceFile - The source file where the import is made.
    * @returns A unique name for the import within the file.
    */
-  private generateLocallyUniqueImportName(name: string, sourceFile: SourceFile): string {
+  private generateLocallyUniqueImportName(
+    name: string,
+    sourceFile: SourceFile
+  ): string {
     const existingImports = (this.imports.get(sourceFile) ?? [])
       .flatMap((i) => i.namedImports as ImportSpecifierStructure[])
       .map((i) => i.alias ?? i.name);
@@ -102,12 +123,15 @@ class BinderImp implements Binder {
     const actualImports = sourceFile
       .getImportDeclarations()
       .flatMap((imp) => imp.getNamedImports())
-      .map((namedImp) => namedImp.getAliasNode()?.getText() ?? namedImp.getName());
+      .map(
+        (namedImp) => namedImp.getAliasNode()?.getText() ?? namedImp.getName()
+      );
 
-    const existingDeclarations = this.symbolsBySourceFile.get(sourceFile) ?? new Set<string>();
+    const existingDeclarations =
+      this.symbolsBySourceFile.get(sourceFile) ?? new Set<string>();
     return generateLocallyUniqueName(
       name,
-      new Set([...existingImports, ...actualImports, ...existingDeclarations]),
+      new Set([...existingImports, ...actualImports, ...existingDeclarations])
     );
   }
 
@@ -142,9 +166,12 @@ class BinderImp implements Binder {
   private addImport(
     fileWhereImportIsAdded: SourceFile,
     fileWhereImportPointsTo: SourceFile | string,
-    name: string,
+    name: string
   ): ImportSpecifierStructure {
-    const importAlias = this.generateLocallyUniqueImportName(name, fileWhereImportIsAdded);
+    const importAlias = this.generateLocallyUniqueImportName(
+      name,
+      fileWhereImportIsAdded
+    );
     let moduleSpecifier = "";
     if (typeof fileWhereImportPointsTo === "string") {
       moduleSpecifier = fileWhereImportPointsTo;
@@ -153,30 +180,35 @@ class BinderImp implements Binder {
         .getRelativePathTo(fileWhereImportPointsTo)
         .replace(".ts", ".js");
       moduleSpecifier =
-        relative.startsWith(".") || relative.startsWith("/") ? relative : `./${relative}`;
+        relative.startsWith(".") || relative.startsWith("/")
+          ? relative
+          : `./${relative}`;
     }
 
     const importStructures = this.imports.get(fileWhereImportIsAdded) || [];
 
-    let importStructure = importStructures.find((imp) => imp.moduleSpecifier === moduleSpecifier);
+    let importStructure = importStructures.find(
+      (imp) => imp.moduleSpecifier === moduleSpecifier
+    );
 
     if (!importStructure) {
       importStructure = {
         kind: StructureKind.ImportDeclaration,
         moduleSpecifier,
-        namedImports: [],
+        namedImports: []
       };
       importStructures.push(importStructure);
     }
 
-    const namedImports = importStructure.namedImports as ImportSpecifierStructure[];
+    const namedImports =
+      importStructure.namedImports as ImportSpecifierStructure[];
     let importSpecifier = namedImports.find((n) => n.name === importAlias);
 
     if (!importSpecifier) {
       importSpecifier = {
         name: name,
         alias: name === importAlias ? undefined : importAlias,
-        kind: StructureKind.ImportSpecifier,
+        kind: StructureKind.ImportSpecifier
       };
       namedImports.push(importSpecifier);
     }
@@ -193,15 +225,21 @@ class BinderImp implements Binder {
    * e.g. "src/static-helpers/serialization/get-binary-response.ts"
    *   -> "#platform/static-helpers/serialization/get-binary-response"
    */
-  private getPlatformImportSpecifier(declarationSourceFile: SourceFile): string | undefined {
+  private getPlatformImportSpecifier(
+    declarationSourceFile: SourceFile
+  ): string | undefined {
     if (!this.useSubpathImports) return undefined;
     const filePath = declarationSourceFile.getFilePath();
     const srcIndex = filePath.lastIndexOf("/src/");
     if (srcIndex === -1) return undefined;
     // Check if a -browser.mts or -react-native.mts sibling exists
     const basePath = filePath.replace(/\.ts$/, "");
-    const hasBrowserVariant = this.project.getSourceFile(basePath + "-browser.mts");
-    const hasReactNativeVariant = this.project.getSourceFile(basePath + "-react-native.mts");
+    const hasBrowserVariant = this.project.getSourceFile(
+      basePath + "-browser.mts"
+    );
+    const hasReactNativeVariant = this.project.getSourceFile(
+      basePath + "-react-native.mts"
+    );
     if (!hasBrowserVariant && !hasReactNativeVariant) return undefined;
     const relativePath = filePath.substring(srcIndex + "/src/".length);
     return "#platform/" + relativePath.replace(/\.ts$/, "");
@@ -217,7 +255,9 @@ class BinderImp implements Binder {
       const importStructures = this.imports.get(file);
       if (importStructures) {
         // Sort imports in place by module specifier to ensure consistent ordering
-        importStructures.sort((a, b) => (a.moduleSpecifier < b.moduleSpecifier ? -1 : 1));
+        importStructures.sort((a, b) =>
+          a.moduleSpecifier < b.moduleSpecifier ? -1 : 1
+        );
         for (const importStructure of importStructures) {
           file.addImportDeclaration(importStructure);
         }
@@ -248,7 +288,10 @@ class BinderImp implements Binder {
       return;
     }
 
-    for (const [declarationKey, declaration] of [...this.declarations, ...this.staticHelpers]) {
+    for (const [declarationKey, declaration] of [
+      ...this.declarations,
+      ...this.staticHelpers
+    ]) {
       const placeholderKey = this.serializePlaceholder(declarationKey);
       const occurences = countPlaceholderOccurrences(file, placeholderKey);
       if (!occurences) {
@@ -267,7 +310,9 @@ class BinderImp implements Binder {
       if (file !== declarationSourceFile) {
         this.trackReference(declarationKey, file);
         // Use #platform/ subpath import specifier for static helpers in warp packages
-        const platformSpecifier = this.getPlatformImportSpecifier(declarationSourceFile);
+        const platformSpecifier = this.getPlatformImportSpecifier(
+          declarationSourceFile
+        );
         const importTarget = platformSpecifier ?? declarationSourceFile;
         const importDec = this.addImport(file, importTarget, name);
         name = importDec.alias ?? name;
@@ -291,7 +336,7 @@ class BinderImp implements Binder {
       if (!sourceFile) {
         // This should be unreachable
         throw new Error(
-          `Static helper ${helper.name} does not have a source file. Make sure that loadStaticHelpers has been correctly initialized in index.ts`,
+          `Static helper ${helper.name} does not have a source file. Make sure that loadStaticHelpers has been correctly initialized in index.ts`
         );
       }
       const referencedHelper = this.references.get(refkey(helper));
@@ -303,9 +348,11 @@ class BinderImp implements Binder {
 
     // Also keep files that are imported by any used helper file
     const helperFiles = this.project.getSourceFiles(
-      normalizePath(path.join(sourceRoot, "static-helpers/**/*.*ts")),
+      normalizePath(path.join(sourceRoot, "static-helpers/**/*.*ts"))
     );
-    const usedFiles = helperFiles.filter((file) => !isFileUnused(file, usedHelperNames));
+    const usedFiles = helperFiles.filter(
+      (file) => !isFileUnused(file, usedHelperNames)
+    );
     for (const usedFile of usedFiles) {
       for (const importDecl of usedFile.getImportDeclarations()) {
         const resolved = importDecl.getModuleSpecifierSourceFile();
@@ -327,14 +374,19 @@ class BinderImp implements Binder {
     }
     this.project
       //normalizae the final path to adapt to different systems
-      .getSourceFiles(normalizePath(path.join(testRoot, "test/generated/util/**/*.*ts")))
+      .getSourceFiles(
+        normalizePath(path.join(testRoot, "test/generated/util/**/*.*ts"))
+      )
       .filter((file) => isFileUnused(file, usedHelperNames))
       .forEach((helperFile) => helperFile.delete());
   }
 }
 
 // Provide the binder context to be used globally
-export function provideBinder(project: Project, options: BinderOptions = {}): Binder {
+export function provideBinder(
+  project: Project,
+  options: BinderOptions = {}
+): Binder {
   const binder = new BinderImp(project, options);
   provideContext("binder", binder);
   return binder;
@@ -345,7 +397,7 @@ function isFileUnused(file: SourceFile, usedHelperNames: string[]) {
   // A file is used if it matches a used helper name exactly,
   // or is a platform-specific variant (e.g. "foo-browser" for helper "foo")
   return !usedHelperNames.some(
-    (s) => name === s || name === `${s}-browser` || name === `${s}-react-native`,
+    (s) => name === s || name === `${s}-browser` || name === `${s}-react-native`
   );
 }
 
@@ -363,14 +415,21 @@ export function useBinder(): Binder {
  * @param placeholder - The placeholder string to replace.
  * @param value - The value to replace the placeholder with.
  */
-function replacePlaceholder(sourceFile: SourceFile, placeholder: string, value: string): void {
+function replacePlaceholder(
+  sourceFile: SourceFile,
+  placeholder: string,
+  value: string
+): void {
   const fileText = sourceFile.getFullText();
   const regex = new RegExp(escapeRegExp(placeholder), "g");
   const updatedText = fileText.replace(regex, value);
   sourceFile.replaceWithText(updatedText);
 }
 
-function countPlaceholderOccurrences(sourceFile: SourceFile, placeholder: string): number {
+function countPlaceholderOccurrences(
+  sourceFile: SourceFile,
+  placeholder: string
+): number {
   return sourceFile.getFullText().split(placeholder).length - 1;
 }
 

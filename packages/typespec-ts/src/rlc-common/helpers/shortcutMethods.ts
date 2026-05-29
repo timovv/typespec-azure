@@ -1,13 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { InterfaceDeclarationStructure, MethodSignatureStructure, OptionalKind } from "ts-morph";
+import {
+  InterfaceDeclarationStructure,
+  MethodSignatureStructure,
+  OptionalKind
+} from "ts-morph";
 import { PathMetadata, Paths } from "../interfaces.js";
 import { NameType, normalizeName } from "./nameUtils.js";
 import { buildMethodDefinitions } from "./operationHelpers.js";
 
 export function generateMethodShortcuts(
-  paths: Paths,
+  paths: Paths
 ): OptionalKind<InterfaceDeclarationStructure>[] {
   const keys: Record<string, OptionalKind<MethodSignatureStructure>[]> = {};
   for (const path in paths) {
@@ -32,14 +36,16 @@ export function generateMethodShortcuts(
       name: `${interfaceName}Operations`,
       methods: methods,
       isExported: true,
-      docs: [`Contains operations for ${interfaceName} operations`],
+      docs: [`Contains operations for ${interfaceName} operations`]
     });
   }
 
   return interfaces;
 }
 
-function buildOperationDefinitions(path: PathMetadata): OptionalKind<MethodSignatureStructure>[] {
+function buildOperationDefinitions(
+  path: PathMetadata
+): OptionalKind<MethodSignatureStructure>[] {
   let ops: OptionalKind<MethodSignatureStructure>[] = [];
 
   for (const verb in path.methods) {
@@ -50,7 +56,10 @@ function buildOperationDefinitions(path: PathMetadata): OptionalKind<MethodSigna
     for (const method of methods) {
       const name = normalizeName(method.operationName, NameType.Property);
       const pathParams = path.pathParameters;
-      const methodDefinitions = buildMethodDefinitions({ [name]: [method] }, pathParams);
+      const methodDefinitions = buildMethodDefinitions(
+        { [name]: [method] },
+        pathParams
+      );
       ops = [...ops, ...methodDefinitions];
     }
   }

@@ -5,7 +5,8 @@ import { Project } from "ts-morph";
 import { RLCModel } from "../interfaces.js";
 
 export function buildApiExtractorConfig(model: RLCModel) {
-  const { packageDetails, isModularLibrary, generateTest, azureSdkForJs } = model.options || {};
+  const { packageDetails, isModularLibrary, generateTest, azureSdkForJs } =
+    model.options || {};
   const project = new Project();
 
   let mainEntryPointFilePath = "dist/esm/index.d.ts";
@@ -16,49 +17,53 @@ export function buildApiExtractorConfig(model: RLCModel) {
 
   const config = azureSdkForJs
     ? {
-        extends: "../../../api-extractor-base.json",
+        extends: "../../../api-extractor-base.json"
       }
     : {
         $schema:
           "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
         mainEntryPointFilePath,
         docModel: {
-          enabled: true,
+          enabled: true
         },
         apiReport: {
           enabled: true,
-          reportFolder: "./review",
+          reportFolder: "./review"
         },
         dtsRollup: {
           enabled: true,
           untrimmedFilePath: "",
           publicTrimmedFilePath: `dist/${
             packageDetails?.nameWithoutScope ?? packageDetails?.name
-          }.d.ts`,
+          }.d.ts`
         },
         messages: {
           tsdocMessageReporting: {
             default: {
-              logLevel: "none",
-            },
+              logLevel: "none"
+            }
           },
           extractorMessageReporting: {
             "ae-missing-release-tag": {
-              logLevel: "none",
+              logLevel: "none"
             },
             "ae-unresolved-link": {
-              logLevel: "none",
-            },
-          },
-        },
+              logLevel: "none"
+            }
+          }
+        }
       };
 
   const filePath = "api-extractor.json";
-  const configFile = project.createSourceFile(filePath, JSON.stringify(config), {
-    overwrite: true,
-  });
+  const configFile = project.createSourceFile(
+    filePath,
+    JSON.stringify(config),
+    {
+      overwrite: true
+    }
+  );
   return {
     path: filePath,
-    content: configFile.getFullText(),
+    content: configFile.getFullText()
   };
 }

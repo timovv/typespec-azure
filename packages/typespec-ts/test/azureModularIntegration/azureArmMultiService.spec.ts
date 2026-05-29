@@ -14,8 +14,8 @@ describe("Azure ResourceManager MultiService Client", () => {
       endpoint: "http://localhost:3002",
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 
@@ -25,8 +25,8 @@ describe("Azure ResourceManager MultiService Client", () => {
     type: "Microsoft.Compute/virtualMachines",
     location: LOCATION,
     properties: {
-      provisioningState: "Succeeded",
-    },
+      provisioningState: "Succeeded"
+    }
   };
 
   const expectedDisk = {
@@ -35,8 +35,8 @@ describe("Azure ResourceManager MultiService Client", () => {
     type: "Microsoft.Compute/disks",
     location: LOCATION,
     properties: {
-      provisioningState: "Succeeded",
-    },
+      provisioningState: "Succeeded"
+    }
   };
 
   describe("VirtualMachines", () => {
@@ -48,15 +48,19 @@ describe("Azure ResourceManager MultiService Client", () => {
       assert.strictEqual(result.location, expectedVm.location);
       assert.strictEqual(
         result.properties?.provisioningState,
-        expectedVm.properties.provisioningState,
+        expectedVm.properties.provisioningState
       );
     });
 
     it("should create or update virtual machine", async () => {
-      const result = await client.virtualMachines.createOrUpdate(RESOURCE_GROUP, "vm1", {
-        location: LOCATION,
-        properties: {},
-      });
+      const result = await client.virtualMachines.createOrUpdate(
+        RESOURCE_GROUP,
+        "vm1",
+        {
+          location: LOCATION,
+          properties: {}
+        }
+      );
       assert.strictEqual(result.id, expectedVm.id);
       assert.strictEqual(result.name, expectedVm.name);
       assert.strictEqual(result.location, expectedVm.location);
@@ -72,15 +76,19 @@ describe("Azure ResourceManager MultiService Client", () => {
       assert.strictEqual(result.location, expectedDisk.location);
       assert.strictEqual(
         result.properties?.provisioningState,
-        expectedDisk.properties.provisioningState,
+        expectedDisk.properties.provisioningState
       );
     });
 
     it("should create or update disk", async () => {
-      const result = await client.disks.createOrUpdate(RESOURCE_GROUP, "disk1", {
-        location: LOCATION,
-        properties: {},
-      });
+      const result = await client.disks.createOrUpdate(
+        RESOURCE_GROUP,
+        "disk1",
+        {
+          location: LOCATION,
+          properties: {}
+        }
+      );
       assert.strictEqual(result.id, expectedDisk.id);
       assert.strictEqual(result.name, expectedDisk.name);
       assert.strictEqual(result.location, expectedDisk.location);

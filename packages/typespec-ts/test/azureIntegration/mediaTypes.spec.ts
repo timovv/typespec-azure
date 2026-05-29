@@ -1,6 +1,8 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
-import MediaTypesClientFactory, { MediaTypesClient } from "./generated/media-types/src/index.js";
+import MediaTypesClientFactory, {
+  MediaTypesClient
+} from "./generated/media-types/src/index.js";
 describe("MediaTypes Rest Client", () => {
   let client: MediaTypesClient;
 
@@ -8,8 +10,8 @@ describe("MediaTypes Rest Client", () => {
     client = MediaTypesClientFactory("http://fake-url.com", {
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 

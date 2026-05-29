@@ -96,6 +96,9 @@ export function useContext<K extends ContextKey>(key: K): Contexts[K] {
  * @param {ContextKey} key - The key of the context to provide.
  * @param {Contexts[K]} value - The value to set for the specified context.
  */
-export function provideContext<K extends ContextKey>(key: K, value: Contexts[K]): void {
+export function provideContext<K extends ContextKey>(
+  key: K,
+  value: Contexts[K]
+): void {
   contextManager.setContext(key, value);
 }

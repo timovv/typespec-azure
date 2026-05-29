@@ -7,7 +7,7 @@ describe("Scalar Azure core Client", () => {
   beforeEach(() => {
     client = new ScalarClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -18,7 +18,7 @@ describe("Scalar Azure core Client", () => {
 
   it("should put an Azure Location value", async () => {
     const result = await client.put("eastus", {
-      requestOptions: { headers: { "content-type": "text/plain" } },
+      requestOptions: { headers: { "content-type": "text/plain" } }
     });
     assert.isUndefined(result);
   });

@@ -1,16 +1,16 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
 import MultipleParamInServerPathClientFactory, {
-  MultipleParamInServerPathClient,
+  MultipleParamInServerPathClient
 } from "./generated/server/path/multiple/src/index.js";
 import SingleParamInServerPathClientFactory, {
-  SingleParamInServerPathClient,
+  SingleParamInServerPathClient
 } from "./generated/server/path/single/src/index.js";
 import NotVersionedParamInServerVersionsClientFactory, {
-  NotVersionedParamInServerVersionsClient,
+  NotVersionedParamInServerVersionsClient
 } from "./generated/server/versions/not-versioned/src/index.js";
 import VersionedParamInServerVersionsClientFactory, {
-  VersionedParamInServerVersionsClient,
+  VersionedParamInServerVersionsClient
 } from "./generated/server/versions/versioned/src/index.js";
 
 describe("SingleParamInServerPath Rest Client", () => {
@@ -20,8 +20,8 @@ describe("SingleParamInServerPath Rest Client", () => {
     client = SingleParamInServerPathClientFactory("http://localhost:3000", {
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 
@@ -38,8 +38,8 @@ describe("MultipleParamInServerPath Rest Client", () => {
     client = MultipleParamInServerPathClientFactory("http://localhost:3000", {
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 
@@ -58,16 +58,21 @@ describe(" NotVersionedParamInServerVersions Rest Client", () => {
   let client: NotVersionedParamInServerVersionsClient;
 
   beforeEach(() => {
-    client = NotVersionedParamInServerVersionsClientFactory("http://localhost:3000", {
-      allowInsecureConnection: true,
-      retryOptions: {
-        maxRetries: 0,
-      },
-    });
+    client = NotVersionedParamInServerVersionsClientFactory(
+      "http://localhost:3000",
+      {
+        allowInsecureConnection: true,
+        retryOptions: {
+          maxRetries: 0
+        }
+      }
+    );
   });
 
   it("should work with no param", async () => {
-    const result = await client.path("/server/versions/not-versioned/without-api-version").head();
+    const result = await client
+      .path("/server/versions/not-versioned/without-api-version")
+      .head();
     assert.strictEqual(result.status, "200");
   });
 
@@ -80,7 +85,10 @@ describe(" NotVersionedParamInServerVersions Rest Client", () => {
 
   it("should work with path param", async () => {
     const result = await client
-      .path("/server/versions/not-versioned/with-path-api-version/{apiVersion}", "v1.0")
+      .path(
+        "/server/versions/not-versioned/with-path-api-version/{apiVersion}",
+        "v1.0"
+      )
       .head();
     assert.strictEqual(result.status, "200");
   });
@@ -90,16 +98,21 @@ describe(" VersionedParamInServerVersions Rest Client", () => {
   let client: VersionedParamInServerVersionsClient;
 
   beforeEach(() => {
-    client = VersionedParamInServerVersionsClientFactory("http://localhost:3000", {
-      allowInsecureConnection: true,
-      retryOptions: {
-        maxRetries: 0,
-      },
-    });
+    client = VersionedParamInServerVersionsClientFactory(
+      "http://localhost:3000",
+      {
+        allowInsecureConnection: true,
+        retryOptions: {
+          maxRetries: 0
+        }
+      }
+    );
   });
 
   it("should work with no param", async () => {
-    const result = await client.path("/server/versions/versioned/without-api-version").head();
+    const result = await client
+      .path("/server/versions/versioned/without-api-version")
+      .head();
     assert.strictEqual(result.status, "200");
   });
 
@@ -112,7 +125,10 @@ describe(" VersionedParamInServerVersions Rest Client", () => {
 
   it("should work with path param", async () => {
     const result = await client
-      .path("/server/versions/versioned/with-path-api-version/{apiVersion}", "2022-12-01-preview")
+      .path(
+        "/server/versions/versioned/with-path-api-version/{apiVersion}",
+        "2022-12-01-preview"
+      )
       .head();
     assert.strictEqual(result.status, "200");
   });

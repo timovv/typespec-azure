@@ -9,7 +9,7 @@ describe("Empty Client", () => {
   beforeEach(() => {
     client = new EmptyClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

@@ -10,7 +10,7 @@ import {
   SourceFile,
   StructureKind,
   TypeAliasDeclaration,
-  TypeAliasDeclarationStructure,
+  TypeAliasDeclarationStructure
 } from "ts-morph";
 import { useBinder } from "./hooks/binder.js";
 import { refkey as getRefKey } from "./refkey.js";
@@ -31,50 +31,58 @@ export type Declarations =
 export function addDeclaration(
   sourceFile: SourceFile,
   declaration: ClassDeclarationStructure,
-  refkey: unknown,
+  refkey: unknown
 ): void;
 
 export function addDeclaration(
   sourceFile: SourceFile,
   declaration: EnumDeclarationStructure,
-  refkey: unknown,
+  refkey: unknown
 ): void;
 
 export function addDeclaration(
   sourceFile: SourceFile,
   declaration: FunctionDeclarationStructure,
-  refkey: unknown,
+  refkey: unknown
 ): void;
 
 export function addDeclaration(
   sourceFile: SourceFile,
   declaration: InterfaceDeclarationStructure,
-  refkey: unknown,
+  refkey: unknown
 ): void;
 
 export function addDeclaration(
   sourceFile: SourceFile,
   declaration: TypeAliasDeclarationStructure,
-  refkey: unknown,
+  refkey: unknown
 ): void;
-export function addDeclaration(sourceFile: SourceFile, declaration: string, refkey: unknown): void;
+export function addDeclaration(
+  sourceFile: SourceFile,
+  declaration: string,
+  refkey: unknown
+): void;
 export function addDeclaration(
   sourceFile: SourceFile,
   input: DeclarationStructures | string,
-  refkey: unknown,
+  refkey: unknown
 ): void {
   const binder = useBinder();
   const declaration: DeclarationStructures =
-    typeof input === "string" ? ({ name: input, kind: StructureKind.TypeAlias } as any) : input;
+    typeof input === "string"
+      ? ({ name: input, kind: StructureKind.TypeAlias } as any)
+      : input;
   if (!declaration.name) {
-    throw new Error(`Declaration must have a name ${JSON.stringify(declaration)}`);
+    throw new Error(
+      `Declaration must have a name ${JSON.stringify(declaration)}`
+    );
   }
 
   const stringRefkey = typeof refkey === "string" ? refkey : getRefKey(refkey);
   const trackedDeclarationName = binder.trackDeclaration(
     stringRefkey,
     declaration.name,
-    sourceFile,
+    sourceFile
   );
 
   // Update the declaration name to be unique
@@ -99,6 +107,8 @@ export function addDeclaration(
       }
       break;
     default:
-      throw new Error(`Unsupported declaration kind ${(trackedDeclaration as any).kind}`);
+      throw new Error(
+        `Unsupported declaration kind ${(trackedDeclaration as any).kind}`
+      );
   }
 }

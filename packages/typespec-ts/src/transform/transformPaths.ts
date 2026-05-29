@@ -4,7 +4,7 @@
 import {
   SdkClient,
   getHttpOperationWithCache,
-  isApiVersion,
+  isApiVersion
 } from "@azure-tools/typespec-client-generator-core";
 import { HttpOperation, HttpOperationParameters } from "@typespec/http";
 import {
@@ -14,9 +14,13 @@ import {
   Paths,
   SchemaContext,
   getParameterTypeName,
-  getResponseTypeName,
+  getResponseTypeName
 } from "../rlc-common/index.js";
-import { getImportedModelName, getSchemaForType, isBodyRequired } from "../utils/modelUtils.js";
+import {
+  getImportedModelName,
+  getSchemaForType,
+  isBodyRequired
+} from "../utils/modelUtils.js";
 import {
   extractOperationLroDetail,
   getOperationGroupName,
@@ -25,7 +29,7 @@ import {
   getOperationStatuscode,
   getOperationSuccessStatus,
   isPagingOperation,
-  sortedOperationResponses,
+  sortedOperationResponses
 } from "../utils/operationUtil.js";
 
 import { getDoc } from "@typespec/compiler";
@@ -36,7 +40,7 @@ import { getParameterSerializationInfo } from "../utils/parameterUtils.js";
 export function transformPaths(
   client: SdkClient,
   dpgContext: SdkContext,
-  importDetails: Imports,
+  importDetails: Imports
 ): Paths {
   const pathParamsImportedSet = new Set<string>();
   const paths: Paths = {};
@@ -60,7 +64,7 @@ function transformOperation(
   dpgContext: SdkContext,
   route: HttpOperation,
   paths: Paths,
-  importSet: Set<string>,
+  importSet: Set<string>
 ) {
   const program = dpgContext.program;
   const respNames = [];
@@ -69,7 +73,7 @@ function transformOperation(
     const respName = getResponseTypeName(
       operationGroupName,
       getOperationName(dpgContext, route.operation),
-      getOperationStatuscode(resp),
+      getOperationStatuscode(resp)
     );
     respNames.push(respName);
   }
@@ -79,25 +83,35 @@ function transformOperation(
     hasOptionalOptions: !hasRequiredOptions(dpgContext, route.parameters),
     optionsName: getParameterTypeName(
       operationGroupName,
-      getOperationName(dpgContext, route.operation),
+      getOperationName(dpgContext, route.operation)
     ),
     responseTypes,
     returnType: respNames.join(" | "),
     successStatus: getOperationSuccessStatus(route),
     operationName: getOperationName(dpgContext, route.operation),
     operationHelperDetail: {
-      lroDetails: extractOperationLroDetail(dpgContext, route, responseTypes, operationGroupName),
-      isPaging: isPagingOperation(dpgContext, route),
-    },
+      lroDetails: extractOperationLroDetail(
+        dpgContext,
+        route,
+        responseTypes,
+        operationGroupName
+      ),
+      isPaging: isPagingOperation(dpgContext, route)
+    }
   };
-  if (paths[route.path] !== undefined && !paths[route.path]?.methods[route.verb]) {
+  if (
+    paths[route.path] !== undefined &&
+    !paths[route.path]?.methods[route.verb]
+  ) {
     (paths[route.path] as PathMetadata).methods[route.verb] = [method];
   } else if (paths[route.path]?.methods[route.verb]) {
     paths[route.path]?.methods[route.verb]?.push(method);
   } else {
     paths[route.path] = {
       description: getDoc(program, route.operation) ?? "",
-      name: escapeCoreName(getOperationName(dpgContext, route.operation) || "Client"),
+      name: escapeCoreName(
+        getOperationName(dpgContext, route.operation) || "Client"
+      ),
       pathParameters: route.parameters.parameters
         .filter((p) => p.type === "path")
         .map((p) => {
@@ -105,14 +119,14 @@ function transformOperation(
           const options = {
             usage: schemaUsage,
             needRef: false,
-            relevantProperty: p.param,
+            relevantProperty: p.param
           };
           const schema = p.param.sourceProperty
             ? getSchemaForType(
                 dpgContext,
                 p.param.sourceProperty?.type,
 
-                options,
+                options
               )
             : getSchemaForType(dpgContext, p.param.type, options);
           const importedNames = getImportedModelName(schema, schemaUsage) ?? [];
@@ -122,19 +136,19 @@ function transformOperation(
             p,
             schema,
             operationGroupName,
-            method.operationName,
+            method.operationName
           );
           return {
             name: p.name,
             type: serializationType.typeName,
             description: getDoc(program, p.param) ?? "",
-            wrapperType: serializationType.wrapperType,
+            wrapperType: serializationType.wrapperType
           };
         }),
       operationGroupName: getOperationGroupName(dpgContext, route),
       methods: {
-        [route.verb]: [method],
-      },
+        [route.verb]: [method]
+      }
     };
   }
 }
@@ -145,7 +159,10 @@ function escapeCoreName(name: string) {
   }
   return name;
 }
-function hasRequiredOptions(dpgContext: SdkContext, routeParameters: HttpOperationParameters) {
+function hasRequiredOptions(
+  dpgContext: SdkContext,
+  routeParameters: HttpOperationParameters
+) {
   const isRequiredBodyParam = isBodyRequired(routeParameters);
 
   const containsRequiredNonBodyParam = routeParameters.parameters

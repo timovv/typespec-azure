@@ -2,7 +2,10 @@ import { NameType } from "../rlc-common/index.js";
 
 import path from "path/posix";
 import { useContext } from "../contextManager.js";
-import { getClientHierarchyMap, getModularClientOptions } from "../utils/clientUtils.js";
+import {
+  getClientHierarchyMap,
+  getModularClientOptions
+} from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
 import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
 import { getClassicalLayerPrefix } from "./helpers/namingHelpers.js";
@@ -14,9 +17,18 @@ import { ModularEmitterOptions } from "./interfaces.js";
  * building export map entries so that they always point to the correct folder
  * even when the generated code lives under `src/generated` instead of `src`.
  */
-function getSourceRootPrefix(emitterOptions: ModularEmitterOptions, context: SdkContext): string {
-  const sourceRoot = emitterOptions.modularOptions.sourceRoot.replace(/\\/g, "/");
-  const rootDir = (context.generationPathDetail?.rootDir ?? "").replace(/\\/g, "/");
+function getSourceRootPrefix(
+  emitterOptions: ModularEmitterOptions,
+  context: SdkContext
+): string {
+  const sourceRoot = emitterOptions.modularOptions.sourceRoot.replace(
+    /\\/g,
+    "/"
+  );
+  const rootDir = (context.generationPathDetail?.rootDir ?? "").replace(
+    /\\/g,
+    "/"
+  );
 
   if (rootDir && sourceRoot.startsWith(rootDir)) {
     const relativePath = path.relative(rootDir, sourceRoot).replace(/\\/g, "/");
@@ -29,7 +41,7 @@ function getSourceRootPrefix(emitterOptions: ModularEmitterOptions, context: Sdk
 function buildExportsForMultiClient(
   context: SdkContext,
   emitterOptions: ModularEmitterOptions,
-  packageInfo: any,
+  packageInfo: any
 ) {
   const srcPrefix = getSourceRootPrefix(emitterOptions, context);
   const clientMap = getClientHierarchyMap(context);
@@ -41,9 +53,11 @@ function buildExportsForMultiClient(
     }
     const { subfolder } = getModularClientOptions([hierarchy, client]);
     if (subfolder !== "" && methodMap.size > 0) {
-      packageInfo.exports[`./${subfolder}`] = `${srcPrefix}/${subfolder}/index.ts`;
+      packageInfo.exports[`./${subfolder}`] =
+        `${srcPrefix}/${subfolder}/index.ts`;
 
-      packageInfo.exports[`./${subfolder}/api`] = `${srcPrefix}/${subfolder}/api/index.ts`;
+      packageInfo.exports[`./${subfolder}/api`] =
+        `${srcPrefix}/${subfolder}/api/index.ts`;
     }
   }
   if (!hasTopLevelClient) {
@@ -63,7 +77,9 @@ function buildExportsForMultiClient(
           }
           const subApiPath = `api/${getClassicalLayerPrefix(prefixes, NameType.File, "/")}`;
 
-          packageInfo.exports[`./${subfolder ? subfolder + "/" : ""}${subApiPath}`] =
+          packageInfo.exports[
+            `./${subfolder ? subfolder + "/" : ""}${subApiPath}`
+          ] =
             `${srcPrefix}/${subfolder ? subfolder + "/" : ""}${subApiPath}/index.ts`;
         }
       }
@@ -79,13 +95,16 @@ function buildExportsForMultiClient(
   return packageInfo.exports;
 }
 
-export function getModuleExports(context: SdkContext, emitterOptions: ModularEmitterOptions) {
+export function getModuleExports(
+  context: SdkContext,
+  emitterOptions: ModularEmitterOptions
+) {
   const srcPrefix = getSourceRootPrefix(emitterOptions, context);
   const exports: Record<string, any> = {
     exports: {
       ".": `${srcPrefix}/index.ts`,
-      "./models": `${srcPrefix}/models/index.ts`,
-    },
+      "./models": `${srcPrefix}/models/index.ts`
+    }
   };
   exports["exports"]["./api"] = `${srcPrefix}/api/index.ts`;
 
@@ -95,7 +114,10 @@ export function getModuleExports(context: SdkContext, emitterOptions: ModularEmi
 function getModelSubpaths(emitterOptions: ModularEmitterOptions) {
   const outputProject = useContext("outputProject");
   const modelFiles = outputProject.getSourceFiles(
-    path.join(emitterOptions.modularOptions.sourceRoot.replace(/\\/g, "/"), `models/**/*.ts`),
+    path.join(
+      emitterOptions.modularOptions.sourceRoot.replace(/\\/g, "/"),
+      `models/**/*.ts`
+    )
   );
   const subpath = new Set<string>();
   for (const modelFile of modelFiles) {
@@ -104,7 +126,10 @@ function getModelSubpaths(emitterOptions: ModularEmitterOptions) {
       continue;
     }
     subpath.add(
-      path.relative(emitterOptions.modularOptions.sourceRoot.replace(/\\/g, "/"), filepath),
+      path.relative(
+        emitterOptions.modularOptions.sourceRoot.replace(/\\/g, "/"),
+        filepath
+      )
     );
   }
   return Array.from(subpath);

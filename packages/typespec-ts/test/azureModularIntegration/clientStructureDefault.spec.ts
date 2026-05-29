@@ -6,7 +6,7 @@ describe("Client Structure Default Rest Client", () => {
 
   beforeEach(() => {
     client = new ServiceClient("http://localhost:3002", "default", {
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

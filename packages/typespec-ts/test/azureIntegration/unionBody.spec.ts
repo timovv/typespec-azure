@@ -1,20 +1,22 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
-import UnionBodyClientFactory, { UnionBodyClient } from "./generated/union-body/src/index.js";
+import UnionBodyClientFactory, {
+  UnionBodyClient
+} from "./generated/union-body/src/index.js";
 describe("UnionBodyClient Rest Client", () => {
   let client: UnionBodyClient;
 
   beforeEach(() => {
     client = UnionBodyClientFactory("http://localhost:3000", {
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
   it("should have no compile error for request body", async () => {
     const result = await client.path("/request-union-body").post({
       body: {
-        prop: "test",
-      },
+        prop: "test"
+      }
     });
     assert.strictEqual(result.status, "404");
   });

@@ -7,15 +7,19 @@ import {
   OptionalKind,
   Project,
   PropertySignatureStructure,
-  StructureKind,
+  StructureKind
 } from "ts-morph";
 import { getImportSpecifier } from "./helpers/importsUtil.js";
 import {
   getImportModuleName,
   getResponseBaseName,
-  getResponseTypeName,
+  getResponseTypeName
 } from "./helpers/nameConstructors.js";
-import { ResponseHeaderSchema, ResponseMetadata, RLCModel } from "./interfaces.js";
+import {
+  ResponseHeaderSchema,
+  ResponseMetadata,
+  RLCModel
+} from "./interfaces.js";
 
 let hasErrorResponse = false;
 export function buildResponseTypes(model: RLCModel) {
@@ -24,7 +28,7 @@ export function buildResponseTypes(model: RLCModel) {
   const filePath = path.join(srcPath, `responses.ts`);
   hasErrorResponse = false;
   const responsesFile = project.createSourceFile(filePath, undefined, {
-    overwrite: true,
+    overwrite: true
   });
   // Set used to track down which models need to be imported
   // Track if we need to import RawHttpHeaders
@@ -38,7 +42,7 @@ export function buildResponseTypes(model: RLCModel) {
       const baseResponseName = getResponseBaseName(
         operationResponse.operationGroup,
         operationResponse.operationName,
-        response.statusCode,
+        response.statusCode
       );
 
       // Build the response header
@@ -50,20 +54,27 @@ export function buildResponseTypes(model: RLCModel) {
       }
 
       // Get the information to build the Response Interface
-      const responseTypeName = response.predefinedName ?? getResponseTypeName(baseResponseName);
-      const responseProperties = getResponseInterfaceProperties(response, headersInterface?.name);
+      const responseTypeName =
+        response.predefinedName ?? getResponseTypeName(baseResponseName);
+      const responseProperties = getResponseInterfaceProperties(
+        response,
+        headersInterface?.name
+      );
 
-      const responseInterfaceDefinition: OptionalKind<InterfaceDeclarationStructure> = {
-        name: responseTypeName,
-        properties: responseProperties,
-        isExported: true,
-        extends: ["HttpResponse"],
-      };
+      const responseInterfaceDefinition: OptionalKind<InterfaceDeclarationStructure> =
+        {
+          name: responseTypeName,
+          properties: responseProperties,
+          isExported: true,
+          extends: ["HttpResponse"]
+        };
 
       // Only add a description if one was provided in the Swagger
       // otherwise skip to avoid having empty TSDoc lines
       if (response.description) {
-        responseInterfaceDefinition.docs = [{ description: response.description }];
+        responseInterfaceDefinition.docs = [
+          { description: response.description }
+        ];
       }
 
       // Add the response interface to the responses file
@@ -76,8 +87,11 @@ export function buildResponseTypes(model: RLCModel) {
       {
         isTypeOnly: true,
         namedImports: ["RawHttpHeaders"],
-        moduleSpecifier: getImportSpecifier("restPipeline", model.importInfo.runtimeImports),
-      },
+        moduleSpecifier: getImportSpecifier(
+          "restPipeline",
+          model.importInfo.runtimeImports
+        )
+      }
     ]);
   }
   const namedImports = ["HttpResponse"];
@@ -88,13 +102,16 @@ export function buildResponseTypes(model: RLCModel) {
     {
       isTypeOnly: true,
       namedImports,
-      moduleSpecifier: getImportSpecifier("restClient", model.importInfo.runtimeImports),
-    },
+      moduleSpecifier: getImportSpecifier(
+        "restClient",
+        model.importInfo.runtimeImports
+      )
+    }
   ]);
 
   if ((model.importInfo.internalImports.response?.importsSet?.size ?? 0) > 0) {
     const modelNamedImports = Array.from(
-      model.importInfo.internalImports.response!.importsSet!,
+      model.importInfo.internalImports.response!.importsSet!
     ).filter((modelName) => {
       return !(modelName === "ErrorResponseOutput" && hasErrorResponse);
     });
@@ -105,11 +122,11 @@ export function buildResponseTypes(model: RLCModel) {
         moduleSpecifier: getImportModuleName(
           {
             cjsName: `./outputModels`,
-            esModulesName: `./outputModels.js`,
+            esModulesName: `./outputModels.js`
           },
-          model,
-        ),
-      },
+          model
+        )
+      }
     ]);
   }
   return { path: filePath, content: responsesFile.getFullText() };
@@ -117,7 +134,7 @@ export function buildResponseTypes(model: RLCModel) {
 
 function getResponseHeaderInterfaceDefinition(
   response: ResponseMetadata,
-  baseName: string,
+  baseName: string
 ): undefined | InterfaceDeclarationStructure {
   // Check if there are any required headers
   if (!response.headers) {
@@ -134,29 +151,35 @@ function getResponseHeaderInterfaceDefinition(
         name: h.name,
         ...(description && { docs: [{ description }] }),
         type: h.type,
-        hasQuestionToken: !h.required,
+        hasQuestionToken: !h.required
       };
-    }),
+    })
   };
 }
 
 /**
  * Gets the properties that need to be part of the response interface
  */
-function getResponseInterfaceProperties(response: ResponseMetadata, headersInterfaceName?: string) {
+function getResponseInterfaceProperties(
+  response: ResponseMetadata,
+  headersInterfaceName?: string
+) {
   const statusCode = response.statusCode;
   const responseProperties: PropertySignatureStructure[] = [
     {
       name: "status",
       type: statusCode === "default" ? `string` : `"${statusCode}"`,
-      kind: StructureKind.PropertySignature,
-    },
+      kind: StructureKind.PropertySignature
+    }
   ];
 
   if (response.body) {
     const description = response.body.description;
     let type = response.body.type;
-    if (response.body.type === "ErrorResponseOutput" && response.body.fromCore) {
+    if (
+      response.body.type === "ErrorResponseOutput" &&
+      response.body.fromCore
+    ) {
       type = "ErrorResponse";
       hasErrorResponse = true;
     }
@@ -164,7 +187,7 @@ function getResponseInterfaceProperties(response: ResponseMetadata, headersInter
       name: "body",
       type,
       kind: StructureKind.PropertySignature,
-      ...(description && { docs: [{ description }] }),
+      ...(description && { docs: [{ description }] })
     });
   }
 
@@ -172,7 +195,7 @@ function getResponseInterfaceProperties(response: ResponseMetadata, headersInter
     responseProperties.push({
       name: "headers",
       type: `RawHttpHeaders & ${headersInterfaceName}`,
-      kind: StructureKind.PropertySignature,
+      kind: StructureKind.PropertySignature
     });
   }
 

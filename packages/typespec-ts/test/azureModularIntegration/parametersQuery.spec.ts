@@ -9,7 +9,7 @@ describe("Parameters Query Client", () => {
     client = new QueryClient({
       endpoint: "http://localhost:3002",
       allowInsecureConnection: true,
-      retryOptions: { maxRetries: 0 },
+      retryOptions: { maxRetries: 0 }
     });
   });
 

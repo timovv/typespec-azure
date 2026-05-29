@@ -1,6 +1,8 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
-import OverloadTestFactory, { OveralodClient } from "./generated/overload/src/index.js";
+import OverloadTestFactory, {
+  OveralodClient
+} from "./generated/overload/src/index.js";
 describe("OverloadTest Rest Client", () => {
   let client: OveralodClient;
 
@@ -8,8 +10,8 @@ describe("OverloadTest Rest Client", () => {
     client = OverloadTestFactory("http://fake-url.com", {
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 

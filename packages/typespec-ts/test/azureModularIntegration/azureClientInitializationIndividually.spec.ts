@@ -6,20 +6,23 @@ import {
   IndividuallyNestedWithMultipleClient,
   IndividuallyNestedWithParamAliasClient,
   IndividuallyNestedWithPathClient,
-  IndividuallyNestedWithQueryClient,
+  IndividuallyNestedWithQueryClient
 } from "./generated/azure/client-generator-core/client-initialization/individually/src/index.js";
 
 describe("Azure ClientGeneratorCore Client Initialization - Individually", () => {
   const endpointOptions = {
     endpoint: "http://localhost:3002",
-    allowInsecureConnection: true,
+    allowInsecureConnection: true
   };
 
   describe("IndividuallyNestedWithPath Client", () => {
     let client: IndividuallyNestedWithPathClient;
 
     beforeEach(() => {
-      client = new IndividuallyNestedWithPathClient("test-blob", endpointOptions);
+      client = new IndividuallyNestedWithPathClient(
+        "test-blob",
+        endpointOptions
+      );
     });
 
     it("should send path parameter in withQuery operation", async () => {
@@ -31,7 +34,10 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
       assert.strictEqual(result.name, "test-blob");
       assert.strictEqual(result.size, 1024);
       assert.strictEqual(result.contentType, "application/octet-stream");
-      assert.strictEqual(result.createdOn.toISOString(), "2023-01-01T12:00:00.000Z");
+      assert.strictEqual(
+        result.createdOn.toISOString(),
+        "2023-01-01T12:00:00.000Z"
+      );
     });
 
     it("should delete standalone with path parameter", async () => {
@@ -43,7 +49,10 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
     let client: IndividuallyNestedWithQueryClient;
 
     beforeEach(() => {
-      client = new IndividuallyNestedWithQueryClient("test-blob", endpointOptions);
+      client = new IndividuallyNestedWithQueryClient(
+        "test-blob",
+        endpointOptions
+      );
     });
 
     it("should send query parameter in withQuery operation", async () => {
@@ -55,7 +64,10 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
       assert.strictEqual(result.name, "test-blob");
       assert.strictEqual(result.size, 1024);
       assert.strictEqual(result.contentType, "application/octet-stream");
-      assert.strictEqual(result.createdOn.toISOString(), "2023-01-01T12:00:00.000Z");
+      assert.strictEqual(
+        result.createdOn.toISOString(),
+        "2023-01-01T12:00:00.000Z"
+      );
     });
 
     it("should delete standalone with query parameter", async () => {
@@ -67,7 +79,10 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
     let client: IndividuallyNestedWithHeaderClient;
 
     beforeEach(() => {
-      client = new IndividuallyNestedWithHeaderClient("test-name-value", endpointOptions);
+      client = new IndividuallyNestedWithHeaderClient(
+        "test-name-value",
+        endpointOptions
+      );
     });
 
     it("should send header parameter in withQuery operation", async () => {
@@ -90,7 +105,7 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
       client = new IndividuallyNestedWithMultipleClient(
         "test-name-value",
         "us-west",
-        endpointOptions,
+        endpointOptions
       );
     });
 
@@ -111,7 +126,10 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
     let client: IndividuallyNestedWithMixedClient;
 
     beforeEach(() => {
-      client = new IndividuallyNestedWithMixedClient("test-name-value", endpointOptions);
+      client = new IndividuallyNestedWithMixedClient(
+        "test-name-value",
+        endpointOptions
+      );
     });
 
     it("should send mixed parameters in withQuery operation", async () => {
@@ -131,7 +149,10 @@ describe("Azure ClientGeneratorCore Client Initialization - Individually", () =>
     let client: IndividuallyNestedWithParamAliasClient;
 
     beforeEach(() => {
-      client = new IndividuallyNestedWithParamAliasClient("sample-blob", endpointOptions);
+      client = new IndividuallyNestedWithParamAliasClient(
+        "sample-blob",
+        endpointOptions
+      );
     });
 
     it("should call withOriginalName operation", async () => {

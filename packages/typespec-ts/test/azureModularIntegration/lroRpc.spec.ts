@@ -8,13 +8,13 @@ describe("RpcClient Classical Client", () => {
   beforeEach(() => {
     client = new RpcClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
   it("should await poller result directly", async () => {
     const result = await client.longRunningRpc({
-      prompt: "text",
+      prompt: "text"
     });
     assert.strictEqual(result.data, "text data");
   });

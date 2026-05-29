@@ -17,7 +17,7 @@ describe("Payload Content Negotiation Client", () => {
   beforeEach(() => {
     client = new ContentNegotiationClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -28,7 +28,10 @@ describe("Payload Content Negotiation Client", () => {
       chunks.push(chunk as Uint8Array);
     }
     const buffer = Buffer.concat(chunks);
-    assert.strictEqual(uint8ArrayToString(buffer, "base64"), uint8ArrayToString(pngFile, "base64"));
+    assert.strictEqual(
+      uint8ArrayToString(buffer, "base64"),
+      uint8ArrayToString(pngFile, "base64")
+    );
   });
 
   it("should get image/jpeg for same body in content negotiation", async () => {
@@ -40,7 +43,7 @@ describe("Payload Content Negotiation Client", () => {
     const buffer = Buffer.concat(chunks);
     assert.strictEqual(
       uint8ArrayToString(buffer, "base64"),
-      uint8ArrayToString(jpegImage, "base64"),
+      uint8ArrayToString(jpegImage, "base64")
     );
   });
 
@@ -51,11 +54,17 @@ describe("Payload Content Negotiation Client", () => {
       chunks.push(chunk as Uint8Array);
     }
     const buffer = Buffer.concat(chunks);
-    assert.strictEqual(uint8ArrayToString(buffer, "base64"), uint8ArrayToString(pngFile, "base64"));
+    assert.strictEqual(
+      uint8ArrayToString(buffer, "base64"),
+      uint8ArrayToString(pngFile, "base64")
+    );
   });
 
   it("should get application/json for different body in content negotiation", async () => {
     const result = await client.differentBody.getAvatarAsJson();
-    assert.strictEqual(uint8ArrayToString(result.content, "utf-8"), pngFile.toString());
+    assert.strictEqual(
+      uint8ArrayToString(result.content, "utf-8"),
+      pngFile.toString()
+    );
   });
 });

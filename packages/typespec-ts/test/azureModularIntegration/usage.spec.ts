@@ -5,7 +5,7 @@ import {
   createUsage,
   input,
   inputAndOutput,
-  output,
+  output
 } from "./generated/type/model/usage/src/api/index.js";
 import { UsageClient } from "./generated/type/model/usage/src/index.js";
 const EXPECTED_VALUE = "example-value";
@@ -15,7 +15,7 @@ describe("UsageContext Classical Client", () => {
   beforeEach(() => {
     client = new UsageClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -32,7 +32,7 @@ describe("UsageContext Classical Client", () => {
 
   it("should inputAndOutput", async () => {
     const result = await client.inputAndOutput({
-      requiredProp: EXPECTED_VALUE,
+      requiredProp: EXPECTED_VALUE
     });
     assert.isNotNull(result);
     assert.strictEqual(result.requiredProp, EXPECTED_VALUE);
@@ -45,7 +45,7 @@ describe("UsageContext API Operations", () => {
   beforeEach(() => {
     context = createUsage({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -56,7 +56,7 @@ describe("UsageContext API Operations", () => {
 
   it("should inputAndOutput", async () => {
     const result = await inputAndOutput(context, {
-      requiredProp: EXPECTED_VALUE,
+      requiredProp: EXPECTED_VALUE
     });
     assert.isNotNull(result);
     assert.strictEqual(result.requiredProp, EXPECTED_VALUE);

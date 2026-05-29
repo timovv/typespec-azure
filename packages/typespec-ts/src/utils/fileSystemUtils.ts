@@ -7,7 +7,7 @@ import { reportDiagnostic } from "../lib.js";
 export async function clearDirectory(
   dirPath: string,
   excludeNames: string[] = [],
-  program?: Program,
+  program?: Program
 ): Promise<void> {
   if (!(await fsextra.pathExists(dirPath))) {
     return;
@@ -39,7 +39,7 @@ export async function clearDirectory(
       reportDiagnostic(program, {
         code: "directory-traversal-error",
         format: { directory: dirPath, error: String(error) },
-        target: NoTarget,
+        target: NoTarget
       });
     }
     await fsextra.emptyDir(dirPath);

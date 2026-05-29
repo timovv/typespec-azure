@@ -14,7 +14,7 @@ import {
   generateResponseAssertions,
   getDescriptiveName,
   iterateClientsAndMethods,
-  prepareCommonParameters,
+  prepareCommonParameters
 } from "./helpers/exampleValueHelpers.js";
 import { getClassicalClientName } from "./helpers/namingHelpers.js";
 import { CreateRecorderHelpers } from "./static-helpers-metadata.js";
@@ -24,12 +24,19 @@ import { CreateRecorderHelpers } from "./static-helpers-metadata.js";
  */
 async function cleanupTestFolder(dpgContext: SdkContext) {
   const clients = dpgContext.sdkPackage.clients;
-  const baseTestFolder = join(dpgContext.generationPathDetail?.rootDir ?? "", "test", "generated");
+  const baseTestFolder = join(
+    dpgContext.generationPathDetail?.rootDir ?? "",
+    "test",
+    "generated"
+  );
 
   // If there are multiple clients, clean up subfolders
   if (clients.length > 1) {
     for (const client of clients) {
-      const subFolder = normalizeName(getClassicalClientName(client), NameType.File);
+      const subFolder = normalizeName(
+        getClassicalClientName(client),
+        NameType.File
+      );
       const clientTestFolder = join(baseTestFolder, subFolder);
       if (existsSync(clientTestFolder)) {
         rmSync(clientTestFolder, { recursive: true, force: true });
@@ -56,7 +63,7 @@ export async function emitTests(dpgContext: SdkContext): Promise<SourceFile[]> {
 function emitMethodTests(
   dpgContext: SdkContext,
   method: ServiceOperation,
-  options: ClientEmitOptions,
+  options: ClientEmitOptions
 ): SourceFile | undefined {
   const examples = method.operation.examples ?? [];
   if (examples.length === 0) {
@@ -65,7 +72,13 @@ function emitMethodTests(
 
   const methodPrefix = `${options.classicalMethodPrefix ?? ""} ${method.oriName ?? method.name}`;
   const fileName = normalizeName(`${methodPrefix} Test`, NameType.File);
-  const sourceFile = createSourceFile(dpgContext, method, options, "test", fileName);
+  const sourceFile = createSourceFile(
+    dpgContext,
+    method,
+    options,
+    "test",
+    fileName
+  );
   const clientName = getClassicalClientName(options.client);
 
   // Use resolveReference for test dependencies to let the binder handle imports automatically
@@ -75,17 +88,21 @@ function emitMethodTests(
   const afterEachType = resolveReference(AzureTestDependencies.afterEach);
   const itType = resolveReference(AzureTestDependencies.it);
   const describeType = resolveReference(AzureTestDependencies.describe);
-  const createRecorderHelper = resolveReference(CreateRecorderHelpers.createRecorder);
+  const createRecorderHelper = resolveReference(
+    CreateRecorderHelpers.createRecorder
+  );
 
   // Compute the relative path from the generated test file to src/index.js.
   // Single-client files land at test/generated/<file>.spec.ts (2 levels up),
   // while multi-client files land at test/generated/<subFolder>/<file>.spec.ts (3 levels up).
-  const srcIndexRelativePath = options.subFolder ? "../../../src/index.js" : "../../src/index.js";
+  const srcIndexRelativePath = options.subFolder
+    ? "../../../src/index.js"
+    : "../../src/index.js";
 
   // Import the client
   sourceFile.addImportDeclaration({
     moduleSpecifier: srcIndexRelativePath,
-    namedImports: [clientName],
+    namedImports: [clientName]
   });
 
   const testFunctions = [];
@@ -93,7 +110,8 @@ function emitMethodTests(
   let clientParameterDefs: string[] = [];
 
   // Create test describe block
-  const methodDescription = method.doc ?? `test ${method.oriName ?? method.name}`;
+  const methodDescription =
+    method.doc ?? `test ${method.oriName ?? method.name}`;
   let normalizedDescription =
     methodDescription.charAt(0).toLowerCase() + methodDescription.slice(1);
 
@@ -106,16 +124,27 @@ function emitMethodTests(
     // Create a more descriptive test name based on the operation (same as samples)
     const testName = getDescriptiveName(method, example.name, "test");
     const parameterMap = buildParameterValueMap(example);
-    const parameters = prepareCommonParameters(dpgContext, method, parameterMap, options.client);
+    const parameters = prepareCommonParameters(
+      dpgContext,
+      method,
+      parameterMap,
+      options.client
+    );
 
     // Prepare client-level parameters
-    const requiredClientParams = parameters.filter((p) => p.onClient && !p.isOptional);
-    clientParameterDefs = requiredClientParams.map((p) => `const ${p.name} = ${p.value};`);
+    const requiredClientParams = parameters.filter(
+      (p) => p.onClient && !p.isOptional
+    );
+    clientParameterDefs = requiredClientParams.map(
+      (p) => `const ${p.name} = ${p.value};`
+    );
     clientParamNames = requiredClientParams.map((p) => p.name);
     // add client options to parameters
     // const clientOptions = recorder.configureClientOptions({});
     clientParamNames.push("clientOptions");
-    clientParameterDefs.push(`const clientOptions = recorder.configureClientOptions({});`);
+    clientParameterDefs.push(
+      `const clientOptions = recorder.configureClientOptions({});`
+    );
 
     const { methodCall } = generateMethodCall(method, parameters, options);
 
@@ -129,13 +158,15 @@ function emitMethodTests(
       testFunctionBody.push(`/* Test passes if no exception is thrown */`);
     } else if (isPaging) {
       testFunctionBody.push(`const resArray = new Array();`);
-      testFunctionBody.push(`for await (const item of ${methodCall}) { resArray.push(item); }`);
+      testFunctionBody.push(
+        `for await (const item of ${methodCall}) { resArray.push(item); }`
+      );
       testFunctionBody.push(`${assertType}.ok(resArray);`);
       // Add response assertions for paging results
       const pagingAssertions = generateResponseAssertions(
         example,
         "resArray",
-        true, // isPaging = true
+        true // isPaging = true
       );
       testFunctionBody.push(...pagingAssertions);
     } else if (isLRO) {
@@ -155,7 +186,7 @@ function emitMethodTests(
     // Create a test function
     const testFunction = {
       name: testName,
-      body: testFunctionBody,
+      body: testFunctionBody
     };
 
     testFunctions.push(testFunction);
@@ -183,7 +214,7 @@ ${testFunctions
   ${itType}("should ${fn.name}", async function() {
     ${fn.body.join("\n    ")}
   });
-`,
+`
   )
   .join("")}
 });`;

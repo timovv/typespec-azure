@@ -3,7 +3,7 @@ import { assert, beforeEach, describe, it } from "vitest";
 import EnumDiscriminatorClientFactory, {
   EnumDiscriminatorClient,
   Golden,
-  Snake,
+  Snake
 } from "./generated/type/model/inheritance/enum-discriminator/src/index.js";
 
 describe("EnumDiscriminatorClient Rest Client", () => {
@@ -11,17 +11,17 @@ describe("EnumDiscriminatorClient Rest Client", () => {
 
   beforeEach(() => {
     client = EnumDiscriminatorClientFactory({
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
   const validBody: Golden = {
     weight: 10,
-    kind: "golden",
+    kind: "golden"
   };
   const validFixedEnumBody: Snake = {
     length: 10,
-    kind: "cobra",
+    kind: "cobra"
   };
   it("should get extensible enum", async () => {
     const result = await client
@@ -40,7 +40,9 @@ describe("EnumDiscriminatorClient Rest Client", () => {
 
   it("should get extensible enum if missing discriminator", async () => {
     const result = await client
-      .path("/type/model/inheritance/enum-discriminator/extensible-enum/missingdiscriminator")
+      .path(
+        "/type/model/inheritance/enum-discriminator/extensible-enum/missingdiscriminator"
+      )
       .get();
     assert.strictEqual(result.status, "200");
     assert.deepEqual(result.body, { weight: 10 } as any);
@@ -48,14 +50,18 @@ describe("EnumDiscriminatorClient Rest Client", () => {
 
   it("should get extensible enum if wrong discriminator", async () => {
     const result = await client
-      .path("/type/model/inheritance/enum-discriminator/extensible-enum/wrongdiscriminator")
+      .path(
+        "/type/model/inheritance/enum-discriminator/extensible-enum/wrongdiscriminator"
+      )
       .get();
     assert.strictEqual(result.status, "200");
     assert.deepEqual(result.body, { weight: 8, kind: "wrongKind" });
   });
 
   it("should get fixed enum", async () => {
-    const result = await client.path("/type/model/inheritance/enum-discriminator/fixed-enum").get();
+    const result = await client
+      .path("/type/model/inheritance/enum-discriminator/fixed-enum")
+      .get();
     assert.strictEqual(result.status, "200");
     assert.deepEqual(result.body, validFixedEnumBody);
   });
@@ -69,7 +75,9 @@ describe("EnumDiscriminatorClient Rest Client", () => {
 
   it("should get fixed enum if missing discriminator", async () => {
     const result = await client
-      .path("/type/model/inheritance/enum-discriminator/fixed-enum/missingdiscriminator")
+      .path(
+        "/type/model/inheritance/enum-discriminator/fixed-enum/missingdiscriminator"
+      )
       .get();
     assert.strictEqual(result.status, "200");
     assert.deepEqual(result.body, { length: 10 } as any);
@@ -77,7 +85,9 @@ describe("EnumDiscriminatorClient Rest Client", () => {
 
   it("should get fixed enum if wrong discriminator", async () => {
     const result = await client
-      .path("/type/model/inheritance/enum-discriminator/fixed-enum/wrongdiscriminator")
+      .path(
+        "/type/model/inheritance/enum-discriminator/fixed-enum/wrongdiscriminator"
+      )
       .get();
     assert.strictEqual(result.status, "200");
     assert.deepEqual(result.body, { length: 8, kind: "wrongKind" });

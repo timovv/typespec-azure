@@ -7,7 +7,7 @@ describe("VersioningMadeOptionalClient Rest Client", () => {
 
   beforeEach(() => {
     client = new MadeOptionalClient("http://localhost:3002", {
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

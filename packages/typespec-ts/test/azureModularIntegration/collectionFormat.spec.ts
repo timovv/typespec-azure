@@ -8,7 +8,7 @@ describe("CollectionFormatClient Classical Client", () => {
   beforeEach(() => {
     client = new CollectionFormatClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -20,8 +20,8 @@ describe("CollectionFormatClient Classical Client", () => {
   it("should send multi format in query", async () => {
     const result = await client.query.multi(["blue", "red", "green"], {
       requestOptions: {
-        skipUrlEncoding: true,
-      },
+        skipUrlEncoding: true
+      }
     });
     assert.strictEqual(result, undefined);
   });

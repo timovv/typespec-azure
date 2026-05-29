@@ -10,9 +10,12 @@ import {
   PackageFlavor,
   pascalCase,
   RLCOptions,
-  ServiceInfo,
+  ServiceInfo
 } from "../rlc-common/index.js";
-import { getRLCClients, listOperationsUnderRLCClient } from "../utils/clientUtils.js";
+import {
+  getRLCClients,
+  listOperationsUnderRLCClient
+} from "../utils/clientUtils.js";
 import { getSupportedHttpAuth } from "../utils/credentialUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
 import { getDefaultService } from "../utils/modelUtils.js";
@@ -21,13 +24,13 @@ import { getOperationName } from "../utils/operationUtil.js";
 
 export function transformRLCOptions(
   emitterOptions: EmitterOptions,
-  dpgContext: SdkContext,
+  dpgContext: SdkContext
 ): RLCOptions {
   // Extract the options from emitter option
   const options = extractRLCOptions(
     dpgContext,
     emitterOptions,
-    dpgContext.generationPathDetail?.rootDir ?? "",
+    dpgContext.generationPathDetail?.rootDir ?? ""
   );
   const batch = getRLCClients(dpgContext, options.isModularLibrary);
   options.batch = batch;
@@ -36,29 +39,41 @@ export function transformRLCOptions(
 function extractRLCOptions(
   dpgContext: SdkContext,
   emitterOptions: EmitterOptions,
-  generationRootDir: string,
+  generationRootDir: string
 ): RLCOptions {
   const program = dpgContext.program;
   // Compute isModularLibrary early - defaults to true unless explicitly set to false
   const isModularLibrary = emitterOptions["is-modular-library"] !== false;
   const includeShortcuts = getIncludeShortcuts(emitterOptions);
-  const packageDetails = getPackageDetails(program, emitterOptions, isModularLibrary);
+  const packageDetails = getPackageDetails(
+    program,
+    emitterOptions,
+    isModularLibrary
+  );
   const flavor = getFlavor(emitterOptions, packageDetails);
   const moduleKind = getModuleKind(emitterOptions);
   const serviceInfo = getServiceInfo(program, isModularLibrary);
-  const includeHeadersInResponse = emitterOptions["include-headers-in-response"] === true;
+  const includeHeadersInResponse =
+    emitterOptions["include-headers-in-response"] === true;
   const azureSdkForJs = getAzureSdkForJs(emitterOptions, flavor);
   const generateMetadata = getGenerateMetadata(emitterOptions);
   const generateTest = getGenerateTest(emitterOptions, flavor);
   const generateSample = getGenerateSample(dpgContext, emitterOptions);
-  const credentialInfo = getCredentialInfo(program, emitterOptions, isModularLibrary);
+  const credentialInfo = getCredentialInfo(
+    program,
+    emitterOptions,
+    isModularLibrary
+  );
   const azureOutputDirectory = getAzureOutputDirectory(generationRootDir);
   const enableOperationGroup = getEnableOperationGroup(
     dpgContext,
     emitterOptions,
-    isModularLibrary,
+    isModularLibrary
   );
-  const enableModelNamespace = getEnableModelNamespace(dpgContext, emitterOptions);
+  const enableModelNamespace = getEnableModelNamespace(
+    dpgContext,
+    emitterOptions
+  );
   const hierarchyClient = getHierarchyClient(emitterOptions);
   const clearOutputFolder = getClearOutputFolder(emitterOptions);
   const multiClient = emitterOptions["multi-client"];
@@ -68,17 +83,26 @@ function extractRLCOptions(
   const productDocLink = emitterOptions["product-doc-link"];
   const compatibilityMode = emitterOptions["compatibility-mode"];
   const compatibilityLro = emitterOptions["compatibility-lro"];
-  const experimentalExtensibleEnums = emitterOptions["experimental-extensible-enums"];
-  const ignorePropertyNameNormalize = emitterOptions["ignore-property-name-normalize"];
-  const ignoreEnumMemberNameNormalize = emitterOptions["ignore-enum-member-name-normalize"];
-  const compatibilityQueryMultiFormat = emitterOptions["compatibility-query-multi-format"];
+  const experimentalExtensibleEnums =
+    emitterOptions["experimental-extensible-enums"];
+  const ignorePropertyNameNormalize =
+    emitterOptions["ignore-property-name-normalize"];
+  const ignoreEnumMemberNameNormalize =
+    emitterOptions["ignore-enum-member-name-normalize"];
+  const compatibilityQueryMultiFormat =
+    emitterOptions["compatibility-query-multi-format"];
   const enableStorageCompat = emitterOptions["enable-storage-compat"] === true;
-  const treatUnknownAsRecord = emitterOptions["treat-unknown-as-record"] === true;
+  const treatUnknownAsRecord =
+    emitterOptions["treat-unknown-as-record"] === true;
   const headAsBoolean = emitterOptions["head-as-boolean"] === true;
   const typespecTitleMap = emitterOptions["typespec-title-map"];
-  const generateReactNativeTarget = emitterOptions["generate-react-native-target"] === true;
+  const generateReactNativeTarget =
+    emitterOptions["generate-react-native-target"] === true;
   const hasSubscriptionId = getSubscriptionId(dpgContext);
-  const ignoreNullableOnOptional = getIgnoreNullableOnOptional(emitterOptions, flavor);
+  const ignoreNullableOnOptional = getIgnoreNullableOnOptional(
+    emitterOptions,
+    flavor
+  );
   const wrapNonModelReturn = getWrapNonModelReturn(emitterOptions, flavor);
   const isMultiService = (dpgContext.allServiceNamespaces?.length ?? 0) > 1;
 
@@ -121,7 +145,7 @@ function extractRLCOptions(
     enableStorageCompat,
     treatUnknownAsRecord,
     headAsBoolean,
-    generateReactNativeTarget,
+    generateReactNativeTarget
   };
 }
 
@@ -141,9 +165,10 @@ function processAuth(program: Program, isModularLibrary: boolean) {
         securityInfo.addCredentials = true;
         securityInfo.customHttpAuthHeaderName = "Authorization";
         // If it is basic or bearer auth we should generate it as Basic or Bearer
-        securityInfo.customHttpAuthSharedKeyPrefix = ["basic", "bearer"].includes(
-          auth.scheme.toLowerCase(),
-        )
+        securityInfo.customHttpAuthSharedKeyPrefix = [
+          "basic",
+          "bearer"
+        ].includes(auth.scheme.toLowerCase())
           ? pascalCase(auth.scheme)
           : auth.scheme;
         break;
@@ -166,7 +191,7 @@ function processAuth(program: Program, isModularLibrary: boolean) {
         if (flow.scopes.length === 0) {
           reportDiagnostic(program, {
             code: "no-credential-scopes",
-            target: NoTarget,
+            target: NoTarget
           });
         }
         // ignore the user_impersonation scope
@@ -180,7 +205,7 @@ function processAuth(program: Program, isModularLibrary: boolean) {
         securityInfo.credentialScopes.push(
           ...flow.scopes.map((item) => {
             return item.value;
-          }),
+          })
         );
         break;
       }
@@ -194,7 +219,7 @@ function processAuth(program: Program, isModularLibrary: boolean) {
 function getEnableOperationGroup(
   dpgContext: SdkContext,
   emitterOptions: EmitterOptions,
-  isModularLibrary: boolean,
+  isModularLibrary: boolean
 ) {
   if (
     emitterOptions["enable-operation-group"] === true ||
@@ -206,7 +231,10 @@ function getEnableOperationGroup(
   return detectIfNameConflicts(dpgContext, isModularLibrary);
 }
 
-function getEnableModelNamespace(dpgContext: SdkContext, emitterOptions: EmitterOptions) {
+function getEnableModelNamespace(
+  dpgContext: SdkContext,
+  emitterOptions: EmitterOptions
+) {
   if (
     emitterOptions["enable-model-namespace"] === true ||
     emitterOptions["enable-model-namespace"] === false
@@ -218,7 +246,10 @@ function getEnableModelNamespace(dpgContext: SdkContext, emitterOptions: Emitter
 }
 
 function getHierarchyClient(emitterOptions: EmitterOptions) {
-  if (emitterOptions["hierarchy-client"] === true || emitterOptions["hierarchy-client"] === false) {
+  if (
+    emitterOptions["hierarchy-client"] === true ||
+    emitterOptions["hierarchy-client"] === false
+  ) {
     return emitterOptions["hierarchy-client"];
   }
   // enable hierarchy client by default if customers didn't set the option explicitly
@@ -229,7 +260,10 @@ function getClearOutputFolder(emitterOptions: EmitterOptions) {
   return emitterOptions["clear-output-folder"] ? true : false;
 }
 
-function detectIfNameConflicts(dpgContext: SdkContext, isModularLibrary: boolean) {
+function detectIfNameConflicts(
+  dpgContext: SdkContext,
+  isModularLibrary: boolean
+) {
   const clients = getRLCClients(dpgContext, isModularLibrary);
   for (const client of clients) {
     // only consider it's conflict when there are conflicts in the same client
@@ -251,7 +285,7 @@ function detectIfNameConflicts(dpgContext: SdkContext, isModularLibrary: boolean
 
 function getIgnoreNullableOnOptional(
   emitterOptions: EmitterOptions,
-  flavor: PackageFlavor,
+  flavor: PackageFlavor
 ): boolean {
   // If explicitly set in options, use that value
   if (emitterOptions["ignore-nullable-on-optional"] !== undefined) {
@@ -261,7 +295,10 @@ function getIgnoreNullableOnOptional(
   return flavor === "azure";
 }
 
-function getWrapNonModelReturn(emitterOptions: EmitterOptions, flavor: PackageFlavor): boolean {
+function getWrapNonModelReturn(
+  emitterOptions: EmitterOptions,
+  flavor: PackageFlavor
+): boolean {
   // If explicitly set in options, use that value
   if (emitterOptions["wrap-non-model-return"] !== undefined) {
     return Boolean(emitterOptions["wrap-non-model-return"]);
@@ -278,7 +315,10 @@ function getModuleKind(emitterOptions: EmitterOptions) {
   return emitterOptions["module-kind"] ?? "esm";
 }
 
-function getFlavor(emitterOptions: EmitterOptions, packageDetails?: PackageDetails): PackageFlavor {
+function getFlavor(
+  emitterOptions: EmitterOptions,
+  packageDetails?: PackageDetails
+): PackageFlavor {
   const flavor = emitterOptions.flavor;
 
   if (flavor !== undefined) {
@@ -307,24 +347,28 @@ function getFlavor(emitterOptions: EmitterOptions, packageDetails?: PackageDetai
 function buildPackageDetails(
   program: Program,
   emitterOptions: EmitterOptions,
-  isModularLibrary: boolean,
+  isModularLibrary: boolean
 ): PackageDetails {
   const defaultDetail = {
     name: "@msinternal/unamedpackage",
     nameWithoutScope: "unamedpackage",
-    version: "1.0.0-beta.1",
+    version: "1.0.0-beta.1"
   };
-  const isVersionUserProvided = Boolean(emitterOptions["package-details"]?.version);
+  const isVersionUserProvided = Boolean(
+    emitterOptions["package-details"]?.version
+  );
   const packageDetails: PackageDetails = {
     ...emitterOptions["package-details"],
     name:
       emitterOptions["package-details"]?.name ??
       normalizeName(
-        emitterOptions?.title ?? getDefaultService(program, isModularLibrary)?.title ?? "",
-        NameType.Class,
+        emitterOptions?.title ??
+          getDefaultService(program, isModularLibrary)?.title ??
+          "",
+        NameType.Class
       ),
     version: emitterOptions["package-details"]?.version ?? "1.0.0-beta.1",
-    isVersionUserProvided,
+    isVersionUserProvided
   };
   if (emitterOptions["package-details"]?.name) {
     const nameParts = emitterOptions["package-details"]?.name.split("/");
@@ -339,20 +383,26 @@ function buildPackageDetails(
 function getPackageDetails(
   program: Program,
   emitterOptions: EmitterOptions,
-  isModularLibrary: boolean,
+  isModularLibrary: boolean
 ): PackageDetails {
   return buildPackageDetails(program, emitterOptions, isModularLibrary);
 }
 
-function getServiceInfo(program: Program, isModularLibrary: boolean): ServiceInfo {
+function getServiceInfo(
+  program: Program,
+  isModularLibrary: boolean
+): ServiceInfo {
   const defaultService = getDefaultService(program, isModularLibrary);
   return {
     title: defaultService?.title,
-    description: defaultService && getDoc(program, defaultService.type),
+    description: defaultService && getDoc(program, defaultService.type)
   };
 }
 
-function getAzureSdkForJs(emitterOptions: EmitterOptions, flavor: PackageFlavor) {
+function getAzureSdkForJs(
+  emitterOptions: EmitterOptions,
+  flavor: PackageFlavor
+) {
   return flavor !== "azure"
     ? false
     : emitterOptions["azure-sdk-for-js"] === undefined ||
@@ -376,7 +426,10 @@ function getGenerateMetadata(emitterOptions: EmitterOptions) {
  * @param emitterOptions
  * @returns
  */
-function getGenerateTest(emitterOptions: EmitterOptions, flavor: PackageFlavor) {
+function getGenerateTest(
+  emitterOptions: EmitterOptions,
+  flavor: PackageFlavor
+) {
   // Disable generateTest if azureSdkForJS is false
   if (!getAzureSdkForJs(emitterOptions, flavor)) {
     return false;
@@ -389,7 +442,10 @@ function getGenerateTest(emitterOptions: EmitterOptions, flavor: PackageFlavor) 
  * @param emitterOptions
  * @returns
  */
-function getGenerateSample(dpgContext: SdkContext, emitterOptions: EmitterOptions) {
+function getGenerateSample(
+  dpgContext: SdkContext,
+  emitterOptions: EmitterOptions
+) {
   if (dpgContext.arm && emitterOptions["generate-sample"] === undefined) {
     return true;
   }
@@ -405,7 +461,7 @@ function getGenerateSample(dpgContext: SdkContext, emitterOptions: EmitterOption
 export function getCredentialInfo(
   program: Program,
   emitterOptions: EmitterOptions,
-  isModularLibrary: boolean = true,
+  isModularLibrary: boolean = true
 ) {
   const securityInfo = processAuth(program, isModularLibrary);
   const addCredentials =
@@ -435,14 +491,20 @@ export function getCredentialInfo(
     credentialScopes,
     credentialKeyHeaderName,
     customHttpAuthHeaderName,
-    customHttpAuthSharedKeyPrefix,
+    customHttpAuthSharedKeyPrefix
   };
 }
 
 function getAzureOutputDirectory(emitterOutputDir: string): string | undefined {
   const sdkFolder = emitterOutputDir;
-  const sdkReletivePath = sdkFolder?.replace(/\/$/, "").split("/").slice(-3).join("/");
-  return sdkReletivePath?.substring(0, 3) === "sdk" ? sdkReletivePath : undefined;
+  const sdkReletivePath = sdkFolder
+    ?.replace(/\/$/, "")
+    .split("/")
+    .slice(-3)
+    .join("/");
+  return sdkReletivePath?.substring(0, 3) === "sdk"
+    ? sdkReletivePath
+    : undefined;
 }
 
 export function getSubscriptionId(dpgContext: SdkContext) {

@@ -9,7 +9,10 @@ import { reportDiagnostic } from "../lib.js";
  * @param authorization authentication object
  * @returns supported HTTP authentication schemes
  */
-export function getSupportedHttpAuth(program: Program, authorization: Authentication): HttpAuth[] {
+export function getSupportedHttpAuth(
+  program: Program,
+  authorization: Authentication
+): HttpAuth[] {
   const authList = [];
   for (const option of authorization.options) {
     for (const auth of option.schemes) {
@@ -22,9 +25,9 @@ export function getSupportedHttpAuth(program: Program, authorization: Authentica
             reportDiagnostic(program, {
               code: "un-supported-credential",
               format: {
-                credentialType: `${auth.type} ${auth.in}`,
+                credentialType: `${auth.type} ${auth.in}`
               },
-              target: NoTarget,
+              target: NoTarget
             });
           }
           break;
@@ -39,7 +42,9 @@ export function getSupportedHttpAuth(program: Program, authorization: Authentica
 }
 
 export function isSupportedKeyCredential(auth: HttpAuth): boolean {
-  return (auth.type === "apiKey" && auth.in === "header") || auth.type === "http";
+  return (
+    (auth.type === "apiKey" && auth.in === "header") || auth.type === "http"
+  );
 }
 
 export function isSupportedTokenCredential(auth: HttpAuth): boolean {
@@ -51,13 +56,19 @@ export function hasKeyCredential(initialization: SdkClientInitializationType) {
   return authScheme.some((auth) => isSupportedKeyCredential(auth));
 }
 
-export function hasTokenCredential(initialization: SdkClientInitializationType) {
+export function hasTokenCredential(
+  initialization: SdkClientInitializationType
+) {
   const authScheme = getAuthScheme(initialization);
   return authScheme.some((auth) => isSupportedTokenCredential(auth));
 }
 
-function getAuthScheme(initialization: SdkClientInitializationType): HttpAuth[] {
-  const credentialParams = initialization.parameters?.find((param) => param.kind === "credential");
+function getAuthScheme(
+  initialization: SdkClientInitializationType
+): HttpAuth[] {
+  const credentialParams = initialization.parameters?.find(
+    (param) => param.kind === "credential"
+  );
   if (!credentialParams) {
     return [];
   }

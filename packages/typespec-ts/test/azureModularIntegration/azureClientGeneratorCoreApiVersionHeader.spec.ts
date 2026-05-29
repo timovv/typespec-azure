@@ -8,7 +8,7 @@ describe("Azure Client Generator Core - API Version Header (Modular)", () => {
   beforeEach(() => {
     client = new HeaderClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

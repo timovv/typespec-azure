@@ -6,11 +6,15 @@ import {
   OptionalKind,
   PropertySignatureStructure,
   StructureKind,
-  TypeAliasDeclarationStructure,
+  TypeAliasDeclarationStructure
 } from "ts-morph";
 import { getMultipartPartTypeName } from "./helpers/nameConstructors.js";
 import { NameType, normalizeName } from "./helpers/nameUtils.js";
-import { isArraySchema, isDictionarySchema, isObjectSchema } from "./helpers/schemaHelpers.js";
+import {
+  isArraySchema,
+  isDictionarySchema,
+  isObjectSchema
+} from "./helpers/schemaHelpers.js";
 import {
   ArraySchema,
   ObjectSchema,
@@ -18,7 +22,7 @@ import {
   Property,
   RLCModel,
   Schema,
-  SchemaContext,
+  SchemaContext
 } from "./interfaces.js";
 
 /**
@@ -27,22 +31,32 @@ import {
 export function buildObjectInterfaces(
   model: RLCModel,
   importedModels: Set<string>,
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ): InterfaceDeclarationStructure[] {
   const objectSchemas: ObjectSchema[] = (model.schemas ?? []).filter(
-    (o) => isObjectSchema(o) && (o as ObjectSchema).usage?.some((u) => schemaUsage.includes(u)),
+    (o) =>
+      isObjectSchema(o) &&
+      (o as ObjectSchema).usage?.some((u) => schemaUsage.includes(u))
   );
   const objectInterfaces: InterfaceDeclarationStructure[] = [];
 
   for (const objectSchema of objectSchemas) {
-    if (objectSchema.alias || objectSchema.outputAlias || objectSchema.fromCore) {
+    if (
+      objectSchema.alias ||
+      objectSchema.outputAlias ||
+      objectSchema.fromCore
+    ) {
       continue;
     }
 
     // FIXME: disabling new multipart generation for modular while we figure out the story
     if (objectSchema.isMultipartBody && !model.options?.isModularLibrary) {
       objectInterfaces.push(
-        ...buildMultipartPartDefinitions(objectSchema, importedModels, schemaUsage),
+        ...buildMultipartPartDefinitions(
+          objectSchema,
+          importedModels,
+          schemaUsage
+        )
       );
       continue;
     }
@@ -53,7 +67,7 @@ export function buildObjectInterfaces(
       baseName,
       objectSchema,
       schemaUsage,
-      importedModels,
+      importedModels
     );
 
     objectInterfaces.push(interfaceDeclaration);
@@ -61,23 +75,24 @@ export function buildObjectInterfaces(
   return objectInterfaces;
 }
 
-const MULTIPART_FILE_METADATA_PROPERTIES: OptionalKind<PropertySignatureStructure>[] = [
-  {
-    name: "filename",
-    hasQuestionToken: true,
-    type: "string",
-  },
-  {
-    name: "contentType",
-    hasQuestionToken: true,
-    type: "string",
-  },
-];
+const MULTIPART_FILE_METADATA_PROPERTIES: OptionalKind<PropertySignatureStructure>[] =
+  [
+    {
+      name: "filename",
+      hasQuestionToken: true,
+      type: "string"
+    },
+    {
+      name: "contentType",
+      hasQuestionToken: true,
+      type: "string"
+    }
+  ];
 
 function buildMultipartPartDefinitions(
   schema: ObjectSchema,
   importedModels: Set<string>,
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ): InterfaceDeclarationStructure[] {
   if (!schema.isMultipartBody) {
     return [];
@@ -88,7 +103,7 @@ function buildMultipartPartDefinitions(
     schema.properties ?? {},
     schemaUsage,
     importedModels,
-    { flattenBinaryArrays: true },
+    { flattenBinaryArrays: true }
   );
 
   const structures: InterfaceDeclarationStructure[] = [];
@@ -109,8 +124,8 @@ function buildMultipartPartDefinitions(
           getPropertySignature(
             { name: "filename", ...multipartOptions.filenameSchema },
             [SchemaContext.Input],
-            importedModels,
-          ),
+            importedModels
+          )
         );
       }
       if (multipartOptions.contentTypeSchema) {
@@ -118,8 +133,8 @@ function buildMultipartPartDefinitions(
           getPropertySignature(
             { name: "contentType", ...multipartOptions.contentTypeSchema },
             [SchemaContext.Input],
-            importedModels,
-          ),
+            importedModels
+          )
         );
       }
     } else if (isFileUpload) {
@@ -134,14 +149,14 @@ function buildMultipartPartDefinitions(
       properties: [
         {
           name: "name",
-          type: name,
+          type: name
         },
         {
           name: "body",
-          type: signature.type,
+          type: signature.type
         },
-        ...additionalProperties,
-      ],
+        ...additionalProperties
+      ]
     });
   }
 
@@ -151,10 +166,12 @@ function buildMultipartPartDefinitions(
 export function buildObjectAliases(
   model: RLCModel,
   importedModels: Set<string>,
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ) {
   const objectSchemas: ObjectSchema[] = (model.schemas ?? []).filter(
-    (o) => isObjectSchema(o) && (o as ObjectSchema).usage?.some((u) => schemaUsage.includes(u)),
+    (o) =>
+      isObjectSchema(o) &&
+      (o as ObjectSchema).usage?.some((u) => schemaUsage.includes(u))
   );
   const objectAliases: TypeAliasDeclarationStructure[] = [];
 
@@ -165,21 +182,21 @@ export function buildObjectAliases(
         objectSchema.properties ?? {},
         schemaUsage,
         importedModels,
-        { flattenBinaryArrays: true },
+        { flattenBinaryArrays: true }
       );
 
       const objectTypeNames = propertySignatures.map((sig) =>
-        getMultipartPartTypeName(objectSchema.name, sig.name),
+        getMultipartPartTypeName(objectSchema.name, sig.name)
       );
 
       objectAliases.push({
         kind: StructureKind.TypeAlias,
         ...(objectSchema.description && {
-          docs: [{ description: objectSchema.description }],
+          docs: [{ description: objectSchema.description }]
         }),
         name: objectSchema.typeName!,
         type: `FormData | Array<${objectTypeNames.join("|") || "unknown"}>`,
-        isExported: true,
+        isExported: true
       });
     }
 
@@ -196,22 +213,31 @@ export function buildObjectAliases(
           ? `${objectSchema.alias}`
           : `${objectSchema.outputAlias}`,
         isExported: true,
-        docs: [description ?? "Alias for " + modelName],
+        docs: [description ?? "Alias for " + modelName]
       });
     }
   }
   return objectAliases;
 }
 
-export function buildPolymorphicAliases(model: RLCModel, schemaUsage: SchemaContext[]) {
+export function buildPolymorphicAliases(
+  model: RLCModel,
+  schemaUsage: SchemaContext[]
+) {
   // We'll add aliases for polymorphic objects
   const objectAliases: TypeAliasDeclarationStructure[] = [];
   const objectSchemas: ObjectSchema[] = (model.schemas ?? []).filter(
-    (o) => isObjectSchema(o) && (o as ObjectSchema).usage?.some((u) => schemaUsage.includes(u)),
+    (o) =>
+      isObjectSchema(o) &&
+      (o as ObjectSchema).usage?.some((u) => schemaUsage.includes(u))
   );
   for (const objectSchema of objectSchemas) {
     const baseName = getObjectBaseName(objectSchema, schemaUsage);
-    const typeAlias = getPolymorphicTypeAlias(baseName, objectSchema, schemaUsage);
+    const typeAlias = getPolymorphicTypeAlias(
+      baseName,
+      objectSchema,
+      schemaUsage
+    );
     if (typeAlias) {
       objectAliases.push(typeAlias);
     }
@@ -223,9 +249,16 @@ export function buildPolymorphicAliases(model: RLCModel, schemaUsage: SchemaCont
 /**
  * Gets a base name for an object schema this is tipically used with suffixes when building interface or type names
  */
-function getObjectBaseName(objectSchema: ObjectSchema, schemaUsage: SchemaContext[]) {
+function getObjectBaseName(
+  objectSchema: ObjectSchema,
+  schemaUsage: SchemaContext[]
+) {
   const nameSuffix = schemaUsage.includes(SchemaContext.Output) ? "Output" : "";
-  const name = normalizeName(objectSchema.name, NameType.Interface, true /** guard name */);
+  const name = normalizeName(
+    objectSchema.name,
+    NameType.Interface,
+    true /** guard name */
+  );
 
   return `${name}${nameSuffix}`;
 }
@@ -237,7 +270,7 @@ function getObjectBaseName(objectSchema: ObjectSchema, schemaUsage: SchemaContex
 function getPolymorphicTypeAlias(
   baseName: string,
   objectSchema: ObjectSchema,
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ): TypeAliasDeclarationStructure | undefined {
   if (!isPolymorphicParent(objectSchema)) {
     return undefined;
@@ -251,8 +284,14 @@ function getPolymorphicTypeAlias(
   }
 
   for (const child of objectSchema.children?.all ?? []) {
-    const nameSuffix = schemaUsage.includes(SchemaContext.Output) ? "Output" : "";
-    const name = normalizeName(child.name, NameType.Interface, true /** shouldGuard */);
+    const nameSuffix = schemaUsage.includes(SchemaContext.Output)
+      ? "Output"
+      : "";
+    const name = normalizeName(
+      child.name,
+      NameType.Interface,
+      true /** shouldGuard */
+    );
 
     unionTypes.push(`${name}${nameSuffix}`);
   }
@@ -264,7 +303,7 @@ function getPolymorphicTypeAlias(
     ...(description && { docs: [{ description }] }),
     name: `${baseName}`,
     type: unionTypes.join(" | "),
-    isExported: true,
+    isExported: true
   };
 }
 
@@ -277,7 +316,7 @@ export function getObjectInterfaceDeclaration(
   baseName: string,
   objectSchema: ObjectSchema,
   schemaUsage: SchemaContext[],
-  importedModels: Set<string>,
+  importedModels: Set<string>
 ): InterfaceDeclarationStructure {
   let interfaceName = `${baseName}`;
   if (isPolymorphicParent(objectSchema)) {
@@ -286,14 +325,18 @@ export function getObjectInterfaceDeclaration(
 
   const properties = objectSchema.properties ?? {};
 
-  let propertySignatures = getPropertySignatures(properties, schemaUsage, importedModels);
+  let propertySignatures = getPropertySignatures(
+    properties,
+    schemaUsage,
+    importedModels
+  );
 
   // Add the polymorphic property if exists
   propertySignatures = addDiscriminatorProperty(
     model,
     objectSchema,
     propertySignatures,
-    schemaUsage,
+    schemaUsage
   );
 
   // Calculate the parents of the current object
@@ -306,7 +349,7 @@ export function getObjectInterfaceDeclaration(
     name: interfaceName,
     isExported: true,
     properties: propertySignatures,
-    ...(extendFrom && { extends: extendFrom }),
+    ...(extendFrom && { extends: extendFrom })
   };
 }
 
@@ -318,15 +361,21 @@ function addDiscriminatorProperty(
   model: RLCModel,
   objectSchema: ObjectSchema,
   properties: PropertySignatureStructure[],
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ): PropertySignatureStructure[] {
-  const polymorphicProperty = getDiscriminatorProperty(model, objectSchema, schemaUsage);
+  const polymorphicProperty = getDiscriminatorProperty(
+    model,
+    objectSchema,
+    schemaUsage
+  );
 
   if (polymorphicProperty) {
     // It is possible that the polymorphic property needs to override an existing property.
     // This is usually the case on the top level parent where the property already has a type of string
     // we need to replace it with the polymorphic values of its children
-    const filteredProperties = properties.filter((p) => p.name !== polymorphicProperty.name);
+    const filteredProperties = properties.filter(
+      (p) => p.name !== polymorphicProperty.name
+    );
     return [...filteredProperties, polymorphicProperty];
   }
 
@@ -339,7 +388,7 @@ function addDiscriminatorProperty(
 function getDiscriminatorProperty(
   model: RLCModel,
   objectSchema: ObjectSchema,
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ): PropertySignatureStructure | undefined {
   const discriminatorValue = objectSchema.discriminatorValue;
   if (!discriminatorValue && !objectSchema.discriminator) {
@@ -352,10 +401,11 @@ function getDiscriminatorProperty(
   if (discriminators) {
     if (discriminatorPropertyName === undefined) {
       throw new Error(
-        `getDiscriminatorProperty: Expected object ${objectSchema.name} to have a discriminator in its hierarchy but found none`,
+        `getDiscriminatorProperty: Expected object ${objectSchema.name} to have a discriminator in its hierarchy but found none`
       );
     }
-    const inputTypeName = objectSchema.discriminator?.typeName ?? objectSchema.discriminator?.type;
+    const inputTypeName =
+      objectSchema.discriminator?.typeName ?? objectSchema.discriminator?.type;
     return {
       kind: StructureKind.PropertySignature,
       name: `"${discriminatorPropertyName}"`,
@@ -364,7 +414,7 @@ function getDiscriminatorProperty(
           ? discriminators
           : schemaUsage.includes(SchemaContext.Output)
             ? (objectSchema.discriminator?.outputTypeName ?? inputTypeName)
-            : inputTypeName,
+            : inputTypeName
     };
   }
 
@@ -418,9 +468,13 @@ function getDiscriminatorValue(objectSchema: ObjectSchema): string | undefined {
     const allChildren = objectSchema.children?.all ?? [];
 
     // Top level parents may not have a discriminator of their own.
-    const selfDiscriminator = discriminatorValue ? [`"${discriminatorValue}"`] : [];
+    const selfDiscriminator = discriminatorValue
+      ? [`"${discriminatorValue}"`]
+      : [];
 
-    const childValues = getChildDiscriminatorValues(allChildren).map((v) => `"${v}"`);
+    const childValues = getChildDiscriminatorValues(allChildren).map(
+      (v) => `"${v}"`
+    );
 
     return [...selfDiscriminator, ...childValues].join(" | ");
   }
@@ -447,7 +501,7 @@ function getChildDiscriminatorValues(children: ObjectSchema[]): string[] {
  */
 export function getImmediateParentsNames(
   objectSchema: ObjectSchema,
-  schemaUsage: SchemaContext[],
+  schemaUsage: SchemaContext[]
 ): string[] {
   if (!objectSchema.parents?.immediate) {
     return [];
@@ -457,7 +511,11 @@ export function getImmediateParentsNames(
 
   // If an immediate parent is an empty DictionarySchema, that means that the object has been marked
   // with additional properties. We need to add Record<string, unknown> to the extend list and
-  if (objectSchema.parents.immediate.find((im) => isDictionarySchema(im, { filterEmpty: true }))) {
+  if (
+    objectSchema.parents.immediate.find((im) =>
+      isDictionarySchema(im, { filterEmpty: true })
+    )
+  ) {
     extendFrom.push("Record<string, unknown>");
   }
 
@@ -465,13 +523,17 @@ export function getImmediateParentsNames(
   const parents = objectSchema.parents.immediate
     .filter((p) => !isDictionarySchema(p, { filterEmpty: true }))
     .map((parent) => {
-      const nameSuffix = schemaUsage.includes(SchemaContext.Output) ? "Output" : "";
+      const nameSuffix = schemaUsage.includes(SchemaContext.Output)
+        ? "Output"
+        : "";
       const name = isDictionarySchema(parent)
         ? Object.entries(objectSchema.properties!)?.some((prop) => {
             const typeName = prop[1].typeName ?? prop[1].type;
             return (
               `Record<string, ${typeName}>` !== parent.typeName &&
-              !(parent as any).additionalProperties?.typeName?.includes(typeName)
+              !(parent as any).additionalProperties?.typeName?.includes(
+                typeName
+              )
             );
           })
           ? schemaUsage.includes(SchemaContext.Output)
@@ -484,7 +546,9 @@ export function getImmediateParentsNames(
             }`
         : `${normalizeName(parent.name, NameType.Interface, true /** shouldGuard */)}${nameSuffix}`;
 
-      return isObjectSchema(parent) && isPolymorphicParent(parent) ? `${name}Parent` : name;
+      return isObjectSchema(parent) && isPolymorphicParent(parent)
+        ? `${name}Parent`
+        : name;
     });
 
   return [...parents, ...extendFrom];
@@ -498,7 +562,7 @@ function getPropertySignatures(
   properties: { [key: string]: Property },
   schemaUsage: SchemaContext[],
   importedModels: Set<string>,
-  options: GetPropertySignatureOptions = {},
+  options: GetPropertySignatureOptions = {}
 ) {
   let validProperties = Object.keys(properties);
   const readOnlyFilter = (name: string) => {
@@ -519,7 +583,7 @@ function getPropertySignatures(
       { ...prop, name: p } as Schema,
       schemaUsage,
       importedModels,
-      options,
+      options
     );
   });
 }
@@ -528,7 +592,7 @@ function isBinaryArray(schema: Schema): boolean {
   return Boolean(
     isArraySchema(schema) &&
     (schema.items?.typeName?.includes("NodeJS.ReadableStream") ||
-      schema.items?.outputTypeName?.includes("NodeJS.ReadableStream")),
+      schema.items?.outputTypeName?.includes("NodeJS.ReadableStream"))
   );
 }
 
@@ -542,13 +606,13 @@ export function getPropertySignature(
   property: Property | Parameter,
   schemaUsage: SchemaContext[],
   importedModels: Set<string>,
-  options: GetPropertySignatureOptions = {},
+  options: GetPropertySignatureOptions = {}
 ): PropertySignatureStructure {
   let schema: Schema;
   if (options.flattenBinaryArrays && isBinaryArray(property)) {
     schema = {
       ...((property as ArraySchema).items ?? property),
-      name: property.name,
+      name: property.name
     };
   } else {
     schema = property;
@@ -558,18 +622,23 @@ export function getPropertySignature(
   const description = schema.description;
   let type;
   const hasCoreInArray =
-    schema.type === "array" && (schema as any).items && (schema as any).items.fromCore;
+    schema.type === "array" &&
+    (schema as any).items &&
+    (schema as any).items.fromCore;
   const hasCoreInRecord =
     schema.type === "dictionary" &&
     (schema as any).additionalProperties &&
     (schema as any).additionalProperties.fromCore;
   if (hasCoreInArray && schema.typeName) {
     type = schema.typeName;
-    importedModels.add((schema as any).items.typeName ?? (schema as any).items.name);
+    importedModels.add(
+      (schema as any).items.typeName ?? (schema as any).items.name
+    );
   } else if (hasCoreInRecord && schema.typeName) {
     type = schema.typeName;
     importedModels.add(
-      (schema as any).additionalProperties.typeName ?? (schema as any).additionalProperties.name,
+      (schema as any).additionalProperties.typeName ??
+        (schema as any).additionalProperties.name
     );
   } else {
     type =
@@ -590,13 +659,17 @@ export function getPropertySignature(
     hasQuestionToken: !schema.required,
     isReadonly: generateForOutput(schemaUsage, schema.usage) && schema.readOnly,
     type,
-    kind: StructureKind.PropertySignature,
+    kind: StructureKind.PropertySignature
   };
 }
 
-function generateForOutput(schemaUsage: SchemaContext[], propertyUsage?: SchemaContext[]) {
+function generateForOutput(
+  schemaUsage: SchemaContext[],
+  propertyUsage?: SchemaContext[]
+) {
   return (
-    (schemaUsage.includes(SchemaContext.Output) && propertyUsage?.includes(SchemaContext.Output)) ||
+    (schemaUsage.includes(SchemaContext.Output) &&
+      propertyUsage?.includes(SchemaContext.Output)) ||
     (schemaUsage.includes(SchemaContext.Exception) &&
       propertyUsage?.includes(SchemaContext.Exception))
   );

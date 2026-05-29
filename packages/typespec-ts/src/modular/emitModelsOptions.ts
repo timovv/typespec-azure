@@ -2,7 +2,10 @@ import * as path from "path";
 
 import { ModularEmitterOptions } from "./interfaces.js";
 
-import { SdkClientType, SdkServiceOperation } from "@azure-tools/typespec-client-generator-core";
+import {
+  SdkClientType,
+  SdkServiceOperation
+} from "@azure-tools/typespec-client-generator-core";
 import { useContext } from "../contextManager.js";
 import { NameType, normalizeName } from "../rlc-common/index.js";
 import { getModularClientOptions } from "../utils/clientUtils.js";
@@ -15,7 +18,7 @@ import { buildOperationOptions } from "./buildOperations.js";
 export function buildApiOptions(
   context: SdkContext,
   clientMap: [string[], SdkClientType<SdkServiceOperation>],
-  emitterOptions: ModularEmitterOptions,
+  emitterOptions: ModularEmitterOptions
 ) {
   const project = useContext("outputProject");
   const [_, client] = clientMap;
@@ -30,12 +33,12 @@ export function buildApiOptions(
         subfolder ?? "",
         `api`,
         ...prefixes.map((p) => normalizeName(p, NameType.File)),
-        "options.ts",
+        "options.ts"
       ),
       undefined,
       {
-        overwrite: true,
-      },
+        overwrite: true
+      }
     );
     operations.forEach((o) => {
       buildOperationOptions(context, [prefixes, o], modelOptionsFile);
@@ -43,7 +46,10 @@ export function buildApiOptions(
     modelOptionsFile
       .getImportDeclarations()
       .filter((id) => {
-        return id.isModuleSpecifierRelative() && !id.getModuleSpecifierValue().endsWith(".js");
+        return (
+          id.isModuleSpecifierRelative() &&
+          !id.getModuleSpecifierValue().endsWith(".js")
+        );
       })
       .map((id) => {
         id.setModuleSpecifier(id.getModuleSpecifierValue() + ".js");

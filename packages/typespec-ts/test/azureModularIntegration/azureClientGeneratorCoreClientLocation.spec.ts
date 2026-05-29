@@ -14,25 +14,28 @@ describe("Azure ClientGeneratorCore Client Location", () => {
   beforeEach(() => {
     client1 = new MoveMethodParameterToClient("testaccount", {
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
     client2 = new MoveToExistingSubClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
     client3 = new MoveToNewSubClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
     client4 = new MoveToRootClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
   describe("Move method Parameter to Client", () => {
     it("should get user via userOperations", async () => {
-      const result = await client1.blobOperations.getBlob("testcontainer", "testblob.txt");
+      const result = await client1.blobOperations.getBlob(
+        "testcontainer",
+        "testblob.txt"
+      );
       assert.strictEqual(result.id, "blob-001");
       assert.strictEqual(result.name, "testblob.txt");
       assert.strictEqual(result.path, "/testcontainer/testblob.txt");

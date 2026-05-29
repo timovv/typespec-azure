@@ -1,6 +1,9 @@
 import { assert, describe, it } from "vitest";
 
-import { emitClientDefinitionFromTypeSpec, emitModelsFromTypeSpec } from "../util/emitUtil.js";
+import {
+  emitClientDefinitionFromTypeSpec,
+  emitModelsFromTypeSpec
+} from "../util/emitUtil.js";
 import { assertEqualContent } from "../util/testUtil.js";
 
 describe("Client definition generation", () => {
@@ -10,7 +13,7 @@ describe("Client definition generation", () => {
       @route("/{id}")
       @doc("This is the longer description")
       op read(@path id: string): {};
-      `,
+      `
     );
     assert.ok(clientDef);
     await assertEqualContent(
@@ -33,7 +36,7 @@ describe("Client definition generation", () => {
       export type testClient = Client & {
               path: Routes;
       };
-    `,
+    `
     );
   });
 
@@ -43,7 +46,7 @@ describe("Client definition generation", () => {
       @route("/{TransactionID}")
       @doc("This is the longer description")
       op read(@path TransactionID: string): {};
-      `,
+      `
     );
     assert.ok(clientDef);
     await assertEqualContent(
@@ -66,7 +69,7 @@ describe("Client definition generation", () => {
       export type testClient = Client & {
               path: Routes;
       };
-    `,
+    `
     );
   });
 
@@ -104,7 +107,7 @@ describe("Client definition generation", () => {
         export type testClient = Client & {
                 path: Routes;
         };
-      `,
+      `
       );
       const modelsDef = await emitModelsFromTypeSpec(tsp);
       await assertEqualContent(
@@ -112,7 +115,7 @@ describe("Client definition generation", () => {
         `
       /** Alias for IdParam */
       export type IdParam = "foo" | "bar";
-      `,
+      `
       );
     });
     it("should generate the anonymous union", async () => {
@@ -121,7 +124,7 @@ describe("Client definition generation", () => {
         @route("/{id}")
         @doc("This is the longer description")
         op read(@path id: "foo" | "bar"): {};
-        `,
+        `
       );
       assert.ok(clientDef);
       await assertEqualContent(
@@ -144,7 +147,7 @@ describe("Client definition generation", () => {
         export type testClient = Client & {
                 path: Routes;
         };
-      `,
+      `
       );
     });
 
@@ -181,7 +184,7 @@ describe("Client definition generation", () => {
         export type testClient = Client & {
                 path: Routes;
         };
-      `,
+      `
       );
 
       const modelsDef = await emitModelsFromTypeSpec(tsp);
@@ -190,7 +193,7 @@ describe("Client definition generation", () => {
         `
       /** Alias for EnumParam */
       export type EnumParam = "foo" | "bar";
-      `,
+      `
       );
     });
   });

@@ -86,7 +86,13 @@ export interface XmlAdditionalPropertiesConfig {
 /**
  * Result of XML serialization - either a primitive value or structured XML object
  */
-export type XmlSerializedValue = string | number | boolean | null | undefined | XmlSerializedObject;
+export type XmlSerializedValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | XmlSerializedObject;
 
 export interface XmlSerializedObject {
   [key: string]: XmlSerializedValue | XmlSerializedValue[];
@@ -100,11 +106,16 @@ const defaultParserOptions = {
   parseTagValue: false,
   parseAttributeValue: false,
   trimValues: false, // Preserve whitespace in text content
-  isArray: (_name: string, _jpath: string | unknown, isLeafNode: boolean, isAttribute: boolean) => {
+  isArray: (
+    _name: string,
+    _jpath: string | unknown,
+    isLeafNode: boolean,
+    isAttribute: boolean
+  ) => {
     // Don't auto-detect arrays for attributes or leaf nodes by default
     // Let the metadata drive array detection
     return !isAttribute && !isLeafNode;
-  },
+  }
 };
 
 const defaultBuilderOptions: Partial<XmlBuilderOptions> = {
@@ -112,13 +123,16 @@ const defaultBuilderOptions: Partial<XmlBuilderOptions> = {
   attributeNamePrefix: "@_",
   textNodeName: "#text",
   format: false,
-  suppressEmptyNode: true,
+  suppressEmptyNode: true
 };
 
 /**
  * Creates an XML element name with optional namespace prefix
  */
-function getElementName(name: string, ns?: { namespace: string; prefix: string }): string {
+function getElementName(
+  name: string,
+  ns?: { namespace: string; prefix: string }
+): string {
   if (ns?.prefix) {
     return `${ns.prefix}:${name}`;
   }
@@ -128,7 +142,9 @@ function getElementName(name: string, ns?: { namespace: string; prefix: string }
 /**
  * Creates namespace declaration attributes for the root element
  */
-function createNamespaceDeclarations(namespaces: Map<string, string>): Record<string, string> {
+function createNamespaceDeclarations(
+  namespaces: Map<string, string>
+): Record<string, string> {
   const declarations: Record<string, string> = {};
   for (const [prefix, namespace] of namespaces) {
     if (prefix) {
@@ -145,7 +161,7 @@ function createNamespaceDeclarations(namespaces: Map<string, string>): Record<st
  */
 function collectNamespaces(
   properties: XmlPropertyMetadata[],
-  rootNs?: { namespace: string; prefix: string },
+  rootNs?: { namespace: string; prefix: string }
 ): Map<string, string> {
   const namespaces = new Map<string, string>();
 
@@ -158,7 +174,10 @@ function collectNamespaces(
       namespaces.set(prop.xmlOptions.ns.prefix, prop.xmlOptions.ns.namespace);
     }
     if (prop.xmlOptions.itemsNs) {
-      namespaces.set(prop.xmlOptions.itemsNs.prefix, prop.xmlOptions.itemsNs.namespace);
+      namespaces.set(
+        prop.xmlOptions.itemsNs.prefix,
+        prop.xmlOptions.itemsNs.namespace
+      );
     }
   }
 
@@ -172,7 +191,7 @@ function serializePrimitiveValue(
   value: any,
   type?: "array" | "object" | "primitive" | "date" | "bytes" | "dict",
   dateEncoding?: "rfc3339" | "rfc7231" | "unixTimestamp",
-  bytesEncoding?: "base64" | "base64url",
+  bytesEncoding?: "base64" | "base64url"
 ): string | number | boolean {
   if (value === null || value === undefined) {
     return "";
@@ -206,12 +225,12 @@ function serializePrimitiveValue(
  */
 function serializeArrayProperty(
   value: any[],
-  metadata: XmlPropertyMetadata,
+  metadata: XmlPropertyMetadata
 ): XmlSerializedObject | XmlSerializedValue[] {
   const { xmlOptions, serializer } = metadata;
   const itemName = getElementName(
     xmlOptions.itemsName || xmlOptions.name,
-    xmlOptions.itemsNs || xmlOptions.ns,
+    xmlOptions.itemsNs || xmlOptions.ns
   );
 
   const serializedItems = value.map((item) => {
@@ -222,7 +241,7 @@ function serializeArrayProperty(
       item,
       metadata.itemType ?? metadata.type,
       metadata.dateEncoding,
-      metadata.bytesEncoding,
+      metadata.bytesEncoding
     );
   });
 
@@ -234,8 +253,8 @@ function serializeArrayProperty(
     const wrapperName = getElementName(xmlOptions.name, xmlOptions.ns);
     return {
       [wrapperName]: {
-        [itemName]: serializedItems,
-      },
+        [itemName]: serializedItems
+      }
     } as XmlSerializedObject;
   }
 }
@@ -248,7 +267,7 @@ export function serializeModelToXml(
   properties: XmlPropertyMetadata[],
   rootName: string,
   rootNs?: { namespace: string; prefix: string },
-  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig,
+  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig
 ): XmlSerializedObject {
   if (item === null || item === undefined) {
     return {};
@@ -281,7 +300,7 @@ export function serializeModelToXml(
         value,
         type,
         prop.dateEncoding,
-        prop.bytesEncoding,
+        prop.bytesEncoding
       );
     } else if (type === "dict" && value !== null && typeof value === "object") {
       // Serialize dictionary - each key-value pair becomes an element
@@ -297,7 +316,7 @@ export function serializeModelToXml(
         // For unwrapped arrays, add each item as a separate element
         const itemName = getElementName(
           xmlOptions.itemsName || xmlOptions.name,
-          xmlOptions.itemsNs || xmlOptions.ns,
+          xmlOptions.itemsNs || xmlOptions.ns
         );
         result[itemName] = arrayResult as XmlSerializedValue[];
       } else {
@@ -308,14 +327,19 @@ export function serializeModelToXml(
       result[elementName] = serializer(value);
     } else if (xmlOptions.unwrapped && !Array.isArray(value)) {
       // Unwrapped primitive - this becomes the text content of the parent element
-      result["#text"] = serializePrimitiveValue(value, type, prop.dateEncoding, prop.bytesEncoding);
+      result["#text"] = serializePrimitiveValue(
+        value,
+        type,
+        prop.dateEncoding,
+        prop.bytesEncoding
+      );
     } else {
       // Serialize primitive
       result[elementName] = serializePrimitiveValue(
         value,
         type,
         prop.dateEncoding,
-        prop.bytesEncoding,
+        prop.bytesEncoding
       );
     }
   }
@@ -338,7 +362,7 @@ export function serializeModelToXml(
   // Wrap in root element
   const rootElementName = getElementName(rootName, rootNs);
   return {
-    [rootElementName]: result,
+    [rootElementName]: result
   };
 }
 
@@ -347,11 +371,11 @@ export function serializeModelToXml(
  */
 export function xmlObjectToString(
   xmlObject: XmlSerializedObject,
-  options?: Partial<XmlBuilderOptions>,
+  options?: Partial<XmlBuilderOptions>
 ): string {
   const builder = new XMLBuilder({
     ...defaultBuilderOptions,
-    ...options,
+    ...options
   });
 
   const xmlData: string = builder.build(xmlObject);
@@ -370,14 +394,14 @@ export function serializeToXml(
   rootName: string,
   rootNs?: { namespace: string; prefix: string },
   options?: Partial<XmlBuilderOptions>,
-  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig,
+  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig
 ): string {
   const xmlObject = serializeModelToXml(
     item,
     properties,
     rootName,
     rootNs,
-    additionalPropertiesConfig,
+    additionalPropertiesConfig
   );
   return xmlObjectToString(xmlObject, options);
 }
@@ -387,11 +411,11 @@ export function serializeToXml(
  */
 export function parseXmlString(
   xmlString: string,
-  options?: Partial<typeof defaultParserOptions>,
+  options?: Partial<typeof defaultParserOptions>
 ): any {
   const parser = new XMLParser({
     ...defaultParserOptions,
-    ...options,
+    ...options
   });
 
   return parser.parse(xmlString);
@@ -405,7 +429,7 @@ function deserializePrimitiveValue(
   type?: "array" | "object" | "primitive" | "date" | "bytes" | "dict",
   dateEncoding?: "rfc3339" | "rfc7231" | "unixTimestamp",
   bytesEncoding?: "base64" | "base64url",
-  primitiveSubtype?: "string" | "number" | "boolean",
+  primitiveSubtype?: "string" | "number" | "boolean"
 ): any {
   if (value === null || value === undefined) {
     return undefined;
@@ -474,7 +498,10 @@ function getElementValue(obj: any, xmlOptions: XmlSerializationOptions): any {
 /**
  * Deserializes an array from XML
  */
-function deserializeArrayProperty(obj: any, metadata: XmlPropertyDeserializeMetadata): any[] {
+function deserializeArrayProperty(
+  obj: any,
+  metadata: XmlPropertyDeserializeMetadata
+): any[] {
   const { xmlOptions, deserializer, type, dateEncoding } = metadata;
 
   let arrayData: any;
@@ -483,7 +510,7 @@ function deserializeArrayProperty(obj: any, metadata: XmlPropertyDeserializeMeta
     // Items are direct children
     const itemName = getElementName(
       xmlOptions.itemsName || xmlOptions.name,
-      xmlOptions.itemsNs || xmlOptions.ns,
+      xmlOptions.itemsNs || xmlOptions.ns
     );
     arrayData = obj[itemName] ?? obj[xmlOptions.itemsName || xmlOptions.name];
   } else {
@@ -498,8 +525,14 @@ function deserializeArrayProperty(obj: any, metadata: XmlPropertyDeserializeMeta
     // Unwrap single-element array if the parser wrapped it
     wrapper = unwrapSingleElementArray(wrapper);
 
-    const itemName = getElementName(xmlOptions.itemsName || xmlOptions.name, xmlOptions.itemsNs);
-    arrayData = wrapper[itemName] ?? wrapper[xmlOptions.itemsName || xmlOptions.name] ?? wrapper;
+    const itemName = getElementName(
+      xmlOptions.itemsName || xmlOptions.name,
+      xmlOptions.itemsNs
+    );
+    arrayData =
+      wrapper[itemName] ??
+      wrapper[xmlOptions.itemsName || xmlOptions.name] ??
+      wrapper;
   }
 
   if (!arrayData) {
@@ -520,7 +553,7 @@ function deserializeArrayProperty(obj: any, metadata: XmlPropertyDeserializeMeta
       metadata.itemType ?? type,
       dateEncoding,
       metadata.bytesEncoding,
-      metadata.primitiveSubtype,
+      metadata.primitiveSubtype
     );
   });
 }
@@ -533,7 +566,7 @@ export function deserializeXmlToModel<T = Record<string, any>>(
   properties: XmlPropertyDeserializeMetadata[],
   rootName: string,
   rootNs?: { namespace: string; prefix: string },
-  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig,
+  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig
 ): T {
   if (!xmlObject) {
     return {} as T;
@@ -544,7 +577,11 @@ export function deserializeXmlToModel<T = Record<string, any>>(
   let content = xmlObject[rootElementName] ?? xmlObject[rootName] ?? xmlObject;
   content = unwrapSingleElementArray(content);
 
-  return deserializeXmlObject<T>(content, properties, additionalPropertiesConfig);
+  return deserializeXmlObject<T>(
+    content,
+    properties,
+    additionalPropertiesConfig
+  );
 }
 
 /**
@@ -556,7 +593,7 @@ export function deserializeFromXml<T = Record<string, any>>(
   rootName: string,
   rootNs?: { namespace: string; prefix: string },
   parserOptions?: Partial<typeof defaultParserOptions>,
-  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig,
+  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig
 ): T {
   if (!xmlString) {
     return {} as T;
@@ -567,7 +604,7 @@ export function deserializeFromXml<T = Record<string, any>>(
     properties,
     rootName,
     rootNs,
-    additionalPropertiesConfig,
+    additionalPropertiesConfig
   );
 }
 
@@ -581,7 +618,7 @@ export function deserializeFromXml<T = Record<string, any>>(
 export function deserializeXmlObject<T = Record<string, any>>(
   xmlObject: Record<string, unknown>,
   properties: XmlPropertyDeserializeMetadata[],
-  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig,
+  additionalPropertiesConfig?: XmlAdditionalPropertiesConfig
 ): T {
   if (!xmlObject) {
     return {} as T;
@@ -593,7 +630,14 @@ export function deserializeXmlObject<T = Record<string, any>>(
   const result: Record<string, any> = {};
 
   for (const prop of properties) {
-    const { propertyName, xmlOptions, deserializer, type, dateEncoding, primitiveSubtype } = prop;
+    const {
+      propertyName,
+      xmlOptions,
+      deserializer,
+      type,
+      dateEncoding,
+      primitiveSubtype
+    } = prop;
 
     if (type === "array" || xmlOptions.itemsName) {
       // Deserialize array
@@ -620,7 +664,7 @@ export function deserializeXmlObject<T = Record<string, any>>(
           type,
           dateEncoding,
           prop.bytesEncoding,
-          primitiveSubtype,
+          primitiveSubtype
         );
       }
     } else {
@@ -648,7 +692,7 @@ export function deserializeXmlObject<T = Record<string, any>>(
           type,
           dateEncoding,
           prop.bytesEncoding,
-          primitiveSubtype,
+          primitiveSubtype
         );
       }
     }
@@ -656,7 +700,11 @@ export function deserializeXmlObject<T = Record<string, any>>(
 
   // Collect undeclared XML elements into additionalProperties
   if (additionalPropertiesConfig) {
-    const { propertyName, excludeNames, deserializer: apDeserializer } = additionalPropertiesConfig;
+    const {
+      propertyName,
+      excludeNames,
+      deserializer: apDeserializer
+    } = additionalPropertiesConfig;
     const additionalProps: Record<string, any> = {};
     const excludeSet = new Set(excludeNames);
     for (const [key, val] of Object.entries(content)) {

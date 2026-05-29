@@ -8,7 +8,7 @@ describe("Azure Client Generator Core - API Version Path (Modular)", () => {
   beforeEach(() => {
     client = new PathClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

@@ -5,12 +5,16 @@ import { ApiVersionInfo, ApiVersionPosition, UrlInfo } from "../interfaces.js";
  * @param urlInfo UrlInfo detail
  * @returns path api-version detail
  */
-export function extractPathApiVersion(urlInfo?: UrlInfo): ApiVersionInfo | undefined {
+export function extractPathApiVersion(
+  urlInfo?: UrlInfo
+): ApiVersionInfo | undefined {
   if (!urlInfo) {
     return;
   }
   const param = urlInfo.urlParameters?.filter(
-    (p) => p.name.toLowerCase() === "api-version" || p.name.toLowerCase() === "apiversion",
+    (p) =>
+      p.name.toLowerCase() === "api-version" ||
+      p.name.toLowerCase() === "apiversion"
   );
   if (!param || param?.length < 1) {
     return;
@@ -18,8 +22,9 @@ export function extractPathApiVersion(urlInfo?: UrlInfo): ApiVersionInfo | undef
   const detail: ApiVersionInfo = {
     definedPosition: "path",
     isCrossedVersion: Boolean(param?.length > 1),
-    defaultValue: param.length === 1 ? (param[0]?.value as string | undefined) : undefined,
-    required: true,
+    defaultValue:
+      param.length === 1 ? (param[0]?.value as string | undefined) : undefined,
+    required: true
   };
   return detail;
 }
@@ -34,7 +39,7 @@ export function extractPathApiVersion(urlInfo?: UrlInfo): ApiVersionInfo | undef
  */
 export function extractDefinedPosition(
   operationApiVersion?: ApiVersionInfo,
-  urlVersionDetail?: ApiVersionInfo,
+  urlVersionDetail?: ApiVersionInfo
 ): ApiVersionPosition {
   let pos: ApiVersionPosition = "none";
   if (operationApiVersion && urlVersionDetail) {

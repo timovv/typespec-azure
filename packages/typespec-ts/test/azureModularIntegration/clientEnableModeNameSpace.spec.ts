@@ -2,7 +2,7 @@ import { assert, beforeEach, describe, it } from "vitest";
 
 import {
   ClientNamespaceFirstClient,
-  ClientNamespaceSecondClient,
+  ClientNamespaceSecondClient
 } from "./generated/client/enableModelNamespace/src/index.js";
 describe("NameSpace Client", () => {
   let firstClient: ClientNamespaceFirstClient;
@@ -11,11 +11,11 @@ describe("NameSpace Client", () => {
   beforeEach(() => {
     firstClient = new ClientNamespaceFirstClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
     secondClient = new ClientNamespaceSecondClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
   it("should get Client ClientNamespace first", async () => {

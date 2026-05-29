@@ -3,7 +3,7 @@ import { assert, beforeEach, describe, it } from "vitest";
 import PageableClientFactory, {
   PageableClient,
   paginate,
-  PetOutput,
+  PetOutput
 } from "./generated/payload/pageable/src/index.js";
 
 describe("Pageable Client", () => {
@@ -11,7 +11,7 @@ describe("Pageable Client", () => {
 
   beforeEach(() => {
     client = PageableClientFactory({
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

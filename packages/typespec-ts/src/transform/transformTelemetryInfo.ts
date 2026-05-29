@@ -1,7 +1,7 @@
 import {
   getHttpOperationWithCache,
   SdkClient,
-  SdkContext,
+  SdkContext
 } from "@azure-tools/typespec-client-generator-core";
 import { TelemetryInfo } from "../rlc-common/index.js";
 import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
@@ -9,21 +9,27 @@ import { getCustomRequestHeaderNameForOperation } from "../utils/operationUtil.j
 
 export function transformTelemetryInfo(
   client: SdkClient,
-  dpgContext: SdkContext,
+  dpgContext: SdkContext
 ): TelemetryInfo | undefined {
-  const customRequestIdHeaderName = getCustomRequestHeaderNameForClient(dpgContext, client);
+  const customRequestIdHeaderName = getCustomRequestHeaderNameForClient(
+    dpgContext,
+    client
+  );
   if (customRequestIdHeaderName) {
     return {
-      customRequestIdHeaderName,
+      customRequestIdHeaderName
     };
   }
   return undefined;
 }
 
-function getCustomRequestHeaderNameForClient(dpgContext: SdkContext, client: SdkClient) {
+function getCustomRequestHeaderNameForClient(
+  dpgContext: SdkContext,
+  client: SdkClient
+) {
   for (const op of listOperationsUnderRLCClient(client)) {
     const headerName = getCustomRequestHeaderNameForOperation(
-      getHttpOperationWithCache(dpgContext, op),
+      getHttpOperationWithCache(dpgContext, op)
     );
     if (headerName !== undefined) {
       return headerName;

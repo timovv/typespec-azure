@@ -7,7 +7,7 @@ describe("BasicClient Client", () => {
   beforeEach(() => {
     client = new BasicClient({
       allowInsecureConnection: true,
-      endpoint: "http://localhost:3002",
+      endpoint: "http://localhost:3002"
     });
   });
 

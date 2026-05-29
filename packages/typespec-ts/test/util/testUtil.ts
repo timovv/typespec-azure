@@ -24,7 +24,7 @@ import {
   AzureCoreDependencies,
   AzureIdentityDependencies,
   AzurePollingDependencies,
-  AzureTestDependencies,
+  AzureTestDependencies
 } from "../../src/modular/external-dependencies.js";
 import {
   CreateRecorderHelpers,
@@ -35,7 +35,7 @@ import {
   SerializationHelpers,
   StorageCompatHelpers,
   UrlTemplateHelpers,
-  XmlHelpers,
+  XmlHelpers
 } from "../../src/modular/static-helpers-metadata.js";
 import { getDirname } from "../../src/utils/dirname.js";
 import { SdkContext } from "../../src/utils/interfaces.js";
@@ -58,8 +58,8 @@ export async function createRLCEmitterTestHost() {
       XmlTestLibrary,
       AzureResourceManagerTestLibrary,
       OpenAPITestLibrary,
-      AutorestTestLibrary,
-    ],
+      AutorestTestLibrary
+    ]
   });
 }
 
@@ -82,8 +82,8 @@ export async function rlcEmitterFor(
     withRawContent = false,
     withVersionedApiVersion = false,
     needArmTemplate = false,
-    exampleJson = {},
-  }: RLCEmitterOptions = {},
+    exampleJson = {}
+  }: RLCEmitterOptions = {}
 ): Promise<TestHost> {
   const host: TestHost = await createRLCEmitterTestHost();
   const namespace = `
@@ -126,12 +126,15 @@ ${code}
     host.addTypeSpecFile(`./examples/${example}.json`, exampleJson[example]);
   }
   await host.compile("./", {
-    warningAsError: false,
+    warningAsError: false
   });
   return host;
 }
 
-export async function compileTypeSpecFor(code: string, examples: ExampleJson[] = []) {
+export async function compileTypeSpecFor(
+  code: string,
+  examples: ExampleJson[] = []
+) {
   let prefix = "";
   if (!code.includes("import")) {
     prefix = prefix + importStatement();
@@ -144,11 +147,11 @@ export async function compileTypeSpecFor(code: string, examples: ExampleJson[] =
   for (const example of examples) {
     host.addTypeSpecFile(
       `./examples/2021-10-01-preview/${example.filename}.json`,
-      example.rawContent,
+      example.rawContent
     );
   }
   await host.compile("./", {
-    warningAsError: false,
+    warningAsError: false
   });
   return host;
 }
@@ -191,7 +194,7 @@ function serviceStatement() {
 export async function createDpgContextTestHelper(
   program: Program,
   enableModelNamespace = false,
-  configs: Record<string, unknown> = {},
+  configs: Record<string, unknown> = {}
 ): Promise<SdkContext> {
   const outputProject = new Project({ useInMemoryFileSystem: true });
   provideContext("rlcMetaTree", new Map());
@@ -200,7 +203,7 @@ export async function createDpgContextTestHelper(
 
   const context = await createContextWithDefaultOptions({
     program,
-    options: configs as any,
+    options: configs as any
   } as EmitContext);
 
   const sdkContext = {
@@ -209,16 +212,16 @@ export async function createDpgContextTestHelper(
     rlcOptions: {
       flavor: "azure",
       enableModelNamespace,
-      ...configs,
+      ...configs
     },
     emitterName: "@azure-tools/typespec-ts",
     originalProgram: program,
-    allServiceNamespaces: listAllServiceNamespaces(context),
+    allServiceNamespaces: listAllServiceNamespaces(context)
   } as SdkContext;
 
   provideContext("emitContext", {
     compilerContext: context as any,
-    tcgcContext: sdkContext,
+    tcgcContext: sdkContext
   });
 
   await provideBinderWithAzureDependencies(outputProject);
@@ -230,17 +233,21 @@ export async function createDpgContextTestHelper(
 export async function assertEqualContent(
   actual: string,
   expected: string,
-  ignoreWeirdLine: boolean = false,
+  ignoreWeirdLine: boolean = false
 ) {
   assert.strictEqual(
     await format(
-      ignoreWeirdLine ? actual.replace(/$\n^/g, "").replace(/\s+/g, " ") : actual,
-      prettierTypeScriptOptions,
+      ignoreWeirdLine
+        ? actual.replace(/$\n^/g, "").replace(/\s+/g, " ")
+        : actual,
+      prettierTypeScriptOptions
     ),
     await format(
-      ignoreWeirdLine ? expected.replace(/$\n^/g, "").replace(/\s+/g, " ") : expected,
-      prettierTypeScriptOptions,
-    ),
+      ignoreWeirdLine
+        ? expected.replace(/$\n^/g, "").replace(/\s+/g, " ")
+        : expected,
+      prettierTypeScriptOptions
+    )
   );
 }
 
@@ -252,13 +259,16 @@ export type VerifyPropertyConfig = {
 };
 
 export async function provideBinderWithAzureDependencies(project: Project) {
-  const helpersDirectory = path.resolve(__dirname, "../../static/static-helpers");
+  const helpersDirectory = path.resolve(
+    __dirname,
+    "../../static/static-helpers"
+  );
 
   const extraDependencies = {
     ...AzurePollingDependencies,
     ...AzureCoreDependencies,
     ...AzureIdentityDependencies,
-    ...AzureTestDependencies,
+    ...AzureTestDependencies
   };
 
   const staticHelpers = {
@@ -270,17 +280,17 @@ export async function provideBinderWithAzureDependencies(project: Project) {
     ...MultipartHelpers,
     ...PlatformTypeHelpers,
     ...CreateRecorderHelpers,
-    ...StorageCompatHelpers,
+    ...StorageCompatHelpers
   };
 
   const staticHelperMap = await loadStaticHelpers(project, staticHelpers, {
     helpersAssetDirectory: helpersDirectory,
-    loadTestHelpers: true,
+    loadTestHelpers: true
   });
 
   const binder = provideBinder(project, {
     staticHelpers: staticHelperMap,
-    dependencies: extraDependencies,
+    dependencies: extraDependencies
   });
 
   return binder;

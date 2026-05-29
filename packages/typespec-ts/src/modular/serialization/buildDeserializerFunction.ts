@@ -5,7 +5,7 @@ import {
   SdkModelType,
   SdkType,
   SdkUnionType,
-  UsageFlags,
+  UsageFlags
 } from "@azure-tools/typespec-client-generator-core";
 import { NoTarget } from "@typespec/compiler";
 import { FunctionDeclarationStructure, StructureKind } from "ts-morph";
@@ -16,20 +16,26 @@ import { reportDiagnostic } from "../../lib.js";
 import { NameType, normalizeName } from "../../rlc-common/index.js";
 import { SdkContext } from "../../utils/interfaces.js";
 import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
-import { getAdditionalPropertiesName, normalizeModelName } from "../emitModels.js";
+import {
+  getAdditionalPropertiesName,
+  normalizeModelName
+} from "../emitModels.js";
 import {
   getAllAncestors,
   getAllProperties,
   getPropertySerializedName,
-  getResponseMapping,
+  getResponseMapping
 } from "../helpers/operationHelpers.js";
-import { getAdditionalPropertiesType, getDirectSubtypes } from "../helpers/typeHelpers.js";
+import {
+  getAdditionalPropertiesType,
+  getDirectSubtypes
+} from "../helpers/typeHelpers.js";
 import { SerializationHelpers } from "../static-helpers-metadata.js";
 import {
   getAllDiscriminatedValues,
   isDiscriminatedUnion,
   isSupportedSerializeType,
-  ModelSerializeOptions,
+  ModelSerializeOptions
 } from "./serializeUtils.js";
 
 export function buildPropertyDeserializer(
@@ -37,10 +43,11 @@ export function buildPropertyDeserializer(
   property: SdkModelPropertyType,
   options: ModelSerializeOptions = {
     nameOnly: false,
-    skipDiscriminatedUnionSuffix: false,
-  },
+    skipDiscriminatedUnionSuffix: false
+  }
 ) {
-  const propertyContext = useContext("sdkTypes").flattenProperties.get(property);
+  const propertyContext =
+    useContext("sdkTypes").flattenProperties.get(property);
   // only build de-serializer for flatten property
   if (property.flatten !== true || !propertyContext) {
     return undefined;
@@ -49,19 +56,19 @@ export function buildPropertyDeserializer(
   const predefinedName = `_${normalizeName(
     `${propertyContext.baseModel.name}_${property.name}`,
     NameType.Method,
-    true,
+    true
   )}Deserializer`;
   return buildModelDeserializer(context, property.type, {
     ...options,
     flatten: {
       baseModel: propertyContext.baseModel,
-      property,
+      property
     },
     overrides: {
       allOptional: property.optional,
-      propertyRenames: propertyContext.conflictMap,
+      propertyRenames: propertyContext.conflictMap
     },
-    predefinedName,
+    predefinedName
   });
 }
 
@@ -70,8 +77,8 @@ export function buildModelDeserializer(
   type: SdkType,
   options: ModelSerializeOptions = {
     nameOnly: false,
-    skipDiscriminatedUnionSuffix: false,
-  },
+    skipDiscriminatedUnionSuffix: false
+  }
 ): FunctionDeclarationStructure | undefined | string {
   // const modelTcgcType = getTcgcType(type) as SdkModelType;
   if (!isSupportedSerializeType(type)) {
@@ -97,7 +104,11 @@ export function buildModelDeserializer(
     }
   }
 
-  if (!isDiscriminatedUnion(type) && type.kind === "model" && type.discriminatorProperty) {
+  if (
+    !isDiscriminatedUnion(type) &&
+    type.kind === "model" &&
+    type.discriminatorProperty
+  ) {
     return buildPolymorphicDeserializer(context, type, nameOnly);
   }
 
@@ -122,28 +133,28 @@ export function buildModelDeserializer(
 function buildPolymorphicDeserializer(
   context: SdkContext,
   type: SdkModelType,
-  nameOnly: boolean,
+  nameOnly: boolean
 ): string;
 function buildPolymorphicDeserializer(
   context: SdkContext,
-  type: SdkModelType,
+  type: SdkModelType
 ): FunctionDeclarationStructure | undefined;
 function buildPolymorphicDeserializer(
   context: SdkContext,
   type: SdkModelType,
-  nameOnly = false,
+  nameOnly = false
 ): FunctionDeclarationStructure | undefined | string {
   if (!type.name) {
     reportDiagnostic(context.program, {
       code: "anonymous-type-deserialization",
-      target: type.__raw || NoTarget,
+      target: type.__raw || NoTarget
     });
     return undefined; // Return undefined to skip this deserialization
   }
   const deserializeFunctionName = `${normalizeModelName(
     context,
     type,
-    NameType.Operation,
+    NameType.Operation
   )}Deserializer`;
   if (nameOnly) {
     return resolveReference(refkey(type, "deserializer"));
@@ -155,11 +166,11 @@ function buildPolymorphicDeserializer(
     parameters: [
       {
         name: "item",
-        type: "any",
-      },
+        type: "any"
+      }
     ],
     returnType: resolveReference(refkey(type, "polymorphicType")),
-    statements: [],
+    statements: []
   };
   if (!type.discriminatorProperty) {
     return;
@@ -171,7 +182,7 @@ function buildPolymorphicDeserializer(
     // No subtypes - treat as a regular model and generate simple deserializer
     return buildModelTypeDeserializer(context, type, {
       nameOnly,
-      skipDiscriminatedUnionSuffix: false,
+      skipDiscriminatedUnionSuffix: false
     });
   }
 
@@ -180,7 +191,8 @@ function buildPolymorphicDeserializer(
     const subType = subTypes[discriminatedValue];
     if (
       !subType?.usage ||
-      (subType?.usage !== undefined && (subType.usage & UsageFlags.Output) !== UsageFlags.Output)
+      (subType?.usage !== undefined &&
+        (subType.usage & UsageFlags.Output) !== UsageFlags.Output)
     ) {
       return;
     }
@@ -188,7 +200,7 @@ function buildPolymorphicDeserializer(
     if (!subType || !subType?.name) {
       reportDiagnostic(context.program, {
         code: "anonymous-type-deserialization",
-        target: subType?.__raw || NoTarget,
+        target: subType?.__raw || NoTarget
       });
       return; // Skip this subtype
     }
@@ -198,7 +210,7 @@ function buildPolymorphicDeserializer(
     const subtypeDeserializerName = normalizeName(
       `${subTypeName}Deserializer`,
       NameType.Operation,
-      true,
+      true
     );
 
     cases.push(`
@@ -208,7 +220,9 @@ function buildPolymorphicDeserializer(
   });
 
   // Use wire format name for the switch since item is raw JSON from the service
-  const discriminatorWireName = getPropertySerializedName(type.discriminatorProperty);
+  const discriminatorWireName = getPropertySerializedName(
+    type.discriminatorProperty
+  );
   statements.push(`
       switch (item["${discriminatorWireName}"]) {
        ${cases.join("\n")}
@@ -223,21 +237,21 @@ function buildPolymorphicDeserializer(
 function buildDiscriminatedUnionDeserializer(
   context: SdkContext,
   type: SdkModelType,
-  nameOnly: boolean,
+  nameOnly: boolean
 ): string;
 function buildDiscriminatedUnionDeserializer(
   context: SdkContext,
-  type: SdkModelType,
+  type: SdkModelType
 ): FunctionDeclarationStructure | undefined;
 function buildDiscriminatedUnionDeserializer(
   context: SdkContext,
   type: SdkModelType,
-  nameOnly = false,
+  nameOnly = false
 ): FunctionDeclarationStructure | undefined | string {
   if (!type.name) {
     reportDiagnostic(context.program, {
       code: "anonymous-type-deserialization",
-      target: type.__raw || NoTarget,
+      target: type.__raw || NoTarget
     });
     return undefined; // Return undefined to skip this deserialization
   }
@@ -246,7 +260,7 @@ function buildDiscriminatedUnionDeserializer(
   const deserializeFunctionName = `${normalizeModelName(
     context,
     type,
-    NameType.Operation,
+    NameType.Operation
   )}Deserializer`;
   if (nameOnly) {
     return resolveReference(refkey(type, "deserializer"));
@@ -256,24 +270,33 @@ function buildDiscriminatedUnionDeserializer(
     context,
     type,
     NameType.Operation,
-    true,
+    true
   )}Deserializer`;
   const directSubtypes = getDirectSubtypes(type);
   for (const subType of directSubtypes) {
     if (
       !subType.usage ||
-      (subType.usage !== undefined && (subType.usage & UsageFlags.Output) !== UsageFlags.Output)
+      (subType.usage !== undefined &&
+        (subType.usage & UsageFlags.Output) !== UsageFlags.Output)
     ) {
       continue;
     }
     // get all discriminated values that is linked by this discriminator property
-    const discriminatedValues = getAllDiscriminatedValues(subType, type.discriminatorProperty);
+    const discriminatedValues = getAllDiscriminatedValues(
+      subType,
+      type.discriminatorProperty
+    );
     const union = subType.discriminatedSubtypes ? "Union" : "";
-    const subTypeName = normalizeModelName(context, subType, NameType.Interface, !union);
+    const subTypeName = normalizeModelName(
+      context,
+      subType,
+      NameType.Interface,
+      !union
+    );
     // Get the deserializer name and ensure reference tracking
     const subtypeDeserializerName = buildModelDeserializer(context, subType, {
       nameOnly: true,
-      skipDiscriminatedUnionSuffix: false,
+      skipDiscriminatedUnionSuffix: false
     }) as string;
 
     const caseLabels = discriminatedValues.map((value) => `case "${value}":`);
@@ -301,36 +324,40 @@ function buildDiscriminatedUnionDeserializer(
     parameters: [
       {
         name: "item",
-        type: "any",
-      },
+        type: "any"
+      }
     ],
     returnType: resolveReference(refkey(type, "polymorphicType")),
-    statements: output.join("\n"),
+    statements: output.join("\n")
   };
   return deserializerFunction;
 }
 
-function buildUnionDeserializer(context: SdkContext, type: SdkUnionType, nameOnly: boolean): string;
 function buildUnionDeserializer(
   context: SdkContext,
   type: SdkUnionType,
+  nameOnly: boolean
+): string;
+function buildUnionDeserializer(
+  context: SdkContext,
+  type: SdkUnionType
 ): FunctionDeclarationStructure;
 function buildUnionDeserializer(
   context: SdkContext,
   type: SdkUnionType,
-  nameOnly = false,
+  nameOnly = false
 ): FunctionDeclarationStructure | string | undefined {
   if (!type.name) {
     reportDiagnostic(context.program, {
       code: "anonymous-type-deserialization",
-      target: type.__raw || NoTarget,
+      target: type.__raw || NoTarget
     });
     return ""; // Return empty string to continue processing
   }
   const deserializerFunctionName = `${normalizeModelName(
     context,
     type,
-    NameType.Operation,
+    NameType.Operation
   )}Deserializer`;
   if (nameOnly) {
     return resolveReference(refkey(type, "deserializer"));
@@ -342,11 +369,11 @@ function buildUnionDeserializer(
     parameters: [
       {
         name: "item",
-        type: "any",
-      },
+        type: "any"
+      }
     ],
     returnType: resolveReference(refkey(type)),
-    statements: ["return item;"],
+    statements: ["return item;"]
   };
   return deserializerFunction;
 }
@@ -356,13 +383,13 @@ function buildModelTypeDeserializer(
   type: SdkModelType,
   options: ModelSerializeOptions = {
     nameOnly: false,
-    skipDiscriminatedUnionSuffix: false,
-  },
+    skipDiscriminatedUnionSuffix: false
+  }
 ): FunctionDeclarationStructure | string | undefined {
   if (!type.name) {
     reportDiagnostic(context.program, {
       code: "anonymous-type-deserialization",
-      target: type.__raw || NoTarget,
+      target: type.__raw || NoTarget
     });
     return ""; // Return empty string to continue processing
   }
@@ -372,7 +399,7 @@ function buildModelTypeDeserializer(
       context,
       type,
       NameType.Operation,
-      options.skipDiscriminatedUnionSuffix,
+      options.skipDiscriminatedUnionSuffix
     )}Deserializer`;
   if (options.nameOnly) {
     return options.flatten
@@ -386,24 +413,25 @@ function buildModelTypeDeserializer(
     parameters: [
       {
         name: "item",
-        type: "any",
-      },
+        type: "any"
+      }
     ],
     returnType: options.flatten
       ? undefined // not set return type for flattened property deserializer and type system will infer correct one
       : resolveReference(refkey(type)),
-    statements: ["return item;"],
+    statements: ["return item;"]
   };
   const nullabilityPrefix = "";
 
-  const additionalPropertiesSpread = getAdditionalPropertiesStatement(context, type) ?? "";
+  const additionalPropertiesSpread =
+    getAdditionalPropertiesStatement(context, type) ?? "";
 
   const propertiesStr = getResponseMapping(
     context,
     type,
     "item",
     options.overrides,
-    !options.flatten,
+    !options.flatten
   );
   const propertiesDeserialization = propertiesStr.filter((p) => p.trim());
 
@@ -429,7 +457,7 @@ function buildModelTypeDeserializer(
 
 function getAdditionalPropertiesStatement(
   context: SdkContext,
-  type: SdkModelType,
+  type: SdkModelType
 ): string | undefined {
   const additionalPropertyType = getAdditionalPropertiesType(type);
   if (!additionalPropertyType) {
@@ -437,13 +465,19 @@ function getAdditionalPropertiesStatement(
   }
   const allParents = getAllAncestors(type);
   const properties = getAllProperties(context, type, allParents);
-  const excludeProperties = properties.filter((p) => !!p.name).map((p) => `"${p.name}"`);
+  const excludeProperties = properties
+    .filter((p) => !!p.name)
+    .map((p) => `"${p.name}"`);
   const params = ["item"];
   params.push(`[${excludeProperties.join(",")}]`);
-  const deserializerFunction = buildModelDeserializer(context, additionalPropertyType, {
-    nameOnly: true,
-    skipDiscriminatedUnionSuffix: false,
-  });
+  const deserializerFunction = buildModelDeserializer(
+    context,
+    additionalPropertyType,
+    {
+      nameOnly: true,
+      skipDiscriminatedUnionSuffix: false
+    }
+  );
   if (typeof deserializerFunction === "string") {
     params.push(deserializerFunction);
   }
@@ -455,20 +489,20 @@ function getAdditionalPropertiesStatement(
 function buildDictTypeDeserializer(
   context: SdkContext,
   type: SdkDictionaryType,
-  nameOnly: boolean,
+  nameOnly: boolean
 ): string;
 function buildDictTypeDeserializer(
   context: SdkContext,
-  type: SdkDictionaryType,
+  type: SdkDictionaryType
 ): FunctionDeclarationStructure | undefined;
 function buildDictTypeDeserializer(
   context: SdkContext,
   type: SdkDictionaryType,
-  nameOnly = false,
+  nameOnly = false
 ): FunctionDeclarationStructure | undefined | string {
   const valueDeserializer = buildModelDeserializer(context, type.valueType, {
     nameOnly: true,
-    skipDiscriminatedUnionSuffix: false,
+    skipDiscriminatedUnionSuffix: false
   });
   if (!valueDeserializer) {
     return undefined;
@@ -492,8 +526,8 @@ function buildDictTypeDeserializer(
     parameters: [
       {
         name: "item",
-        type: "Record<string, any>",
-      },
+        type: "Record<string, any>"
+      }
     ],
     returnType: `Record<string, ${resolveReference(refkey(type.valueType)) ?? "any"}>`,
     statements: [
@@ -503,8 +537,8 @@ function buildDictTypeDeserializer(
     result[key] = !item[key]? item[key]: ${valueDeserializer}(item[key])
   });
   return result;
-      `,
-    ],
+      `
+    ]
   };
   return deserializerFunction;
 }
@@ -512,20 +546,20 @@ function buildDictTypeDeserializer(
 function buildArrayTypeDeserializer(
   context: SdkContext,
   type: SdkArrayType,
-  nameOnly: boolean,
+  nameOnly: boolean
 ): string;
 function buildArrayTypeDeserializer(
   context: SdkContext,
-  type: SdkArrayType,
+  type: SdkArrayType
 ): FunctionDeclarationStructure | undefined;
 function buildArrayTypeDeserializer(
   context: SdkContext,
   type: SdkArrayType,
-  nameOnly = false,
+  nameOnly = false
 ): FunctionDeclarationStructure | undefined | string {
   const valueDeserializer = buildModelDeserializer(context, type.valueType, {
     nameOnly: true,
-    skipDiscriminatedUnionSuffix: false,
+    skipDiscriminatedUnionSuffix: false
   });
   if (!valueDeserializer) {
     return undefined;
@@ -548,8 +582,8 @@ function buildArrayTypeDeserializer(
     parameters: [
       {
         name: "result",
-        type: `Array<${normalizeModelName(context, type.valueType as any) ?? "any"}>`,
-      },
+        type: `Array<${normalizeModelName(context, type.valueType as any) ?? "any"}>`
+      }
     ],
     returnType: "any[]",
     statements: [
@@ -557,8 +591,8 @@ function buildArrayTypeDeserializer(
   return result.map((item) => {
     return ${valueDeserializer}(item)
   });
-      `,
-    ],
+      `
+    ]
   };
   return serializerFunction;
 }

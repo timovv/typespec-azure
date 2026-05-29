@@ -20,12 +20,12 @@ export function buildSamples(model: RLCModel) {
   const sampleFiles: RLCFile[] = [];
   for (const sampleGroup of sampleGroups) {
     const sampleGroupFileContents = hbs.compile(sampleTemplate, {
-      noEscape: true,
+      noEscape: true
     });
     const filePath = path.join("samples-dev", `${sampleGroup.filename}.ts`);
     sampleFiles.push({
       path: filePath,
-      content: sampleGroupFileContents(sampleGroup),
+      content: sampleGroupFileContents(sampleGroup)
     });
   }
   return sampleFiles;

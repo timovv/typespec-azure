@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
  * @returns {string} path to the directory containing the package.json file.
  */
 export function resolveProjectRoot(
-  currentDir: string = dirname(fileURLToPath(import.meta.url)),
+  currentDir: string = dirname(fileURLToPath(import.meta.url))
 ): string {
   const packageJsonPath = resolve(currentDir, "package.json");
 

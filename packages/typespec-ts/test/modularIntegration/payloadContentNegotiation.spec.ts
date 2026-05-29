@@ -17,7 +17,7 @@ describe("Payload Content Negotiation Client", () => {
   beforeEach(() => {
     client = new ContentNegotiationClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -28,7 +28,10 @@ describe("Payload Content Negotiation Client", () => {
 
   it("should get image/jpeg for same body in content negotiation", async () => {
     const result = await client.sameBody.getAvatarAsJpeg();
-    assert.strictEqual(uint8ArrayToString(result, "utf-8"), jpegImage.toString());
+    assert.strictEqual(
+      uint8ArrayToString(result, "utf-8"),
+      jpegImage.toString()
+    );
   });
 
   it("should get image/png for different body in content negotiation", async () => {
@@ -38,6 +41,9 @@ describe("Payload Content Negotiation Client", () => {
 
   it("should get application/json for different body in content negotiation", async () => {
     const result = await client.differentBody.getAvatarAsJson();
-    assert.strictEqual(uint8ArrayToString(result.content, "utf-8"), pngFile.toString());
+    assert.strictEqual(
+      uint8ArrayToString(result.content, "utf-8"),
+      pngFile.toString()
+    );
   });
 });

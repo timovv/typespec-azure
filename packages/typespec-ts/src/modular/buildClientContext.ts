@@ -1,11 +1,15 @@
-import { NameType, isAzurePackage, normalizeName } from "../rlc-common/index.js";
+import {
+  NameType,
+  isAzurePackage,
+  normalizeName
+} from "../rlc-common/index.js";
 import {
   buildGetClientCredentialParam,
   buildGetClientEndpointParam,
   buildGetClientOptionsParam,
   getClientParameterName,
   getClientParameters,
-  getClientParametersDeclaration,
+  getClientParametersDeclaration
 } from "./helpers/clientHelpers.js";
 import { ModularEmitterOptions } from "./interfaces.js";
 
@@ -15,7 +19,7 @@ import {
   SdkEndpointParameter,
   SdkHttpParameter,
   SdkMethodParameter,
-  SdkServiceOperation,
+  SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
 import { NoTarget } from "@typespec/compiler";
 import { SourceFile } from "ts-morph";
@@ -28,7 +32,10 @@ import { getModularClientOptions } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
 import { buildEnumTypes, getApiVersionEnum } from "./emitModels.js";
 import { getDocsFromDescription } from "./helpers/docsHelpers.js";
-import { getClassicalClientName, getClientName } from "./helpers/namingHelpers.js";
+import {
+  getClassicalClientName,
+  getClientName
+} from "./helpers/namingHelpers.js";
 import { CloudSettingHelpers } from "./static-helpers-metadata.js";
 import { getTypeExpression } from "./type-expressions/get-type-expression.js";
 
@@ -37,7 +44,7 @@ import { getTypeExpression } from "./type-expressions/get-type-expression.js";
  */
 export function getClientContextPath(
   clientMap: [string[], SdkClientType<SdkServiceOperation>],
-  emitterOptions: ModularEmitterOptions,
+  emitterOptions: ModularEmitterOptions
 ): string {
   const [_, client] = clientMap;
   const { subfolder } = getModularClientOptions(clientMap);
@@ -55,7 +62,7 @@ export function getClientContextPath(
 export function buildClientContext(
   dpgContext: SdkContext,
   clientMap: [string[], SdkClientType<SdkServiceOperation>],
-  emitterOptions: ModularEmitterOptions,
+  emitterOptions: ModularEmitterOptions
 ): SourceFile {
   const project = useContext("outputProject");
   const dependencies = useDependencies();
@@ -65,36 +72,40 @@ export function buildClientContext(
   const requiredParams = getClientParametersDeclaration(client, dpgContext, {
     onClientOnly: false,
     requiredOnly: true,
-    apiVersionAsRequired: true,
+    apiVersionAsRequired: true
   });
   const clientContextFile = project.createSourceFile(
-    getClientContextPath(clientMap, emitterOptions),
+    getClientContextPath(clientMap, emitterOptions)
   );
 
   // Get all client parameters (both required and optional) for the interface
   const requiredInterfaceProperties = getClientParameters(client, dpgContext, {
     onClientOnly: false,
-    requiredOnly: true,
+    requiredOnly: true
   })
     .filter((p) => {
       const clientParamName = getClientParameterName(p);
-      return clientParamName !== "endpointParam" && clientParamName !== "credential";
+      return (
+        clientParamName !== "endpointParam" && clientParamName !== "credential"
+      );
     })
     .map((p) => {
       return {
         name: getClientParameterName(p),
         type: getTypeExpression(dpgContext, p.type),
         hasQuestionToken: false,
-        docs: getDocsWithKnownVersion(dpgContext, p),
+        docs: getDocsWithKnownVersion(dpgContext, p)
       };
     });
 
   // Collect names of required properties to avoid duplicates
-  const requiredPropertyNames = new Set(requiredInterfaceProperties.map((p) => p.name));
+  const requiredPropertyNames = new Set(
+    requiredInterfaceProperties.map((p) => p.name)
+  );
 
   const optionalInterfaceProperties = getClientParameters(client, dpgContext, {
     onClientOnly: false,
-    optionalOnly: true,
+    optionalOnly: true
   })
     .filter((p) => {
       const clientParamName = getClientParameterName(p);
@@ -110,7 +121,7 @@ export function buildClientContext(
         name: getClientParameterName(p),
         type: getTypeExpression(dpgContext, p.type),
         hasQuestionToken: true,
-        docs: getDocsWithKnownVersion(dpgContext, p),
+        docs: getDocsWithKnownVersion(dpgContext, p)
       };
     });
 
@@ -119,20 +130,22 @@ export function buildClientContext(
     name: `${rlcClientName}`,
     extends: [resolveReference(dependencies.Client)],
     docs: getDocsFromDescription(client.doc),
-    properties: [...requiredInterfaceProperties, ...optionalInterfaceProperties],
+    properties: [...requiredInterfaceProperties, ...optionalInterfaceProperties]
   });
 
   const propertiesInOptions = getClientParameters(client, dpgContext, {
-    optionalOnly: true,
+    optionalOnly: true
   })
     .filter((p) => getClientParameterName(p) !== "endpoint")
     .map((p) => {
       return {
         name: getClientParameterName(p),
         type:
-          p.name.toLowerCase() === "apiversion" ? "string" : getTypeExpression(dpgContext, p.type),
+          p.name.toLowerCase() === "apiversion"
+            ? "string"
+            : getTypeExpression(dpgContext, p.type),
         hasQuestionToken: true,
-        docs: getDocsWithKnownVersion(dpgContext, p),
+        docs: getDocsWithKnownVersion(dpgContext, p)
       };
     });
   if (dpgContext.arm) {
@@ -140,7 +153,7 @@ export function buildClientContext(
       name: "cloudSetting",
       type: `${resolveReference(CloudSettingHelpers.AzureSupportedClouds)}`,
       hasQuestionToken: true,
-      docs: [`Specifies the Azure cloud environment for the client.`],
+      docs: [`Specifies the Azure cloud environment for the client.`]
     });
   }
   // check if we have duplication options
@@ -150,7 +163,7 @@ export function buildClientContext(
       reportDiagnostic(dpgContext.program, {
         code: "parameter-name-conflict",
         format: { parameterName: property.name },
-        target: NoTarget,
+        target: NoTarget
       });
     }
     existingOptionNames.add(property.name);
@@ -160,7 +173,7 @@ export function buildClientContext(
     isExported: true,
     extends: [resolveReference(dependencies.ClientOptions)],
     properties: propertiesInOptions,
-    docs: ["Optional parameters for the client."],
+    docs: ["Optional parameters for the client."]
   });
 
   // TODO use binder here
@@ -168,7 +181,7 @@ export function buildClientContext(
   if (isAzurePackage(emitterOptions)) {
     clientContextFile.addImportDeclaration({
       moduleSpecifier: "../".repeat(hierarchy.length + 1) + "logger.js",
-      namedImports: ["logger"],
+      namedImports: ["logger"]
     });
   }
 
@@ -178,36 +191,38 @@ export function buildClientContext(
     returnType: `${rlcClientName}`,
     parameters: getClientParametersDeclaration(client, dpgContext, {
       onClientOnly: false,
-      requiredOnly: true,
+      requiredOnly: true
     }),
-    isExported: true,
+    isExported: true
   });
 
-  const { endpointParamName: endpointParam, assignedOptionalParams } = buildGetClientEndpointParam(
-    factoryFunction,
-    dpgContext,
-    client,
-  );
+  const { endpointParamName: endpointParam, assignedOptionalParams } =
+    buildGetClientEndpointParam(factoryFunction, dpgContext, client);
   const credentialParam = buildGetClientCredentialParam(client, emitterOptions);
 
   // Get api version param early so we can use its name when building options
-  const apiVersionParam = getClientParameters(client, dpgContext).find((x) => x.isApiVersionParam);
-  const apiVersionParamName = apiVersionParam ? getClientParameterName(apiVersionParam) : undefined;
+  const apiVersionParam = getClientParameters(client, dpgContext).find(
+    (x) => x.isApiVersionParam
+  );
+  const apiVersionParamName = apiVersionParam
+    ? getClientParameterName(apiVersionParam)
+    : undefined;
 
   const optionsParam = buildGetClientOptionsParam(
     factoryFunction,
     emitterOptions,
     endpointParam,
-    apiVersionParamName,
+    apiVersionParamName
   );
 
   factoryFunction.addStatements(
     `const clientContext = ${resolveReference(
-      dependencies.getClient,
-    )}(${endpointParam}, ${credentialParam}, ${optionsParam});`,
+      dependencies.getClient
+    )}(${endpointParam}, ${credentialParam}, ${optionsParam});`
   );
 
-  const { customHttpAuthHeaderName, customHttpAuthSharedKeyPrefix } = emitterOptions.options;
+  const { customHttpAuthHeaderName, customHttpAuthSharedKeyPrefix } =
+    emitterOptions.options;
 
   if (customHttpAuthHeaderName && customHttpAuthSharedKeyPrefix) {
     factoryFunction.addStatements(`
@@ -227,7 +242,7 @@ export function buildClientContext(
   const endpointParameter = getClientParameters(client, dpgContext, {
     onClientOnly: false,
     requiredOnly: true,
-    skipEndpointTemplate: true,
+    skipEndpointTemplate: true
   }).find((x) => x.kind === "endpoint");
   if (apiVersionParam) {
     const templateArguments =
@@ -255,7 +270,10 @@ export function buildClientContext(
   factoryFunction.addStatements(apiVersionStatement);
 
   const contextRequiredParam = requiredParams.filter(
-    (p) => p.name !== "endpointParam" && p.name !== "credential" && p.name !== "options",
+    (p) =>
+      p.name !== "endpointParam" &&
+      p.name !== "credential" &&
+      p.name !== "options"
   );
 
   // Collect names of required parameters to avoid duplicates
@@ -264,7 +282,7 @@ export function buildClientContext(
   // Also include optional parameters from clientInitialization that should be passed through
   const contextOptionalParams = getClientParameters(client, dpgContext, {
     optionalOnly: true,
-    onClientOnly: false,
+    onClientOnly: false
   }).filter((p) => {
     const clientParamName = getClientParameterName(p);
     return (
@@ -289,18 +307,21 @@ export function buildClientContext(
         return clientParamName;
       }
       return `${clientParamName}: options.${clientParamName}`;
-    }),
+    })
   ];
 
   if (allContextParams.length) {
     factoryFunction.addStatements(
-      `return { ...clientContext, ${allContextParams.join(", ")}} as ${rlcClientName};`,
+      `return { ...clientContext, ${allContextParams.join(", ")}} as ${rlcClientName};`
     );
   } else {
     factoryFunction.addStatements(`return clientContext;`);
   }
 
-  clientContextFile.fixMissingImports({}, { importModuleSpecifierEnding: "js" });
+  clientContextFile.fixMissingImports(
+    {},
+    { importModuleSpecifierEnding: "js" }
+  );
 
   clientContextFile.fixUnusedIdentifiers();
   return clientContextFile;
@@ -308,7 +329,11 @@ export function buildClientContext(
 
 function getDocsWithKnownVersion(
   dpgContext: SdkContext,
-  param: SdkMethodParameter | SdkEndpointParameter | SdkCredentialParameter | SdkHttpParameter,
+  param:
+    | SdkMethodParameter
+    | SdkEndpointParameter
+    | SdkCredentialParameter
+    | SdkHttpParameter
 ) {
   const docs = getDocsFromDescription(param.doc);
   if (param.name.toLowerCase() !== "apiversion") {
@@ -316,9 +341,13 @@ function getDocsWithKnownVersion(
   }
   const apiVersionEnum = getApiVersionEnum(dpgContext);
   if (apiVersionEnum) {
-    const [_, knownValuesEnum] = buildEnumTypes(dpgContext, apiVersionEnum, true);
+    const [_, knownValuesEnum] = buildEnumTypes(
+      dpgContext,
+      apiVersionEnum,
+      true
+    );
     docs.push(
-      `Known values of {@link ${resolveReference(refkey(knownValuesEnum.name, "knownValues"))}} that the service accepts.`,
+      `Known values of {@link ${resolveReference(refkey(knownValuesEnum.name, "knownValues"))}} that the service accepts.`
     );
   }
   return docs;

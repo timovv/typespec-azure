@@ -7,7 +7,7 @@ describe("Azure ClientGeneratorCore Usage Client", () => {
   beforeEach(() => {
     client = new DeserializeEmptyStringAsNullClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

@@ -7,7 +7,7 @@ import { shouldEmitInline } from "./utils.js";
 export function getEnumExpression(
   context: SdkContext,
   type: SdkEnumType,
-  options: EmitTypeOptions = {},
+  options: EmitTypeOptions = {}
 ): string {
   if (shouldEmitInline(type, options)) {
     return !isExtensibleEnum(context, type)
@@ -18,6 +18,11 @@ export function getEnumExpression(
   }
 }
 
-export function isExtensibleEnum(context: SdkContext, type: SdkEnumType): boolean {
-  return !type.isFixed && context.rlcOptions?.experimentalExtensibleEnums === true;
+export function isExtensibleEnum(
+  context: SdkContext,
+  type: SdkEnumType
+): boolean {
+  return (
+    !type.isFixed && context.rlcOptions?.experimentalExtensibleEnums === true
+  );
 }

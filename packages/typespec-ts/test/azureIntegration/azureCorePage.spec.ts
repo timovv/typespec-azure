@@ -6,14 +6,14 @@ import AzureCorePageClientFactory, {
   SecondItemOutput,
   UserOutput,
   isUnexpected,
-  paginate,
+  paginate
 } from "./generated/azure/core/page/src/index.js";
 describe("Azure Core Page Rest Client", () => {
   let client: AzureCorePageClient;
 
   beforeEach(() => {
     client = AzureCorePageClientFactory({
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -37,13 +37,15 @@ describe("Azure Core Page Rest Client", () => {
 
   it("should list core page withParameters", async () => {
     const validBody = { inputName: "Madge" };
-    const initialResponse = await client.path("/azure/core/page/parameters").post({
-      body: validBody,
-      queryParameters: {
-        "api-version": "2022-12-01-preview",
-        another: "Second",
-      },
-    });
+    const initialResponse = await client
+      .path("/azure/core/page/parameters")
+      .post({
+        body: validBody,
+        queryParameters: {
+          "api-version": "2022-12-01-preview",
+          another: "Second"
+        }
+      });
     if (isUnexpected(initialResponse)) {
       const error = `Unexpected status code ${initialResponse.status}`;
       assert.fail(error);
@@ -61,7 +63,9 @@ describe("Azure Core Page Rest Client", () => {
   });
 
   it("should get core page TwoModelsAsPageItem", async () => {
-    const initialResponse1 = await client.path("/azure/core/page/first-item").get();
+    const initialResponse1 = await client
+      .path("/azure/core/page/first-item")
+      .get();
 
     if (isUnexpected(initialResponse1)) {
       const error = `Unexpected status code ${initialResponse1.status}`;
@@ -75,7 +79,9 @@ describe("Azure Core Page Rest Client", () => {
     }
     assert.strictEqual(result1[0]?.id, 1);
 
-    const initialResponse2 = await client.path("/azure/core/page/second-item").get();
+    const initialResponse2 = await client
+      .path("/azure/core/page/second-item")
+      .get();
 
     if (isUnexpected(initialResponse2)) {
       const error = `Unexpected status code ${initialResponse2.status}`;
@@ -91,7 +97,9 @@ describe("Azure Core Page Rest Client", () => {
   });
 
   it("should list core page withCustomPageModel", async () => {
-    const initialResponse = await client.path("/azure/core/page/custom-page").get();
+    const initialResponse = await client
+      .path("/azure/core/page/custom-page")
+      .get();
     if (isUnexpected(initialResponse)) {
       const error = `Unexpected status code ${initialResponse.status}`;
       assert.fail(error);
@@ -111,18 +119,20 @@ describe("Azure Core Page Rest Client", () => {
   it("should list core page withParameterizedNextLink", async () => {
     // Expected query parameters on initial request: includePending=true, select=name
     // TODO: We can only get the first page data because the parameter re-injection is not implemented yet.
-    const result = await client.path("/azure/core/page/with-parameterized-next-link").get({
-      queryParameters: {
-        includePending: true,
-        select: "name",
-      },
-    });
+    const result = await client
+      .path("/azure/core/page/with-parameterized-next-link")
+      .get({
+        queryParameters: {
+          includePending: true,
+          select: "name"
+        }
+      });
     assert.strictEqual(result.status, "200");
     assert.strictEqual(result.body.values.length, 1);
     assert.strictEqual(result.body.values[0]?.name, "User1");
     assert.strictEqual(
       result.body.nextLink,
-      "http://localhost:3000/azure/core/page/with-parameterized-next-link/second-page?select=name",
+      "http://localhost:3000/azure/core/page/with-parameterized-next-link/second-page?select=name"
     );
   });
 });

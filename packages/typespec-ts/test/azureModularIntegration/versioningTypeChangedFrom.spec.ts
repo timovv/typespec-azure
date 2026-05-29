@@ -7,7 +7,7 @@ describe("VersioningTypeChangedFrom Rest Client", () => {
 
   beforeEach(() => {
     client = new TypeChangedFromClient("http://localhost:3002", {
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -15,9 +15,9 @@ describe("VersioningTypeChangedFrom Rest Client", () => {
     const result = await client.test(
       {
         prop: "foo",
-        changedProp: "bar",
+        changedProp: "bar"
       },
-      "baz",
+      "baz"
     );
     assert.strictEqual(result.prop, "foo");
     assert.strictEqual(result.changedProp, "bar");

@@ -1,7 +1,7 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
 import AdditionalPropertiesClientFactory, {
-  AdditionalPropertiesClient,
+  AdditionalPropertiesClient
 } from "./generated/type/property/additional-properties/src/index.js";
 describe("ModelsPropertyAdditional Rest Client", () => {
   let client: AdditionalPropertiesClient;
@@ -10,8 +10,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
     client = AdditionalPropertiesClientFactory({
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 
@@ -34,8 +34,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
           name: "ExtendsUnknownAdditionalProperties",
           prop1: 32,
           prop2: true,
-          prop3: "abc",
-        },
+          prop3: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -63,8 +63,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
           age: 2.71875,
           prop1: 32,
           prop2: true,
-          prop3: "abc",
-        },
+          prop3: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -94,14 +94,16 @@ describe("ModelsPropertyAdditional Rest Client", () => {
           age: 2.71875,
           prop1: 32,
           prop2: true,
-          prop3: "abc",
-        },
+          prop3: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get is unknown additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordUnknown").get();
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordUnknown")
+      .get();
     assert.strictEqual(result.status, "200");
     assert.strictEqual(result.body.name, "IsUnknownAdditionalProperties");
     assert.strictEqual(result.body["prop1"], 32);
@@ -110,14 +112,16 @@ describe("ModelsPropertyAdditional Rest Client", () => {
   });
 
   it("should put is unknown additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordUnknown").put({
-      body: {
-        name: "IsUnknownAdditionalProperties",
-        prop1: 32,
-        prop2: true,
-        prop3: "abc",
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordUnknown")
+      .put({
+        body: {
+          name: "IsUnknownAdditionalProperties",
+          prop1: 32,
+          prop2: true,
+          prop3: "abc"
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
@@ -144,8 +148,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
           age: 2.71875,
           prop1: 32,
           prop2: true,
-          prop3: "abc",
-        },
+          prop3: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -175,8 +179,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
           age: 2.71875,
           prop1: 32,
           prop2: true,
-          prop3: "abc",
-        },
+          prop3: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -196,26 +200,30 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .put({
         body: {
           name: "ExtendsStringAdditionalProperties",
-          prop: "abc",
-        },
+          prop: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get is string additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordstring").get();
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordstring")
+      .get();
     assert.strictEqual(result.status, "200");
     assert.strictEqual(result.body.name, "IsStringAdditionalProperties");
     assert.strictEqual(result.body["prop"], "abc");
   });
 
   it("should put is string additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordstring").put({
-      body: {
-        name: "IsStringAdditionalProperties",
-        prop: "abc",
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordstring")
+      .put({
+        body: {
+          name: "IsStringAdditionalProperties",
+          prop: "abc"
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
@@ -229,29 +237,35 @@ describe("ModelsPropertyAdditional Rest Client", () => {
   });
 
   it("should put extends float additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/extendsRecordFloat").put({
-      body: {
-        id: 43.125,
-        prop: 43.125,
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/extendsRecordFloat")
+      .put({
+        body: {
+          id: 43.125,
+          prop: 43.125
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get is float additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordFloat").get();
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordFloat")
+      .get();
     assert.strictEqual(result.status, "200");
     assert.strictEqual(result.body.id, 43.125);
     assert.strictEqual(result.body["prop"], 43.125);
   });
 
   it("should put is float additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordFloat").put({
-      body: {
-        id: 43.125,
-        prop: 43.125,
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordFloat")
+      .put({
+        body: {
+          id: 43.125,
+          prop: 43.125
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
@@ -264,28 +278,34 @@ describe("ModelsPropertyAdditional Rest Client", () => {
   });
 
   it("should put extends model additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/extendsRecordModel").put({
-      body: {
-        prop: { state: "ok" },
-        knownProp: { state: "ok" },
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/extendsRecordModel")
+      .put({
+        body: {
+          prop: { state: "ok" },
+          knownProp: { state: "ok" }
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get is model additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordModel").get();
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordModel")
+      .get();
     assert.strictEqual(result.status, "200");
     assert.strictEqual(result.body["prop"]?.state, "ok");
   });
 
   it("should put is model additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordModel").put({
-      body: {
-        prop: { state: "ok" },
-        knownProp: { state: "ok" },
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordModel")
+      .put({
+        body: {
+          prop: { state: "ok" },
+          knownProp: { state: "ok" }
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
@@ -305,8 +325,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .put({
         body: {
           prop: [{ state: "ok" }, { state: "ok" }],
-          knownProp: [{ state: "ok" }, { state: "ok" }],
-        },
+          knownProp: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -322,72 +342,86 @@ describe("ModelsPropertyAdditional Rest Client", () => {
   });
 
   it("should put is model array additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/isRecordModelArray").put({
-      body: {
-        prop: [{ state: "ok" }, { state: "ok" }],
-        knownProp: [{ state: "ok" }, { state: "ok" }],
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/isRecordModelArray")
+      .put({
+        body: {
+          prop: [{ state: "ok" }, { state: "ok" }],
+          knownProp: [{ state: "ok" }, { state: "ok" }]
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record string additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordString").get({
-      body: {
-        name: "SpreadSpringRecord",
-        prop: "abc",
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordString")
+      .get({
+        body: {
+          name: "SpreadSpringRecord",
+          prop: "abc"
+        }
+      });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record string additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordString").put({
-      body: {
-        name: "SpreadSpringRecord",
-        prop: "abc",
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordString")
+      .put({
+        body: {
+          name: "SpreadSpringRecord",
+          prop: "abc"
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record float additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordFloat").get({
-      body: {
-        id: 43.125,
-        prop: 43.125,
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordFloat")
+      .get({
+        body: {
+          id: 43.125,
+          prop: 43.125
+        }
+      });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record float additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordFloat").put({
-      body: {
-        id: 43.125,
-        prop: 43.125,
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordFloat")
+      .put({
+        body: {
+          id: 43.125,
+          prop: 43.125
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record model additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordModel").get({
-      body: {
-        prop: { state: "ok" },
-        knownProp: { state: "ok" },
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordModel")
+      .get({
+        body: {
+          prop: { state: "ok" },
+          knownProp: { state: "ok" }
+        }
+      });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record model additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordModel").put({
-      body: {
-        prop: { state: "ok" },
-        knownProp: { state: "ok" },
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordModel")
+      .put({
+        body: {
+          prop: { state: "ok" },
+          knownProp: { state: "ok" }
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
@@ -397,8 +431,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .get({
         body: {
           knownProp: [{ state: "ok" }, { state: "ok" }],
-          prop: [{ state: "ok" }, { state: "ok" }],
-        },
+          prop: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -409,8 +443,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .put({
         body: {
           knownProp: [{ state: "ok" }, { state: "ok" }],
-          prop: [{ state: "ok" }, { state: "ok" }],
-        },
+          prop: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -421,8 +455,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .get({
         body: {
           id: 43.125,
-          prop: "abc",
-        },
+          prop: "abc"
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -433,8 +467,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .put({
         body: {
           id: 43.125,
-          prop: "abc",
-        },
+          prop: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -445,8 +479,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .get({
         body: {
           name: "abc",
-          prop: 43.125,
-        },
+          prop: 43.125
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -457,8 +491,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .put({
         body: {
           name: "abc",
-          prop: 43.125,
-        },
+          prop: 43.125
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -469,8 +503,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .get({
         body: {
           knownProp: "abc",
-          prop: { state: "ok" },
-        },
+          prop: { state: "ok" }
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -481,32 +515,36 @@ describe("ModelsPropertyAdditional Rest Client", () => {
       .put({
         body: {
           knownProp: "abc",
-          prop: { state: "ok" },
-        },
+          prop: { state: "ok" }
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread different record model array additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadDifferentRecordModelArray")
+      .path(
+        "/type/property/additionalProperties/spreadDifferentRecordModelArray"
+      )
       .get({
         body: {
           knownProp: "abc",
-          prop: [{ state: "ok" }, { state: "ok" }],
-        },
+          prop: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread different record model array additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadDifferentRecordModelArray")
+      .path(
+        "/type/property/additionalProperties/spreadDifferentRecordModelArray"
+      )
       .put({
         body: {
           knownProp: "abc",
-          prop: [{ state: "ok" }, { state: "ok" }],
-        },
+          prop: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -518,8 +556,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           id: 43.125,
           prop: "abc",
-          derivedProp: "abc",
-        },
+          derivedProp: "abc"
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -531,8 +569,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           id: 43.125,
           prop: "abc",
-          derivedProp: "abc",
-        },
+          derivedProp: "abc"
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -544,8 +582,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           name: "abc",
           prop: 43.125,
-          derivedProp: 43.125,
-        },
+          derivedProp: 43.125
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -557,8 +595,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           name: "abc",
           prop: 43.125,
-          derivedProp: 43.125,
-        },
+          derivedProp: 43.125
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -570,8 +608,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           knownProp: "abc",
           prop: { state: "ok" },
-          derivedProp: { state: "ok" },
-        },
+          derivedProp: { state: "ok" }
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -583,34 +621,38 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           knownProp: "abc",
           prop: { state: "ok" },
-          derivedProp: { state: "ok" },
-        },
+          derivedProp: { state: "ok" }
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get extends different spread model array additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/extendsDifferentSpreadModelArray")
+      .path(
+        "/type/property/additionalProperties/extendsDifferentSpreadModelArray"
+      )
       .get({
         body: {
           knownProp: "abc",
           prop: [{ state: "ok" }, { state: "ok" }],
-          derivedProp: [{ state: "ok" }, { state: "ok" }],
-        },
+          derivedProp: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put extends different spread model array additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/extendsDifferentSpreadModelArray")
+      .path(
+        "/type/property/additionalProperties/extendsDifferentSpreadModelArray"
+      )
       .put({
         body: {
           knownProp: "abc",
           prop: [{ state: "ok" }, { state: "ok" }],
-          derivedProp: [{ state: "ok" }, { state: "ok" }],
-        },
+          derivedProp: [{ state: "ok" }, { state: "ok" }]
+        }
       });
     assert.strictEqual(result.status, "204");
   });
@@ -622,8 +664,8 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           flag: true,
           prop1: "abc",
-          prop2: 43.125,
-        },
+          prop2: 43.125
+        }
       });
     assert.strictEqual(result.status, "200");
   });
@@ -635,208 +677,228 @@ describe("ModelsPropertyAdditional Rest Client", () => {
         body: {
           flag: true,
           prop1: "abc",
-          prop2: 43.125,
-        },
+          prop2: 43.125
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record union additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordUnion").get({
-      body: {
-        flag: true,
-        prop1: "abc",
-        prop2: 43.125,
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordUnion")
+      .get({
+        body: {
+          flag: true,
+          prop1: "abc",
+          prop2: 43.125
+        }
+      });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record union additional properties", async () => {
-    const result = await client.path("/type/property/additionalProperties/spreadRecordUnion").put({
-      body: {
-        flag: true,
-        prop1: "abc",
-        prop2: 43.125,
-      },
-    });
+    const result = await client
+      .path("/type/property/additionalProperties/spreadRecordUnion")
+      .put({
+        body: {
+          flag: true,
+          prop1: "abc",
+          prop2: 43.125
+        }
+      });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record discriminate union additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3"
+      )
       .get({
         body: {
           name: "abc",
           prop1: {
             kind: "kind0",
-            fooProp: "abc",
+            fooProp: "abc"
           },
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record discriminate union additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3"
+      )
       .put({
         body: {
           name: "abc",
           prop1: [
             {
               kind: "kind1",
-              start: "2021-01-01T00:00:00Z",
+              start: "2021-01-01T00:00:00Z"
             },
             {
               kind: "kind1",
-              start: "2021-01-01T00:00:00Z",
-            },
+              start: "2021-01-01T00:00:00Z"
+            }
           ],
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record nondiscriminate union additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion"
+      )
       .get({
         body: {
           name: "abc",
           prop1: {
             kind: "kind0",
-            fooProp: "abc",
+            fooProp: "abc"
           },
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record nondiscriminate union additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion"
+      )
       .put({
         body: {
           name: "abc",
           prop1: {
             kind: "kind0",
-            fooProp: "abc",
+            fooProp: "abc"
           },
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record nondiscriminate union2 additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion2")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion2"
+      )
       .get({
         body: {
           name: "abc",
           prop1: {
             kind: "kind1",
-            start: "2021-01-01T00:00:00Z",
+            start: "2021-01-01T00:00:00Z"
           },
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record nondiscriminate union2 additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion2")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion2"
+      )
       .put({
         body: {
           name: "abc",
           prop1: {
             kind: "kind1",
-            start: "2021-01-01T00:00:00Z",
+            start: "2021-01-01T00:00:00Z"
           },
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "204");
   });
 
   it("should get spread record nondiscriminate union3 additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3"
+      )
       .get({
         body: {
           name: "abc",
           prop1: [
             {
               kind: "kind1",
-              start: "2021-01-01T00:00:00Z",
+              start: "2021-01-01T00:00:00Z"
             },
             {
               kind: "kind1",
-              start: "2021-01-01T00:00:00Z",
-            },
+              start: "2021-01-01T00:00:00Z"
+            }
           ],
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "200");
   });
 
   it("should put spread record nondiscriminate union3 additional properties", async () => {
     const result = await client
-      .path("/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3")
+      .path(
+        "/type/property/additionalProperties/spreadRecordNonDiscriminatedUnion3"
+      )
       .put({
         body: {
           name: "abc",
           prop1: [
             {
               kind: "kind1",
-              start: "2021-01-01T00:00:00Z",
+              start: "2021-01-01T00:00:00Z"
             },
             {
               kind: "kind1",
-              start: "2021-01-01T00:00:00Z",
-            },
+              start: "2021-01-01T00:00:00Z"
+            }
           ],
           prop2: {
             kind: "kind1",
             start: "2021-01-01T00:00:00Z",
-            end: "2021-01-02T00:00:00Z",
-          },
-        },
+            end: "2021-01-02T00:00:00Z"
+          }
+        }
       });
     assert.strictEqual(result.status, "204");
   });

@@ -1,4 +1,7 @@
-import { SdkClientType, SdkServiceOperation } from "@azure-tools/typespec-client-generator-core";
+import {
+  SdkClientType,
+  SdkServiceOperation
+} from "@azure-tools/typespec-client-generator-core";
 import path from "path";
 import { SourceFile } from "ts-morph";
 import { useContext } from "../contextManager.js";
@@ -18,7 +21,7 @@ import { PollingHelpers } from "./static-helpers-metadata.js";
 export function buildRestorePoller(
   context: SdkContext,
   clientMap: [string[], SdkClientType<SdkServiceOperation>],
-  emitterOptions: ModularEmitterOptions,
+  emitterOptions: ModularEmitterOptions
 ) {
   const project = useContext("outputProject");
   const [_, client] = clientMap;
@@ -33,19 +36,33 @@ export function buildRestorePoller(
   }
   const srcPath = emitterOptions.modularOptions.sourceRoot;
   const filePath = path.join(
-    `${srcPath}/${subfolder && subfolder !== "" ? subfolder + "/" : ""}restorePollerHelpers.ts`,
+    `${srcPath}/${subfolder && subfolder !== "" ? subfolder + "/" : ""}restorePollerHelpers.ts`
   );
   const restorePollerFile = project.createSourceFile(filePath, undefined, {
-    overwrite: true,
+    overwrite: true
   });
 
   const clientNames = importClassicalClient(client, restorePollerFile);
-  const deserializeMap = importDeserializeHelpers(context, client, restorePollerFile);
-  const pathUncheckedReference = resolveReference(dependencies.PathUncheckedResponse);
-  const pollerLikeReference = resolveReference(AzurePollingDependencies.PollerLike);
-  const operationStateReference = resolveReference(AzurePollingDependencies.OperationState);
-  const operationOptionsReference = resolveReference(dependencies.OperationOptions);
-  const deserializeStateReference = resolveReference(AzurePollingDependencies.DeserializeState);
+  const deserializeMap = importDeserializeHelpers(
+    context,
+    client,
+    restorePollerFile
+  );
+  const pathUncheckedReference = resolveReference(
+    dependencies.PathUncheckedResponse
+  );
+  const pollerLikeReference = resolveReference(
+    AzurePollingDependencies.PollerLike
+  );
+  const operationStateReference = resolveReference(
+    AzurePollingDependencies.OperationState
+  );
+  const operationOptionsReference = resolveReference(
+    dependencies.OperationOptions
+  );
+  const deserializeStateReference = resolveReference(
+    AzurePollingDependencies.DeserializeState
+  );
   const restorePollerHelperContent = `
     export interface RestorePollerOptions<
       TResult,
@@ -205,7 +222,7 @@ export function buildRestorePoller(
 function importDeserializeHelpers(
   context: SdkContext,
   client: SdkClientType<SdkServiceOperation>,
-  sourceFile: SourceFile,
+  sourceFile: SourceFile
 ) {
   const deserializeDetails = buildLroDeserDetailMap(context, client);
   const deserializeMap: string[] = [];
@@ -214,15 +231,15 @@ function importDeserializeHelpers(
       namedImports: value.map((detail) =>
         detail.renamedDeserName
           ? `${detail.deserName} as ${detail.renamedDeserName}`
-          : detail.deserName,
+          : detail.deserName
       ),
-      moduleSpecifier: key,
+      moduleSpecifier: key
     });
     value.forEach((detail) => {
       deserializeMap.push(
         `"${detail.path}": { deserializer: ${
           detail.renamedDeserName ?? detail.deserName
-        }, expectedStatuses: ${detail.expectedStatusesExpression} }`,
+        }, expectedStatuses: ${detail.expectedStatusesExpression} }`
       );
     });
   }
@@ -231,12 +248,12 @@ function importDeserializeHelpers(
 
 function importClassicalClient(
   client: SdkClientType<SdkServiceOperation>,
-  sourceFile: SourceFile,
+  sourceFile: SourceFile
 ): string[] {
   const classicalClientName = `${getClassicalClientName(client)}`;
   sourceFile.addImportDeclaration({
     namedImports: [`${classicalClientName}`],
-    moduleSpecifier: `./${normalizeName(classicalClientName, NameType.File)}.js`,
+    moduleSpecifier: `./${normalizeName(classicalClientName, NameType.File)}.js`
   });
   return [classicalClientName];
 }

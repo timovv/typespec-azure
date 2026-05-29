@@ -1,12 +1,15 @@
 import { assert, describe, it } from "vitest";
 
-import { bearerTokenAuthenticationPolicyName, PipelinePolicy } from "@azure/core-rest-pipeline";
+import {
+  bearerTokenAuthenticationPolicyName,
+  PipelinePolicy
+} from "@azure/core-rest-pipeline";
 import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
 import {
   createUnion,
   UnionContext,
   validKey,
-  validToken,
+  validToken
 } from "./generated/authentication/union/src/api/index.js";
 import { UnionClient } from "./generated/authentication/union/src/index.js";
 
@@ -18,12 +21,12 @@ describe("UnionContext in API Layer", () => {
   function prepareToken() {
     context = createUnion(
       {
-        getToken: async () => Promise.resolve(null),
+        getToken: async () => Promise.resolve(null)
       },
       {
         allowInsecureConnection: true,
-        endpoint: "http://localhost:3002",
-      },
+        endpoint: "http://localhost:3002"
+      }
     );
 
     policy = customBearerTokenAuthenticationPolicy({
@@ -32,13 +35,13 @@ describe("UnionContext in API Layer", () => {
         getToken: async () => {
           return {
             token: defaultScope,
-            expiresOnTimestamp: Date.now(),
+            expiresOnTimestamp: Date.now()
           };
-        },
-      },
+        }
+      }
     });
     context.pipeline.removePolicy({
-      name: bearerTokenAuthenticationPolicyName,
+      name: bearerTokenAuthenticationPolicyName
     });
     context.pipeline.addPolicy(policy);
   }
@@ -46,9 +49,9 @@ describe("UnionContext in API Layer", () => {
   function prepareKey() {
     context = createUnion(
       {
-        key: "valid-key",
+        key: "valid-key"
       },
-      { allowInsecureConnection: true, endpoint: "http://localhost:3002" },
+      { allowInsecureConnection: true, endpoint: "http://localhost:3002" }
     );
   }
 
@@ -73,12 +76,12 @@ describe("UnionClient in classical client", () => {
   function prepareToken() {
     client = new UnionClient(
       {
-        getToken: async () => Promise.resolve(null),
+        getToken: async () => Promise.resolve(null)
       },
       {
         allowInsecureConnection: true,
-        endpoint: "http://localhost:3002",
-      },
+        endpoint: "http://localhost:3002"
+      }
     );
 
     policy = customBearerTokenAuthenticationPolicy({
@@ -87,13 +90,13 @@ describe("UnionClient in classical client", () => {
         getToken: async () => {
           return {
             token: defaultScope,
-            expiresOnTimestamp: Date.now(),
+            expiresOnTimestamp: Date.now()
           };
-        },
-      },
+        }
+      }
     });
     client.pipeline.removePolicy({
-      name: bearerTokenAuthenticationPolicyName,
+      name: bearerTokenAuthenticationPolicyName
     });
     client.pipeline.addPolicy(policy);
   }
@@ -101,9 +104,9 @@ describe("UnionClient in classical client", () => {
   function prepareKey() {
     client = new UnionClient(
       {
-        key: "valid-key",
+        key: "valid-key"
       },
-      { allowInsecureConnection: true, endpoint: "http://localhost:3002" },
+      { allowInsecureConnection: true, endpoint: "http://localhost:3002" }
     );
   }
 

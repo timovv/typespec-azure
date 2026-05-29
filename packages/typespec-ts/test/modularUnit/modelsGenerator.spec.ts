@@ -2,7 +2,7 @@ import { assert, describe, it } from "vitest";
 
 import {
   emitModularModelsFromTypeSpec,
-  emitModularOperationsFromTypeSpec,
+  emitModularOperationsFromTypeSpec
 } from "../util/emitUtil.js";
 import { assertEqualContent } from "../util/testUtil.js";
 
@@ -48,7 +48,7 @@ describe("inheritance & polymorphism", () => {
         kind: "cat";
         meow: number;
       }
-      `,
+      `
     );
     const operationFiles = await emitModularOperationsFromTypeSpec(tspContent);
     assert.ok(operationFiles);
@@ -95,7 +95,7 @@ describe("inheritance & polymorphism", () => {
         const result = await _readSend(context, options);
         return _readDeserialize(result);
       }
-      `,
+      `
     );
   });
 });

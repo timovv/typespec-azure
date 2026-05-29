@@ -2,7 +2,7 @@ import {
   SdkHttpParameter,
   SdkModelPropertyType,
   SdkServiceResponseHeader,
-  SdkType,
+  SdkType
 } from "@azure-tools/typespec-client-generator-core";
 import { NameType, normalizeName } from "../../rlc-common/index.js";
 import { SdkContext } from "../../utils/interfaces.js";
@@ -19,7 +19,7 @@ export interface EmitTypeOptions {
 
 export function normalizeModelPropertyName(
   context: SdkContext,
-  property: SdkModelPropertyType | SdkHttpParameter | SdkServiceResponseHeader,
+  property: SdkModelPropertyType | SdkHttpParameter | SdkServiceResponseHeader
 ): string {
   const normalizedPropName = normalizeName(property.name, NameType.Property);
   return context.rlcOptions?.ignorePropertyNameNormalize
@@ -30,7 +30,7 @@ export function normalizeModelPropertyName(
 export function getTypeExpression(
   context: SdkContext,
   type: SdkType,
-  options?: EmitTypeOptions,
+  options?: EmitTypeOptions
 ): string {
   switch (type.kind) {
     case "array": {
@@ -40,7 +40,9 @@ export function getTypeExpression(
     case "enum":
       return getEnumExpression(context, type);
     case "unknown":
-      return context.rlcOptions?.treatUnknownAsRecord ? "Record<string, unknown>" : "any";
+      return context.rlcOptions?.treatUnknownAsRecord
+        ? "Record<string, unknown>"
+        : "any";
     case "boolean":
       return "boolean";
     case "decimal":
@@ -96,7 +98,9 @@ export function getTypeExpression(
     case "offsetDateTime":
       return "string";
     case "tuple": {
-      const types = type.valueTypes.map((v) => getTypeExpression(context, v, options)).join(", ");
+      const types = type.valueTypes
+        .map((v) => getTypeExpression(context, v, options))
+        .join(", ");
       return `[${types}]`;
     }
     case "union":

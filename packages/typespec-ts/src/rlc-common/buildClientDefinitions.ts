@@ -9,17 +9,25 @@ import {
   Project,
   SourceFile,
   StructureKind,
-  Writers,
+  Writers
 } from "ts-morph";
 
 import { REST_CLIENT_RESERVED } from "./buildMethodShortcuts.js";
 import { getImportSpecifier } from "./helpers/importsUtil.js";
-import { getClientName, getImportModuleName } from "./helpers/nameConstructors.js";
-import { CasingConvention, NameType, normalizeName, pascalCase } from "./helpers/nameUtils.js";
+import {
+  getClientName,
+  getImportModuleName
+} from "./helpers/nameConstructors.js";
+import {
+  CasingConvention,
+  NameType,
+  normalizeName,
+  pascalCase
+} from "./helpers/nameUtils.js";
 import {
   buildMethodDefinitions,
   getGeneratedWrapperTypes,
-  getPathParamDefinitions,
+  getPathParamDefinitions
 } from "./helpers/operationHelpers.js";
 import { generateMethodShortcuts } from "./helpers/shortcutMethods.js";
 import { PathMetadata, Paths, RLCModel } from "./interfaces.js";
@@ -28,13 +36,13 @@ export function buildClientDefinitions(model: RLCModel) {
   const options = {
     importedParameters: new Set<string>(),
     importedResponses: new Set<string>(),
-    clientImports: new Set<string>(),
+    clientImports: new Set<string>()
   };
   const project = new Project();
   const srcPath = model.srcPath;
   const filePath = path.join(srcPath, `clientDefinitions.ts`);
   const clientDefinitionsFile = project.createSourceFile(filePath, undefined, {
-    overwrite: true,
+    overwrite: true
   });
 
   // Get all paths
@@ -58,8 +66,8 @@ export function buildClientDefinitions(model: RLCModel) {
     callSignatures: getPathFirstRoutesInterfaceDefinition(
       pathDictionary,
       clientDefinitionsFile,
-      options,
-    ),
+      options
+    )
   });
 
   const clientInterfaceName = getClientName(model);
@@ -69,14 +77,19 @@ export function buildClientDefinitions(model: RLCModel) {
     type: Writers.intersectionType(
       "Client",
       Writers.objectType({
-        properties: [{ name: "path", type: "Routes" }, ...shortcutsInOperationGroup],
+        properties: [
+          { name: "path", type: "Routes" },
+          ...shortcutsInOperationGroup
+        ]
       }),
       // If the length of shortcuts in operation group and all shortcutsInOperationGroup
       // is the same, then we don't have any operations at the client level
       // Otherwise we need to make the client interface name an union with the
       // definition of all client level shortcut methods
-      ...(shortcutsInOperationGroup.length !== shortcuts.length ? [`ClientOperations`] : []),
-    ),
+      ...(shortcutsInOperationGroup.length !== shortcuts.length
+        ? [`ClientOperations`]
+        : [])
+    )
   });
 
   if (options.importedParameters.size) {
@@ -85,8 +98,8 @@ export function buildClientDefinitions(model: RLCModel) {
       namedImports: [...options.importedParameters],
       moduleSpecifier: getImportModuleName(
         { cjsName: "./parameters", esModulesName: "./parameters.js" },
-        model,
-      ),
+        model
+      )
     });
   }
 
@@ -96,19 +109,24 @@ export function buildClientDefinitions(model: RLCModel) {
       namedImports: [...options.importedResponses],
       moduleSpecifier: getImportModuleName(
         { cjsName: "./responses", esModulesName: "./responses.js" },
-        model,
-      ),
+        model
+      )
     });
   }
 
-  if ((model.importInfo.internalImports.rlcClientDefinition.importsSet?.size ?? 0) > 0) {
+  if (
+    (model.importInfo.internalImports.rlcClientDefinition.importsSet?.size ??
+      0) > 0
+  ) {
     clientDefinitionsFile.addImportDeclaration({
       isTypeOnly: true,
-      namedImports: Array.from(model.importInfo.internalImports.rlcClientDefinition.importsSet!),
+      namedImports: Array.from(
+        model.importInfo.internalImports.rlcClientDefinition.importsSet!
+      ),
       moduleSpecifier: getImportModuleName(
         { cjsName: "./models", esModulesName: "./models.js" },
-        model,
-      ),
+        model
+      )
     });
   }
 
@@ -118,8 +136,11 @@ export function buildClientDefinitions(model: RLCModel) {
     {
       isTypeOnly: true,
       namedImports: [...options.clientImports],
-      moduleSpecifier: getImportSpecifier("restClient", model.importInfo.runtimeImports),
-    },
+      moduleSpecifier: getImportSpecifier(
+        "restClient",
+        model.importInfo.runtimeImports
+      )
+    }
   ]);
 
   return { path: filePath, content: clientDefinitionsFile.getFullText() };
@@ -132,7 +153,7 @@ function getPathFirstRoutesInterfaceDefinition(
     importedParameters: Set<string>;
     importedResponses: Set<string>;
     clientImports: Set<string>;
-  },
+  }
 ): CallSignatureDeclarationStructure[] {
   const operationGroupCount = getOperationGroupCount(paths);
 
@@ -149,25 +170,40 @@ function getPathFirstRoutesInterfaceDefinition(
       }
       for (const method of methods) {
         options.importedParameters.add(method.optionsName);
-        method.returnType.split(" | ").forEach((item) => options.importedResponses.add(item));
+        method.returnType
+          .split(" | ")
+          .forEach((item) => options.importedResponses.add(item));
       }
     }
-    generatePathFirstRouteMethodsDefinition(pathMetadata, operationGroupCount, sourcefile);
+    generatePathFirstRouteMethodsDefinition(
+      pathMetadata,
+      operationGroupCount,
+      sourcefile
+    );
     const pathParams = pathMetadata.pathParameters;
     getGeneratedWrapperTypes(pathParams).forEach((p) =>
-      options.importedParameters.add(p.name ?? p.type),
+      options.importedParameters.add(p.name ?? p.type)
     );
     signatures.push({
       docs: [
         `Resource for '${key
           .replace(/}/g, "\\}")
-          .replace(/{/g, "\\{")}' has methods for the following verbs: ${Object.keys(
-          pathMetadata.methods,
-        ).join(", ")}`,
+          .replace(
+            /{/g,
+            "\\{"
+          )}' has methods for the following verbs: ${Object.keys(
+          pathMetadata.methods
+        ).join(", ")}`
       ],
-      parameters: [{ name: "path", type: `"${key}"` }, ...getPathParamDefinitions(pathParams)],
-      returnType: getOperationReturnTypeName(pathMetadata, getOperationGroupCount(paths)),
-      kind: StructureKind.CallSignature,
+      parameters: [
+        { name: "path", type: `"${key}"` },
+        ...getPathParamDefinitions(pathParams)
+      ],
+      returnType: getOperationReturnTypeName(
+        pathMetadata,
+        getOperationGroupCount(paths)
+      ),
+      kind: StructureKind.CallSignature
     });
   }
   return signatures;
@@ -184,12 +220,16 @@ function getOperationGroupCount(paths: Paths) {
 
 function getOperationReturnTypeName(
   { operationGroupName, name }: PathMetadata,
-  operationGroupCount: number,
+  operationGroupCount: number
 ) {
-  if (operationGroupCount > 1 && operationGroupName && operationGroupName !== "Client") {
+  if (
+    operationGroupCount > 1 &&
+    operationGroupName &&
+    operationGroupName !== "Client"
+  ) {
     return normalizeName(
       `${pascalCase(operationGroupName)}${pascalCase(name)}`,
-      NameType.Interface,
+      NameType.Interface
     );
   }
 
@@ -199,13 +239,13 @@ function getOperationReturnTypeName(
 function generatePathFirstRouteMethodsDefinition(
   path: PathMetadata,
   operationGroupCount: number,
-  file: SourceFile,
+  file: SourceFile
 ): void {
   const methodDefinitions = buildMethodDefinitions(path.methods);
   const interfaceDef = {
     methods: methodDefinitions,
     name: getOperationReturnTypeName(path, operationGroupCount),
-    isExported: true,
+    isExported: true
   };
   file.addInterface(interfaceDef);
 }
@@ -219,16 +259,20 @@ function getShortcutName(interfaceName: string) {
     NameType.OperationGroup,
     true,
     REST_CLIENT_RESERVED,
-    CasingConvention.Camel,
+    CasingConvention.Camel
   );
 
   return {
     name: clientProperty,
-    type: interfaceName,
+    type: interfaceName
   };
 }
 
 function shouldKeepSuffix(name: string) {
-  const reservedNames = ["pipelineOperations", "pathOperations", "pathUncheckedOperations"];
+  const reservedNames = [
+    "pipelineOperations",
+    "pathOperations",
+    "pathUncheckedOperations"
+  ];
   return reservedNames.some((r) => r.toLowerCase() === name.toLowerCase());
 }

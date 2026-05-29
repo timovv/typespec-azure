@@ -8,7 +8,7 @@ describe("Azure ARM Large Header Client", () => {
   beforeEach(() => {
     client = new LargeHeaderClient("00000000-0000-0000-0000-000000000000", {
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
@@ -17,7 +17,10 @@ describe("Azure ARM Large Header Client", () => {
     const largeHeaderName = "header1";
 
     // Call the LRO operation
-    const poller = client.largeHeaders.two6K(resourceGroupName, largeHeaderName);
+    const poller = client.largeHeaders.two6K(
+      resourceGroupName,
+      largeHeaderName
+    );
 
     // Wait for completion
     const result = await poller.pollUntilDone();

@@ -1,7 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { getHttpOperationWithCache, SdkClient } from "@azure-tools/typespec-client-generator-core";
+import {
+  getHttpOperationWithCache,
+  SdkClient
+} from "@azure-tools/typespec-client-generator-core";
 import { getDoc, isVoidType } from "@typespec/compiler";
 import { HttpOperation, HttpOperationResponse } from "@typespec/http";
 import {
@@ -11,7 +14,7 @@ import {
   ResponseHeaderSchema,
   ResponseMetadata,
   Schema,
-  SchemaContext,
+  SchemaContext
 } from "../rlc-common/index.js";
 import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
@@ -19,7 +22,7 @@ import {
   getBinaryType,
   getImportedModelName,
   getSchemaForType,
-  getTypeName,
+  getTypeName
 } from "../utils/modelUtils.js";
 import {
   getOperationGroupName,
@@ -27,13 +30,13 @@ import {
   getOperationName,
   getOperationStatuscode,
   isBinaryPayload,
-  sortedOperationResponses,
+  sortedOperationResponses
 } from "../utils/operationUtil.js";
 
 export function transformToResponseTypes(
   client: SdkClient,
   dpgContext: SdkContext,
-  importDetails: Imports,
+  importDetails: Imports
 ): OperationResponse[] {
   const rlcResponses: OperationResponse[] = [];
   const inputImportedSet = new Set<string>();
@@ -53,7 +56,7 @@ export function transformToResponseTypes(
       operationGroup: getOperationGroupName(dpgContext, route),
       operationName: getOperationName(dpgContext, route.operation),
       path: route.path,
-      responses: [],
+      responses: []
     };
     const defaultSchemas: Schema[] = [],
       nonDefaultSchemas: Schema[] = [];
@@ -61,16 +64,20 @@ export function transformToResponseTypes(
       const statusCode = getOperationStatuscode(resp);
       const rlcResponseUnit: ResponseMetadata = {
         statusCode,
-        description: resp.description,
+        description: resp.description
       };
       // transform header
       const headers = transformHeaders(dpgContext, resp, inputImportedSet);
       // transform body
-      const [body, schemas] = transformBody(dpgContext, resp, inputImportedSet) ?? [undefined, []];
+      const [body, schemas] = transformBody(
+        dpgContext,
+        resp,
+        inputImportedSet
+      ) ?? [undefined, []];
       rlcOperationUnit.responses.push({
         ...rlcResponseUnit,
         headers,
-        body,
+        body
       });
       if (statusCode === "default") {
         defaultSchemas.push(...schemas);
@@ -82,7 +89,7 @@ export function transformToResponseTypes(
       dpgContext,
       route,
       getOperationGroupName(dpgContext, route),
-      rlcOperationUnit.responses,
+      rlcOperationUnit.responses
     );
     if (lroLogicalResponse) {
       rlcOperationUnit.responses.push(lroLogicalResponse);
@@ -100,7 +107,7 @@ export function transformToResponseTypes(
 function transformHeaders(
   dpgContext: SdkContext,
   response: HttpOperationResponse,
-  importedModels: Set<string>,
+  importedModels: Set<string>
 ): ResponseHeaderSchema[] | undefined {
   if (!response.responses.length) {
     return;
@@ -126,18 +133,18 @@ function transformHeaders(
       }
       const typeSchema = getSchemaForType(dpgContext, value!.type, {
         usage: [SchemaContext.Output],
-        relevantProperty: value,
+        relevantProperty: value
       }) as Schema;
       const type = getTypeName(typeSchema, [SchemaContext.Output]);
       getImportedModelName(typeSchema, [SchemaContext.Output])?.forEach(
         importedModels.add,
-        importedModels,
+        importedModels
       );
       const header: ResponseHeaderSchema = {
         name: `"${key.toLowerCase()}"`,
         type,
         required: !value?.optional,
-        description: getDoc(dpgContext.program, value!),
+        description: getDoc(dpgContext.program, value!)
       };
       rlcHeaders.set(header.name, header);
     }
@@ -149,7 +156,7 @@ function transformHeaders(
 function transformBody(
   dpgContext: SdkContext,
   response: HttpOperationResponse,
-  importedModels: Set<string>,
+  importedModels: Set<string>
 ): [Schema, Schema[]] | undefined {
   if (!response.responses.length) {
     return;
@@ -166,7 +173,7 @@ function transformBody(
       continue;
     }
     const hasBinaryContent = body.contentTypes.some((contentType) =>
-      isBinaryPayload(dpgContext, body.type, contentType),
+      isBinaryPayload(dpgContext, body.type, contentType)
     );
     if (hasBinaryContent) {
       typeSet.add(getBinaryType([SchemaContext.Output]));
@@ -174,7 +181,7 @@ function transformBody(
       continue;
     }
     const bodySchema = getSchemaForType(dpgContext, body!.type, {
-      usage: [SchemaContext.Output],
+      usage: [SchemaContext.Output]
     }) as Schema;
     fromCore = bodySchema.fromCore ?? false;
     const bodyType = getTypeName(bodySchema);
@@ -199,9 +206,9 @@ function transformBody(
       name: "body",
       type: [...typeSet].join("|"),
       description: [...descriptions].join("\n\n"),
-      fromCore,
+      fromCore
     },
-    schemas,
+    schemas
   ];
 }
 
@@ -209,13 +216,13 @@ function transformLroLogicalResponse(
   dpgContext: SdkContext,
   route: HttpOperation,
   operationGroupName: string,
-  existingResponses: ResponseMetadata[],
+  existingResponses: ResponseMetadata[]
 ): ResponseMetadata | undefined {
   const operationLroOverload = getOperationLroOverload(
     dpgContext.program,
     route,
     undefined,
-    existingResponses,
+    existingResponses
   );
   if (!operationLroOverload) {
     return;
@@ -229,9 +236,9 @@ function transformLroLogicalResponse(
     description: `The final response for long-running ${route.operation.name} operation`,
     predefinedName: getLroLogicalResponseName(
       operationGroupName,
-      getOperationName(dpgContext, route.operation),
+      getOperationName(dpgContext, route.operation)
     ),
-    body: successResp?.body,
+    body: successResp?.body
   };
   return logicalLROResponse;
 }

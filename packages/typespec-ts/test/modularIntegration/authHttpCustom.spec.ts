@@ -9,21 +9,21 @@ describe("CustomClient Classical Client", () => {
   beforeEach(() => {
     validKeyClient = new CustomClient(
       {
-        key: "valid-key",
+        key: "valid-key"
       },
       {
         allowInsecureConnection: true,
-        endpoint: "http://localhost:3002",
-      },
+        endpoint: "http://localhost:3002"
+      }
     );
     invalidKeyClient = new CustomClient(
       {
-        key: "invalid-key",
+        key: "invalid-key"
       },
       {
         allowInsecureConnection: true,
-        endpoint: "http://localhost:3002",
-      },
+        endpoint: "http://localhost:3002"
+      }
     );
   });
 

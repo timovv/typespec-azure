@@ -9,7 +9,7 @@ export function buildSampleTest(model: RLCModel) {
     path: "test/public/sampleTest.spec.ts",
     content: hbs.compile(sampleTestContent, { noEscape: true })({
       isEsm: model.options?.moduleKind === "esm",
-      isCjs: model.options?.moduleKind === "cjs",
-    }),
+      isCjs: model.options?.moduleKind === "cjs"
+    })
   };
 }

@@ -56,7 +56,7 @@ describe("Client Factory generation", () => {
 
         return client;
     }
-    `,
+    `
       );
     });
     it("should handle one parameter", async () => {
@@ -118,7 +118,7 @@ describe("Client Factory generation", () => {
     
             return client;
         }
-        `,
+        `
       );
     });
 
@@ -146,7 +146,7 @@ describe("Client Factory generation", () => {
       }
       `;
       const clientFactory = await emitClientFactoryFromTypeSpec(tsp, {
-        needAzureCore: true,
+        needAzureCore: true
       });
       assert.ok(clientFactory);
       await assertEqualContent(
@@ -196,7 +196,7 @@ describe("Client Factory generation", () => {
       
               return client;
           }
-          `,
+          `
       );
     });
     it("should handle extensible enums in host parameters", async () => {
@@ -222,8 +222,8 @@ describe("Client Factory generation", () => {
             }
             `,
         {
-          needAzureCore: true,
-        },
+          needAzureCore: true
+        }
       );
       assert.ok(models);
       await assertEqualContent(
@@ -273,7 +273,7 @@ describe("Client Factory generation", () => {
       
               return client;
           }
-          `,
+          `
       );
     });
 
@@ -300,8 +300,8 @@ describe("Client Factory generation", () => {
             }
             `,
         {
-          needAzureCore: true,
-        },
+          needAzureCore: true
+        }
       );
       assert.ok(models);
       await assertEqualContent(
@@ -353,7 +353,7 @@ describe("Client Factory generation", () => {
       
               return client;
           }
-          `,
+          `
       );
     });
   });
@@ -406,7 +406,7 @@ describe("Client Factory generation", () => {
 
         return client;
     }
-    `,
+    `
       );
     });
   });
@@ -424,13 +424,16 @@ describe("Client Factory generation", () => {
             }]>)
           @service(#{title: "PetStoreClient"})
           namespace PetStore;
-        `,
+        `
         );
         assert.fail("Should throw diagnostic errors");
       } catch (e) {
         const diagnostics = e as Diagnostic[];
         assert.equal(diagnostics.length, 1);
-        assert.equal(diagnostics[0]?.code, "@azure-tools/typespec-ts/no-credential-scopes");
+        assert.equal(
+          diagnostics[0]?.code,
+          "@azure-tools/typespec-ts/no-credential-scopes"
+        );
       }
     });
 
@@ -447,8 +450,8 @@ describe("Client Factory generation", () => {
         namespace PetStore;
       `,
         {
-          mustEmptyDiagnostic: false,
-        },
+          mustEmptyDiagnostic: false
+        }
       );
 
       assert.ok(factoryFile);
@@ -496,7 +499,7 @@ describe("Client Factory generation", () => {
 
         return client;
       }
-      `,
+      `
       );
     });
 
@@ -560,7 +563,7 @@ describe("Client Factory generation", () => {
 
         return client;
     }
-    `,
+    `
       );
     });
 
@@ -640,7 +643,7 @@ describe("Client Factory generation", () => {
         
           return client;
         }
-    `,
+    `
       );
     });
   });

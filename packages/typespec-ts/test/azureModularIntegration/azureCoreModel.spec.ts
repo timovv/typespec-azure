@@ -8,7 +8,7 @@ describe("Traits Client", () => {
   beforeEach(() => {
     client = new ModelClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 

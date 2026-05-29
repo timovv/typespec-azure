@@ -9,7 +9,7 @@ describe("Service MultiService Client", () => {
     client = new Combined({
       endpoint: "http://localhost:3002",
       allowInsecureConnection: true,
-      retryOptions: { maxRetries: 0 },
+      retryOptions: { maxRetries: 0 }
     });
   });
 

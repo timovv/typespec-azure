@@ -120,7 +120,7 @@ const buildDefaultReturn = (
   hasDefault: boolean,
   hasQueryDefinition: boolean,
   hasApiVersionInClient: boolean = false,
-  apiVersionRequired: boolean = true,
+  apiVersionRequired: boolean = true
 ) => {
   const apiVersionWarning =
     apiVersionRequired && !hasDefault && hasApiVersionInClient
@@ -174,7 +174,9 @@ const buildDefaultReturn = (
    */
   export default function createClient(
     endpointParam: string,${
-      hasApiVersionInClient && apiVersionRequired && !hasDefault ? "apiVersion: string," : ""
+      hasApiVersionInClient && apiVersionRequired && !hasDefault
+        ? "apiVersion: string,"
+        : ""
     }
     ${
       (!hasDefault && apiVersionRequired) || !hasApiVersionInClient
@@ -329,7 +331,7 @@ describe("api-version", () => {
     describe("with default value", () => {
       it("in @versioned", async () => {
         const def = buildQueryDefinition({
-          "@versioned": true,
+          "@versioned": true
         });
         const expectedRes = buildDefaultReturn(true, true, true);
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -340,7 +342,7 @@ describe("api-version", () => {
     describe("without default value", () => {
       it("no @versioned", async () => {
         const def = buildQueryDefinition({
-          "@versioned": false,
+          "@versioned": false
         });
         const expectedRes = buildDefaultReturn(false, false, false);
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -353,7 +355,7 @@ describe("api-version", () => {
     describe("with default value", () => {
       it("in @versioned", async () => {
         const def = buildPathDefinition({
-          "@versioned": true,
+          "@versioned": true
         });
         const expectedRes = buildPathReturn_WithDefault();
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -364,7 +366,7 @@ describe("api-version", () => {
     describe("without default value", () => {
       it("no @versioned", async () => {
         const def = buildPathDefinition({
-          "@versioned": false,
+          "@versioned": false
         });
         const expectedRes = buildPathReturn_WithoutDefault();
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -377,7 +379,7 @@ describe("api-version", () => {
     describe("with default value", () => {
       it("in @versioned", async () => {
         const def = buildMixedDefinition({
-          "@versioned": true,
+          "@versioned": true
         });
         const expectedRes = buildPathReturn_WithDefault();
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -388,7 +390,7 @@ describe("api-version", () => {
     describe("without default value", () => {
       it("no @versioned", async () => {
         const def = buildMixedDefinition({
-          "@versioned": false,
+          "@versioned": false
         });
         const expectedRes = buildPathReturn_WithoutDefault();
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -402,7 +404,7 @@ describe("api-version", () => {
     describe("with default value", () => {
       it("in @versioned", async () => {
         const def = buildDefaultDefinition({
-          "@versioned": true,
+          "@versioned": true
         });
         const expectedRes = buildDefaultReturn(false, false);
         const models = await emitClientFactoryFromTypeSpec(def);
@@ -413,7 +415,7 @@ describe("api-version", () => {
     describe("without default value", () => {
       it("no @versioned", async () => {
         const def = buildDefaultDefinition({
-          "@versioned": false,
+          "@versioned": false
         });
         const expectedRes = buildDefaultReturn(false, false);
         const models = await emitClientFactoryFromTypeSpec(def);

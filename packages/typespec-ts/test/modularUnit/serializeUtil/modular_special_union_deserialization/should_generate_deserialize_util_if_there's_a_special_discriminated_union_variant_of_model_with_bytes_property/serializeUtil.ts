@@ -6,7 +6,10 @@ import { WidgetData1Output, WidgetDataOutput } from "../rest/index.js";
 function deserializeWidgetData1(obj: WidgetData1Output): WidgetData1 {
   return {
     kind: obj["kind"],
-    data: typeof obj["data"] === "string" ? stringToUint8Array(obj["data"], "base64") : obj["data"],
+    data:
+      typeof obj["data"] === "string"
+        ? stringToUint8Array(obj["data"], "base64")
+        : obj["data"]
   };
 }
 

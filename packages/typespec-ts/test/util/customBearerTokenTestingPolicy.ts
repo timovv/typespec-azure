@@ -5,7 +5,7 @@ import {
   PipelinePolicy,
   PipelineRequest,
   PipelineResponse,
-  SendRequest,
+  SendRequest
 } from "@azure/core-rest-pipeline";
 
 /**
@@ -15,13 +15,14 @@ import {
  * @returns A customized bearer auth policy
  */
 export function customBearerTokenAuthenticationPolicy(
-  options: BearerTokenAuthenticationPolicyOptions,
+  options: BearerTokenAuthenticationPolicyOptions
 ): PipelinePolicy {
   const { credential, scopes, challengeCallbacks } = options;
   const callbacks = {
-    authorizeRequest: challengeCallbacks?.authorizeRequest ?? defaultAuthorizeRequest,
+    authorizeRequest:
+      challengeCallbacks?.authorizeRequest ?? defaultAuthorizeRequest,
     // keep all other properties
-    ...challengeCallbacks,
+    ...challengeCallbacks
   };
 
   const getAccessToken = credential
@@ -30,11 +31,14 @@ export function customBearerTokenAuthenticationPolicy(
 
   return {
     name: "customBearerTokenAuthPolicy",
-    async sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse> {
+    async sendRequest(
+      request: PipelineRequest,
+      next: SendRequest
+    ): Promise<PipelineResponse> {
       await callbacks.authorizeRequest({
         scopes: Array.isArray(scopes) ? scopes : [scopes],
         request,
-        getAccessToken,
+        getAccessToken
       });
 
       let response: PipelineResponse;
@@ -51,18 +55,20 @@ export function customBearerTokenAuthenticationPolicy(
       } else {
         return response;
       }
-    },
+    }
   };
 }
 
 /**
  * Default authorize request handler
  */
-async function defaultAuthorizeRequest(options: AuthorizeRequestOptions): Promise<void> {
+async function defaultAuthorizeRequest(
+  options: AuthorizeRequestOptions
+): Promise<void> {
   const { scopes, getAccessToken, request } = options;
   const getTokenOptions: GetTokenOptions = {
     abortSignal: request.abortSignal,
-    tracingOptions: request.tracingOptions,
+    tracingOptions: request.tracingOptions
   };
   const accessToken = await getAccessToken(scopes, getTokenOptions);
 

@@ -45,11 +45,11 @@ export function buildEsLintConfig(model: RLCModel) {
     "eslint.config.mjs",
     model.options?.moduleKind === "esm" ? esLintConfigEsm : eslintConfig,
     {
-      overwrite: true,
-    },
+      overwrite: true
+    }
   );
   return {
     path: filePath,
-    content: configFile.getFullText(),
+    content: configFile.getFullText()
   };
 }

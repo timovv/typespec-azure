@@ -8,13 +8,13 @@ describe("MediaType Client", () => {
   beforeEach(() => {
     client = new MediaTypeClient({
       endpoint: "http://localhost:3002",
-      allowInsecureConnection: true,
+      allowInsecureConnection: true
     });
   });
 
   it("should getAsText", async () => {
     const result = await client.stringBody.getAsText({
-      requestOptions: { headers: { accept: "text/plain" } },
+      requestOptions: { headers: { accept: "text/plain" } }
     });
     assert.strictEqual(result.body, "{cat}");
   });

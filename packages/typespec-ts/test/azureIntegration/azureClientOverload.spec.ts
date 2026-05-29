@@ -1,6 +1,8 @@
 import { assert, beforeEach, describe, it } from "vitest";
 
-import OverloadClientFactory, { OverloadClient } from "./generated/client/overload/src/index.js";
+import OverloadClientFactory, {
+  OverloadClient
+} from "./generated/client/overload/src/index.js";
 describe("Client Overload Rest Client", () => {
   let client: OverloadClient;
 
@@ -8,8 +10,8 @@ describe("Client Overload Rest Client", () => {
     client = OverloadClientFactory({
       allowInsecureConnection: true,
       retryOptions: {
-        maxRetries: 0,
-      },
+        maxRetries: 0
+      }
     });
   });
 
@@ -28,7 +30,9 @@ describe("Client Overload Rest Client", () => {
   });
 
   it("should list resources by scope", async () => {
-    const result = await client.path("/client/overload/resources/{scope}", "car").get();
+    const result = await client
+      .path("/client/overload/resources/{scope}", "car")
+      .get();
     assert.strictEqual(result.status, "200");
     if (result.status === "200") {
       assert.strictEqual(result.body.length, 1);
