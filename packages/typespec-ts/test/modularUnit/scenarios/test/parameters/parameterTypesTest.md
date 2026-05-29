@@ -28,10 +28,8 @@ model Widget {
   arrValue: string[];
   unionValue: Foo | string;
   nullValue: null;
-
   @clientName("jsClientName", "javascript")
   renamedProp: string;
-
   ...Record<string>;
   stringLiteral: "foo";
   booleanLiteral: true;
@@ -44,15 +42,12 @@ model Widget {
   withEscapeChars: string;
   unknownRecord: Record<unknown>;
   certificate?: bytes;
-
   @encode("base64url")
   profile?: bytes;
 }
 
 @doc("show example demo")
-op read(@bodyRoot body: Widget): {
-  @body body: {};
-};
+op read(@bodyRoot body: Widget): { @body body: {}};
 ```
 
 ## Example and generated tests

@@ -1,5 +1,4 @@
 # Should generate serializer for anonymous models
-
 Will prompt all operations into top-level.
 
 ## TypeSpec
@@ -12,14 +11,14 @@ model SimpleModel {
     propA: string;
     propB: {
       propAA: string;
-      propBB: boolean;
-    };
-  };
+      propBB: boolean
+    }
+  }
 }
 
 @route("/serialize")
 interface D {
-  bar(@body body: SimpleModel): void;
+  op bar(@body body: SimpleModel): void;
 }
 ```
 

@@ -1,10 +1,10 @@
-import {
-  PathUncheckedResponse,
-  StreamableMethod,
-  createRestError,
-  operationOptionsToRequestParameters
-} from "@azure-rest/core-client";
 import { TestingContext as Client } from "./index.js";
+import {
+  StreamableMethod,
+  operationOptionsToRequestParameters,
+  PathUncheckedResponse,
+  createRestError
+} from "@azure-rest/core-client";
 export function _customGet1Send(
   context: Client,
   options: CustomGet1OptionalParams = { requestOptions: {} }

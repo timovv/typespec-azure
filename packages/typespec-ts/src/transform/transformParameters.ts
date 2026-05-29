@@ -2,18 +2,6 @@
 // Licensed under the MIT License.
 
 import {
-  SdkClient,
-  getHttpOperationWithCache,
-  isApiVersion
-} from "@azure-tools/typespec-client-generator-core";
-import { NoTarget, Type, isVoidType } from "@typespec/compiler";
-import {
-  HttpOperation,
-  HttpOperationParameter,
-  HttpOperationParameters
-} from "@typespec/http";
-import { reportDiagnostic } from "../lib.js";
-import {
   ApiVersionInfo,
   Imports,
   ObjectSchema,
@@ -23,14 +11,23 @@ import {
   Schema,
   SchemaContext
 } from "../rlc-common/index.js";
-import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
+import {
+  HttpOperation,
+  HttpOperationParameter,
+  HttpOperationParameters
+} from "@typespec/http";
 import {
   KnownMediaType,
   extractMediaTypes,
   hasMediaType,
   isMediaTypeJsonMergePatch
 } from "../utils/mediaTypes.js";
+import {
+  SdkClient,
+  getHttpOperationWithCache,
+  isApiVersion
+} from "@azure-tools/typespec-client-generator-core";
+import { NoTarget, Type, isVoidType } from "@typespec/compiler";
 import {
   getBodyType,
   getCollectionFormat,
@@ -46,7 +43,10 @@ import {
   getOperationName,
   getSpecialSerializeInfo
 } from "../utils/operationUtil.js";
+import { SdkContext } from "../utils/interfaces.js";
 import { getParameterSerializationInfo } from "../utils/parameterUtils.js";
+import { reportDiagnostic } from "../lib.js";
+import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 
 interface ParameterTransformationOptions {
   apiVersionInfo?: ApiVersionInfo;

@@ -1,16 +1,16 @@
+import { fileURLToPath } from "url";
+import { dirname, join as joinPath } from "path";
 import {
   Extractor,
   ExtractorConfig,
   ExtractorLogLevel,
   IExtractorConfigPrepareOptions
 } from "@microsoft/api-extractor";
-import * as fs from "fs/promises";
-import lodash from "lodash";
-import { dirname, join as joinPath } from "path";
-import { CompilerOptions, createProgram } from "typescript";
-import { fileURLToPath } from "url";
-import { createTaskLogger } from "./logger.js";
 import { npxCommand } from "./runCommand.js";
+import * as fs from "fs/promises";
+import { createTaskLogger } from "./logger.js";
+import { createProgram, CompilerOptions } from "typescript";
+import lodash from "lodash";
 
 interface GenEnv {
   readonly logger: () => any;

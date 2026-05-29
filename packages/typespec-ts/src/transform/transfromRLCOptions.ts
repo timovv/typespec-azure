@@ -1,26 +1,27 @@
-import { getHttpOperationWithCache } from "@azure-tools/typespec-client-generator-core";
-import { getDoc, NoTarget, Program } from "@typespec/compiler";
-import { getAuthentication } from "@typespec/http";
-import { EmitterOptions, reportDiagnostic } from "../lib.js";
-import { getClientParameters } from "../modular/helpers/clientHelpers.js";
 import {
+  pascalCase,
   NameType,
   normalizeName,
   PackageDetails,
   PackageFlavor,
-  pascalCase,
   RLCOptions,
   ServiceInfo
 } from "../rlc-common/index.js";
+import { getHttpOperationWithCache } from "@azure-tools/typespec-client-generator-core";
+import { getDoc, NoTarget, Program } from "@typespec/compiler";
+import { getAuthentication } from "@typespec/http";
+import { EmitterOptions, reportDiagnostic } from "../lib.js";
 import {
   getRLCClients,
   listOperationsUnderRLCClient
 } from "../utils/clientUtils.js";
-import { getSupportedHttpAuth } from "../utils/credentialUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
 import { getDefaultService } from "../utils/modelUtils.js";
 import { detectModelConflicts } from "../utils/namespaceUtils.js";
 import { getOperationName } from "../utils/operationUtil.js";
+import { getSupportedHttpAuth } from "../utils/credentialUtils.js";
+import _ from "lodash";
+import { getClientParameters } from "../modular/helpers/clientHelpers.js";
 
 export function transformRLCOptions(
   emitterOptions: EmitterOptions,
@@ -94,7 +95,6 @@ function extractRLCOptions(
   const enableStorageCompat = emitterOptions["enable-storage-compat"] === true;
   const treatUnknownAsRecord =
     emitterOptions["treat-unknown-as-record"] === true;
-  const headAsBoolean = emitterOptions["head-as-boolean"] === true;
   const typespecTitleMap = emitterOptions["typespec-title-map"];
   const generateReactNativeTarget =
     emitterOptions["generate-react-native-target"] === true;
@@ -144,7 +144,6 @@ function extractRLCOptions(
     isMultiService,
     enableStorageCompat,
     treatUnknownAsRecord,
-    headAsBoolean,
     generateReactNativeTarget
   };
 }

@@ -1,11 +1,11 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import MultipleParamInServerPathClientFactory, {
-  MultipleParamInServerPathClient
-} from "./generated/server/path/multiple/src/index.js";
 import SingleParamInServerPathClientFactory, {
   SingleParamInServerPathClient
 } from "./generated/server/path/single/src/index.js";
+import MultipleParamInServerPathClientFactory, {
+  MultipleParamInServerPathClient
+} from "./generated/server/path/multiple/src/index.js";
 import NotVersionedParamInServerVersionsClientFactory, {
   NotVersionedParamInServerVersionsClient
 } from "./generated/server/versions/not-versioned/src/index.js";

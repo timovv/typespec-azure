@@ -1,11 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import {
-  SdkClient,
-  getHttpOperationWithCache,
-  isApiVersion
-} from "@azure-tools/typespec-client-generator-core";
 import { HttpOperation, HttpOperationParameters } from "@typespec/http";
 import {
   Imports,
@@ -17,10 +12,10 @@ import {
   getResponseTypeName
 } from "../rlc-common/index.js";
 import {
-  getImportedModelName,
-  getSchemaForType,
-  isBodyRequired
-} from "../utils/modelUtils.js";
+  SdkClient,
+  getHttpOperationWithCache,
+  isApiVersion
+} from "@azure-tools/typespec-client-generator-core";
 import {
   extractOperationLroDetail,
   getOperationGroupName,
@@ -31,11 +26,16 @@ import {
   isPagingOperation,
   sortedOperationResponses
 } from "../utils/operationUtil.js";
+import {
+  getImportedModelName,
+  getSchemaForType,
+  isBodyRequired
+} from "../utils/modelUtils.js";
 
-import { getDoc } from "@typespec/compiler";
-import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
+import { getDoc } from "@typespec/compiler";
 import { getParameterSerializationInfo } from "../utils/parameterUtils.js";
+import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 
 export function transformPaths(
   client: SdkClient,

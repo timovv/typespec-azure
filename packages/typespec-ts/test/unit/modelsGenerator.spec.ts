@@ -1,12 +1,12 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
-import { Diagnostic } from "@typespec/compiler";
 import {
   emitModelsFromTypeSpec,
   emitParameterFromTypeSpec,
   emitResponsesFromTypeSpec
 } from "../util/emitUtil.js";
 import { VerifyPropertyConfig, assertEqualContent } from "../util/testUtil.js";
+import { Diagnostic } from "@typespec/compiler";
 
 describe("Input/output model type", () => {
   it("shouldn't generate models if there is no operations", async () => {

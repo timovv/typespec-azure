@@ -1,16 +1,16 @@
-import { afterAll, assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, afterAll, assert } from "vitest";
 
-import { UsageFlags } from "@azure-tools/typespec-client-generator-core";
 import { NoTarget } from "@typespec/compiler";
-import { Project } from "ts-morph";
-import { provideContext } from "../../src/contextManager.js";
-import { buildSubClientIndexFile } from "../../src/modular/buildRootIndex.js";
-import { visitPackageTypes } from "../../src/modular/emitModels.js";
-import { getParameterMap } from "../../src/modular/helpers/operationHelpers.js";
 import { buildModelDeserializer } from "../../src/modular/serialization/buildDeserializerFunction.js";
 import { buildModelSerializer } from "../../src/modular/serialization/buildSerializerFunction.js";
-import { emitContentByBuilder } from "../../src/utils/emitUtil.js";
+import { getParameterMap } from "../../src/modular/helpers/operationHelpers.js";
+import { buildSubClientIndexFile } from "../../src/modular/buildRootIndex.js";
+import { visitPackageTypes } from "../../src/modular/emitModels.js";
+import { provideContext } from "../../src/contextManager.js";
 import { SdkContext } from "../../src/utils/interfaces.js";
+import { UsageFlags } from "@azure-tools/typespec-client-generator-core";
+import { Project } from "ts-morph";
+import { emitContentByBuilder } from "../../src/utils/emitUtil.js";
 
 /**
  * Diagnostic Reporting Tests

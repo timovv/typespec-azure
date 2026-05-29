@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from "child_process";
+import { spawn, ChildProcess } from "child_process";
 
 const onExit = (childProcess: ChildProcess): Promise<string[]> => {
   let messages: string[] = [];

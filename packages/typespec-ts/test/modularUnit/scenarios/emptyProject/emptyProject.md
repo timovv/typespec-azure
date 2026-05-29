@@ -5,6 +5,7 @@
 ```tsp
 import "@typespec/rest";
 import "@typespec/openapi";
+
 ```
 
 This is a yaml config
@@ -16,5 +17,4 @@ withRawContent: true
 ## classicClient
 
 ```ts classicClient
-
 ```

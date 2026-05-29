@@ -34,9 +34,7 @@ model CompositeRequest {
 }
 
 @doc("show example demo")
-op read(...CompositeRequest): {
-  @body body: {};
-};
+op read(...CompositeRequest): { @body body: {}};
 ```
 
 ## Example
@@ -111,7 +109,9 @@ using TypeSpec.Rest;
 using Azure.Core;
 using Azure.Core.Traits;
 
-@service(#{ title: "Face Service" })
+@service(#{
+  title: "Face Service"
+})
 namespace FaceService;
 
 model UserDefinedFields {
@@ -127,6 +127,7 @@ union RecognitionModel {
 
 model CreateCollectionRequest {
   ...UserDefinedFields;
+
   recognitionModel?: RecognitionModel;
 }
 
@@ -135,7 +136,9 @@ model LargeFaceList {
   @key
   largeFaceListId: string;
 }
-alias ServiceTraits = NoClientRequestId & NoRepeatableRequests & NoConditionalRequests;
+alias ServiceTraits = NoClientRequestId &
+  NoRepeatableRequests &
+  NoConditionalRequests;
 
 interface Operations {
   @createsOrReplacesResource(LargeFaceList)

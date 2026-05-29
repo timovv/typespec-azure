@@ -1,9 +1,9 @@
 import { uint8ArrayToString } from "@azure/core-util";
-import { WidgetData, WidgetData1 } from "../models/models.js";
 import {
   WidgetData1 as WidgetData1Rest,
   WidgetData as WidgetDataRest
 } from "../rest/index.js";
+import { WidgetData1, WidgetData } from "../models/models.js";
 
 /** serialize function for WidgetData1 */
 function serializeWidgetData1(obj: WidgetData1): WidgetData1Rest {

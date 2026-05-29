@@ -137,7 +137,12 @@ function generateRecordValues(
   }
 
   return recordType
-    ? `{"key": ${generateParameterTypeValue(recordType, parameterName, schemaMap, path)}}`
+    ? `{"key": ${generateParameterTypeValue(
+        recordType,
+        parameterName,
+        schemaMap,
+        path
+      )}}`
     : `{}`;
 }
 

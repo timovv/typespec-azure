@@ -17,7 +17,9 @@ using Azure.Core;
 using Azure.Core.Traits;
 
 @useAuth(AadOauth2Auth<["https://contoso.azure.com/.default"]>)
-@service(#{ title: "Contoso Widget Manager" })
+@service(#{
+  title: "Contoso Widget Manager",
+})
 @versioned(Contoso.WidgetManager.Versions)
 namespace Azure.Contoso.WidgetManager;
 
@@ -37,6 +39,7 @@ model WidgetSuite {
 
   @doc("The ID of the widget's manufacturer.")
   manufacturerId: string;
+
 }
 
 interface Widgets {
@@ -135,7 +138,9 @@ using Azure.ResourceManager;
 
 /** Microsoft.Contoso Resource Provider management API. */
 @armProviderNamespace
-@service(#{ title: "Microsoft.Contoso management service" })
+@service(#{
+  title: "Microsoft.Contoso management service",
+})
 @versioned(Microsoft.Contoso.Versions)
 namespace Microsoft.Contoso;
 
@@ -157,12 +162,10 @@ model Employee is TrackedResource<EmployeeProperties> {
 model EmployeeProperties {
   /** Age of employee */
   age?: int32;
-
   /** City of employee */
   city?: string;
-
   /** Profile of employee */
-  profile?: string;
+  profile?: string,
 }
 
 @armResourceOperations

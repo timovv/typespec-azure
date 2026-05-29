@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Project, SourceFile } from "ts-morph";
 import { NameType, normalizeName } from "../helpers/nameUtils.js";
 import { hasPollingOperations } from "../helpers/operationHelpers.js";
 import {
@@ -9,16 +8,17 @@ import {
   isAzurePackage,
   isAzureStandalonePackage
 } from "../helpers/packageUtil.js";
-import { getRelativePartFromSrcPath } from "../helpers/pathUtils.js";
-import { RLCModel } from "../interfaces.js";
-import { buildAzureMonorepoPackage } from "./packageJson/buildAzureMonorepoPackage.js";
-import { buildAzureStandalonePackage } from "./packageJson/buildAzureStandalonePackage.js";
-import { buildFlavorlessPackage } from "./packageJson/buildFlavorlessPackage.js";
 import {
   PackageCommonInfoConfig,
   getTshyConfig,
   resolveWarpExports
 } from "./packageJson/packageCommon.js";
+import { Project, SourceFile } from "ts-morph";
+import { RLCModel } from "../interfaces.js";
+import { buildAzureMonorepoPackage } from "./packageJson/buildAzureMonorepoPackage.js";
+import { buildAzureStandalonePackage } from "./packageJson/buildAzureStandalonePackage.js";
+import { buildFlavorlessPackage } from "./packageJson/buildFlavorlessPackage.js";
+import { getRelativePartFromSrcPath } from "../helpers/pathUtils.js";
 import { getPackageName } from "./utils.js";
 
 interface PackageFileOptions {

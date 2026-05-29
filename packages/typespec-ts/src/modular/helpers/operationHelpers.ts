@@ -1,4 +1,79 @@
 import {
+  FunctionDeclarationStructure,
+  OptionalKind,
+  ParameterDeclarationStructure,
+  StructureKind,
+  TypeAliasDeclarationStructure
+} from "ts-morph";
+import { NoTarget, Program } from "@typespec/compiler";
+import {
+  PagingHelpers,
+  PollingHelpers,
+  PlatformTypeHelpers,
+  SerializationHelpers,
+  StorageCompatHelpers,
+  UrlTemplateHelpers,
+  XmlHelpers
+} from "../static-helpers-metadata.js";
+import {
+  getNullableValidType,
+  isSpreadBodyParameter,
+  isTypeNullable
+} from "./typeHelpers.js";
+import {
+  getClassicalLayerPrefix,
+  getOperationName,
+  generateLocallyUniqueName
+} from "./namingHelpers.js";
+import {
+  getCollectionFormatHelper,
+  hasCollectionFormatInfo,
+  isBinaryPayload,
+  isXmlPayload,
+  isMultipartPayload,
+  hasDualFormatSupport,
+  ServiceOperation,
+  getCollectionFormatParseHelper,
+  getCollectionFormatFromArrayEncoding,
+  KnownCollectionFormat
+} from "../../utils/operationUtil.js";
+import {
+  getPropertyWithOverrides,
+  isNormalUnion,
+  isSpecialHandledUnion,
+  ModelOverrideOptions
+} from "../serialization/serializeUtils.js";
+import {
+  getDocsFromDescription,
+  getFixmeForMultilineDocs
+} from "./docsHelpers.js";
+import { AzurePollingDependencies } from "../external-dependencies.js";
+import { NameType, normalizeName } from "../../rlc-common/index.js";
+import {
+  buildModelDeserializer,
+  buildPropertyDeserializer
+} from "../serialization/buildDeserializerFunction.js";
+import {
+  buildModelSerializer,
+  buildPropertySerializer
+} from "../serialization/buildSerializerFunction.js";
+import {
+  buildXmlModelSerializer,
+  buildXmlModelDeserializer,
+  hasXmlSerialization
+} from "../serialization/buildXmlSerializerFunction.js";
+import { refkey } from "../../framework/refkey.js";
+import { reportDiagnostic } from "../../lib.js";
+import { resolveReference } from "../../framework/reference.js";
+import { useDependencies } from "../../framework/hooks/useDependencies.js";
+import { useSdkTypes } from "../../framework/hooks/sdkTypes.js";
+import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
+import {
+  getTypeExpression,
+  normalizeModelPropertyName
+} from "../type-expressions/get-type-expression.js";
+import { SdkContext } from "../../utils/interfaces.js";
+import {
   getClientOptions,
   isHttpMetadata,
   isReadOnly,
@@ -9,99 +84,24 @@ import {
   SdkHttpOperation,
   SdkHttpParameter,
   SdkLroPagingServiceMethod,
+  SdkMethodParameter,
   SdkLroServiceMethod,
   SdkMethod,
-  SdkMethodParameter,
   SdkModelPropertyType,
   SdkModelType,
   SdkPagingServiceMethod,
   SdkServiceResponseHeader,
   SdkType
 } from "@azure-tools/typespec-client-generator-core";
-import { NoTarget, Program } from "@typespec/compiler";
 import { isHeader, isMetadata } from "@typespec/http";
-import {
-  FunctionDeclarationStructure,
-  OptionalKind,
-  ParameterDeclarationStructure,
-  StructureKind,
-  TypeAliasDeclarationStructure
-} from "ts-morph";
 import { useContext } from "../../contextManager.js";
-import { useSdkTypes } from "../../framework/hooks/sdkTypes.js";
-import { useDependencies } from "../../framework/hooks/useDependencies.js";
-import { resolveReference } from "../../framework/reference.js";
-import { refkey } from "../../framework/refkey.js";
-import { reportDiagnostic } from "../../lib.js";
-import { NameType, normalizeName } from "../../rlc-common/index.js";
-import { SdkContext } from "../../utils/interfaces.js";
-import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
-import {
-  getCollectionFormatFromArrayEncoding,
-  getCollectionFormatHelper,
-  getCollectionFormatParseHelper,
-  hasCollectionFormatInfo,
-  hasDualFormatSupport,
-  isBinaryPayload,
-  isMultipartPayload,
-  isXmlPayload,
-  KnownCollectionFormat,
-  ServiceOperation
-} from "../../utils/operationUtil.js";
-import { AzurePollingDependencies } from "../external-dependencies.js";
-import {
-  buildModelDeserializer,
-  buildPropertyDeserializer
-} from "../serialization/buildDeserializerFunction.js";
-import {
-  buildModelSerializer,
-  buildPropertySerializer
-} from "../serialization/buildSerializerFunction.js";
-import {
-  buildXmlModelDeserializer,
-  buildXmlModelSerializer,
-  hasXmlSerialization
-} from "../serialization/buildXmlSerializerFunction.js";
-import {
-  getPropertyWithOverrides,
-  isNormalUnion,
-  isSpecialHandledUnion,
-  ModelOverrideOptions
-} from "../serialization/serializeUtils.js";
-import {
-  PagingHelpers,
-  PlatformTypeHelpers,
-  PollingHelpers,
-  SerializationHelpers,
-  StorageCompatHelpers,
-  UrlTemplateHelpers,
-  XmlHelpers
-} from "../static-helpers-metadata.js";
-import { isExtensibleEnum } from "../type-expressions/get-enum-expression.js";
-import { emitInlineModel } from "../type-expressions/get-model-expression.js";
-import {
-  getTypeExpression,
-  normalizeModelPropertyName
-} from "../type-expressions/get-type-expression.js";
-import { getClientParameterName } from "./clientHelpers.js";
 import {
   getHeaderClientOptions,
   getRestErrorCodeHeader
 } from "./clientOptionHelpers.js";
-import {
-  getDocsFromDescription,
-  getFixmeForMultilineDocs
-} from "./docsHelpers.js";
-import {
-  generateLocallyUniqueName,
-  getClassicalLayerPrefix,
-  getOperationName
-} from "./namingHelpers.js";
-import {
-  getNullableValidType,
-  isSpreadBodyParameter,
-  isTypeNullable
-} from "./typeHelpers.js";
+import { getClientParameterName } from "./clientHelpers.js";
+import { isExtensibleEnum } from "../type-expressions/get-enum-expression.js";
+import { emitInlineModel } from "../type-expressions/get-model-expression.js";
 
 /**
  * Checks whether a header should be skipped during serialization/deserialization.
@@ -237,7 +237,7 @@ export function getDeserializePrivateFunction(
       name: (response as any).name ?? "",
       type: response.optional ? `${baseType} | undefined` : baseType
     };
-  } else if (isHeadAsBooleanOperation(context, operation)) {
+  } else if (isHeadAsBooleanOperation(operation)) {
     returnType = { name: "", type: "boolean" };
   } else {
     returnType = { name: "", type: "void" };
@@ -265,7 +265,7 @@ export function getDeserializePrivateFunction(
     dependencies.createRestError
   );
   statements.push(
-    `const expectedStatuses = ${getExpectedStatuses(operation, context)};`
+    `const expectedStatuses = ${getExpectedStatuses(operation)};`
   );
   statements.push(
     `if(!expectedStatuses.includes(result.status)){`,
@@ -437,7 +437,7 @@ export function getDeserializePrivateFunction(
           statements.push(
             `return { blobBody: result.blobBody, readableStreamBody: result.readableStreamBody };`
           );
-        } else if (isHeadAsBooleanOperation(context, operation)) {
+        } else if (isHeadAsBooleanOperation(operation)) {
           // HEAD has no body; derive boolean from status code
           statements.push(`return { body: result.status.startsWith("2") };`);
         } else {
@@ -473,7 +473,7 @@ export function getDeserializePrivateFunction(
         isAzureCoreErrorType(context.program, deserializedType.__raw)
       ) {
         statements.push(`return ${deserializedRoot}${multipartCastSuffix}`);
-      } else if (isHeadAsBooleanOperation(context, operation)) {
+      } else if (isHeadAsBooleanOperation(operation)) {
         // HEAD has no body; derive boolean from status code
         statements.push(`return result.status.startsWith("2");`);
       } else {
@@ -495,7 +495,7 @@ export function getDeserializePrivateFunction(
         );
       }
     }
-  } else if (isHeadAsBooleanOperation(context, operation)) {
+  } else if (isHeadAsBooleanOperation(operation)) {
     if (shouldWrap) {
       statements.push(`return { body: result.status.startsWith("2") };`);
     } else {
@@ -1097,7 +1097,7 @@ export function getOperationFunction(
       name: "",
       type: `${buildHeaderOnlyResponseType(context, responseHeaders)}`
     };
-  } else if (isHeadAsBooleanOperation(context, operation)) {
+  } else if (isHeadAsBooleanOperation(operation)) {
     returnType = { name: "", type: "boolean" };
   }
 
@@ -1344,7 +1344,9 @@ function getLroOnlyOperationFunction(
   )}, {
     updateIntervalInMs: ${optionalParamName}?.updateIntervalInMs,
     abortSignal: ${optionalParamName}?.abortSignal,
-    getInitialResponse: () => _${name}Send(${parameters.map((p) => p.name).join(", ")}),
+    getInitialResponse: () => _${name}Send(${parameters
+      .map((p) => p.name)
+      .join(", ")}),
     ${resourceLocationConfig}
     ${apiVersion ? `apiVersion: ${apiVersion}` : ""}
   }) as ${pollerLikeReference}<${operationStateReference}<${effectiveReturnTypeStr}>, ${effectiveReturnTypeStr}>;
@@ -2473,7 +2475,9 @@ export function getResponseMapping(
     const property = getPropertyWithOverrides(prop, overrides);
     const dot = propertyPath.endsWith("?") ? "." : "";
     const serializedName = getPropertySerializedName(property);
-    const restValue = `${propertyPath ? `${propertyPath}${dot}` : `${dot}`}["${serializedName}"]`;
+    const restValue = `${
+      propertyPath ? `${propertyPath}${dot}` : `${dot}`
+    }["${serializedName}"]`;
 
     const nullOrUndefinedPrefix =
       property.optional || isTypeNullable(property.type)
@@ -3023,17 +3027,10 @@ export function getPropertyFullName(
  * Get an expression representing an array of expected status codes for the operation
  * @param operation The operation
  */
-export function getExpectedStatuses(
-  operation: ServiceOperation,
-  context?: SdkContext
-): string {
+export function getExpectedStatuses(operation: ServiceOperation): string {
   let statusCodes = operation.operation.responses.map((x) => x.statusCodes);
-  // For HEAD + @responseAsBool / head-as-boolean, 404 is a valid "false" response.
-  if (
-    context &&
-    isHeadAsBooleanOperation(context, operation) &&
-    !statusCodes.includes(404)
-  ) {
+  // For HEAD + @responseAsBool, 404 is a valid "false" response.
+  if (isHeadAsBooleanOperation(operation) && !statusCodes.includes(404)) {
     statusCodes = [...statusCodes, 404];
   }
   // LROs may call the same path but with GET to get the operation status.
@@ -3254,15 +3251,11 @@ function isHeadOperation(operation: ServiceOperation): boolean {
   return operation.operation.verb.toLowerCase() === "head";
 }
 
-function isHeadAsBooleanOperation(
-  context: SdkContext,
-  operation: ServiceOperation
-): boolean {
+function isHeadAsBooleanOperation(operation: ServiceOperation): boolean {
   if (!isHeadOperation(operation)) return false;
   // @responseAsBool: TCGC promotes response.type to SdkBuiltInType { kind: "boolean" }
   if ((operation.response.type as any)?.kind === "boolean") return true;
-  // Legacy head-as-boolean emitter option (response.type remains void)
-  return !!context.rlcOptions?.headAsBoolean;
+  return false;
 }
 
 /**
@@ -3299,9 +3292,8 @@ export function checkWrapNonModelReturn(
 
   const { type } = operation.response;
   if (!type) {
-    // Special case: HEAD operation with void response → wrap as boolean { body: boolean }
-    // Triggered by head-as-boolean emitter option.
-    if (isHeadAsBooleanOperation(context, operation)) {
+    // Special case: HEAD operation with @responseAsBool and void response → wrap as boolean { body: boolean }
+    if (isHeadAsBooleanOperation(operation)) {
       return { shouldWrap: true, isBinary: false };
     }
     return noWrap; // void return type - no wrap needed
@@ -3355,10 +3347,6 @@ export function buildNonModelResponseTypeDeclaration(
        */
       readableStreamBody?: ${nodeReadableStreamRef};
   }`;
-  } else if (!operation.response.type && isHeadOperation(operation)) {
-    // HEAD as boolean: the body property is a boolean indicating if the resource exists.
-    // true = resource exists (2xx response), false = resource not found (e.g., 404)
-    typeBody = `{ body: boolean }`;
   } else {
     const returnType = getTypeExpression(context, operation.response.type!);
     typeBody = `{ body: ${returnType} }`;

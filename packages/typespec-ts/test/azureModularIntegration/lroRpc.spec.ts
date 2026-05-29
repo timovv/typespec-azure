@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { RpcClient } from "./generated/azure/core/lro/rpc/src/index.js";
 

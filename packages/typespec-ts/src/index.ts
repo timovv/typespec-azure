@@ -1,20 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { EmitContext, Program } from "@typespec/compiler";
 import * as fsextra from "fs-extra";
-import { provideContext, useContext } from "./contextManager.js";
-import {
-  buildRootIndex,
-  buildSubClientIndexFile
-} from "./modular/buildRootIndex.js";
 import {
   AzureCoreDependencies,
   AzureIdentityDependencies,
   AzurePollingDependencies,
-  AzureTestDependencies,
-  DefaultCoreDependencies
+  DefaultCoreDependencies,
+  AzureTestDependencies
 } from "./modular/external-dependencies.js";
+import { clearDirectory } from "./utils/fileSystemUtils.js";
+import { EmitContext, Program } from "@typespec/compiler";
+import { GenerationDirDetail, SdkContext } from "./utils/interfaces.js";
 import {
   CloudSettingHelpers,
   CreateRecorderHelpers,
@@ -32,90 +29,94 @@ import {
   RLCModel,
   RLCOptions,
   buildApiExtractorConfig,
-  buildChangelogFile,
   buildClient,
   buildClientDefinitions,
   buildEsLintConfig,
   buildIndexFile,
   buildIsUnexpectedHelper,
   buildLicenseFile,
+  buildChangelogFile,
   buildLogger,
   buildPackageFile,
   buildParameterTypes,
   buildPollingHelper,
   buildPaginateHelper as buildRLCPaginateHelper,
   buildReadmeFile,
+  hasClientNameChanged,
+  updateReadmeFile,
   buildRecordedClientFile,
   buildResponseTypes,
   buildRollupConfig,
-  buildSampleEnvFile,
   buildSampleTest,
   buildSamples,
   buildSerializeHelper,
-  buildSnippets,
-  buildTestBrowserTsConfig,
-  buildTestNodeTsConfig,
   buildTopLevelIndex,
   buildTsConfig,
-  buildTsSampleConfig,
   buildTsSnippetsConfig,
-  buildTsSrcBrowserConfig,
-  buildTsSrcCjsConfig,
   buildTsSrcEsmConfig,
+  buildTsSrcBrowserConfig,
   buildTsSrcReactNativeConfig,
+  buildTsSrcCjsConfig,
+  buildTsLintConfig,
+  buildTestBrowserTsConfig,
+  buildTestNodeTsConfig,
   buildVitestConfig,
   buildWarpConfig,
   getClientName,
-  hasClientNameChanged,
   hasUnexpectedHelper,
   isAzurePackage,
   updatePackageFile,
-  updateReadmeFile
+  buildSampleEnvFile,
+  buildSnippets,
+  buildTsSampleConfig
 } from "./rlc-common/index.js";
+import {
+  buildRootIndex,
+  buildSubClientIndexFile
+} from "./modular/buildRootIndex.js";
 import { emitContentByBuilder, emitModels } from "./utils/emitUtil.js";
-import { clearDirectory } from "./utils/fileSystemUtils.js";
-import { GenerationDirDetail, SdkContext } from "./utils/interfaces.js";
+import { provideContext, useContext } from "./contextManager.js";
 
-import {
-  SdkClientType,
-  SdkServiceOperation,
-  createSdkContext,
-  listAllServiceNamespaces
-} from "@azure-tools/typespec-client-generator-core";
-import { existsSync } from "fs";
-import { basename, join } from "path";
-import { Project } from "ts-morph";
-import { provideBinder } from "./framework/hooks/binder.js";
-import { provideSdkTypes } from "./framework/hooks/sdkTypes.js";
-import { loadStaticHelpers } from "./framework/load-static-helpers.js";
 import { EmitterOptions } from "./lib.js";
-import { buildClassicalClient } from "./modular/buildClassicalClient.js";
+import { ModularEmitterOptions } from "./modular/interfaces.js";
+import { Project } from "ts-morph";
 import { buildClassicOperationFiles } from "./modular/buildClassicalOperationGroups.js";
+import { buildClassicalClient } from "./modular/buildClassicalClient.js";
 import {
-  buildClientContext,
-  getClientContextPath
+  getClientContextPath,
+  buildClientContext
 } from "./modular/buildClientContext.js";
-import { transformModularEmitterOptions } from "./modular/buildModularOptions.js";
+import { buildApiOptions } from "./modular/emitModelsOptions.js";
 import { buildOperationFiles } from "./modular/buildOperations.js";
-import { getModuleExports } from "./modular/buildProjectFiles.js";
 import { buildRestorePoller } from "./modular/buildRestorePoller.js";
 import { buildSubpathIndexFile } from "./modular/buildSubpathIndex.js";
+import {
+  createSdkContext,
+  listAllServiceNamespaces,
+  SdkClientType,
+  SdkServiceOperation
+} from "@azure-tools/typespec-client-generator-core";
+import { transformModularEmitterOptions } from "./modular/buildModularOptions.js";
 import { emitLoggerFile } from "./modular/emitLoggerFile.js";
-import { emitNonModelResponseTypes, emitTypes } from "./modular/emitModels.js";
-import { buildApiOptions } from "./modular/emitModelsOptions.js";
-import { emitSamples } from "./modular/emitSamples.js";
-import { emitTests } from "./modular/emitTests.js";
-import { getClassicalClientName } from "./modular/helpers/namingHelpers.js";
-import { ModularEmitterOptions } from "./modular/interfaces.js";
-import { packageUsesXmlSerialization } from "./modular/serialization/buildXmlSerializerFunction.js";
-import { transformRLCModel } from "./transform/transform.js";
-import { transformRLCOptions } from "./transform/transfromRLCOptions.js";
+import { emitTypes, emitNonModelResponseTypes } from "./modular/emitModels.js";
+import { existsSync } from "fs";
+import { getModuleExports } from "./modular/buildProjectFiles.js";
 import {
   getClientHierarchyMap,
-  getModularClientOptions,
-  getRLCClients
+  getRLCClients,
+  getModularClientOptions
 } from "./utils/clientUtils.js";
+import { basename, join } from "path";
+import { loadStaticHelpers } from "./framework/load-static-helpers.js";
+import { packageUsesXmlSerialization } from "./modular/serialization/buildXmlSerializerFunction.js";
+import { provideBinder } from "./framework/hooks/binder.js";
+import { provideSdkTypes } from "./framework/hooks/sdkTypes.js";
+import { transformRLCModel } from "./transform/transform.js";
+import { transformRLCOptions } from "./transform/transfromRLCOptions.js";
+import { emitSamples } from "./modular/emitSamples.js";
+import { emitTests } from "./modular/emitTests.js";
 import { generateCrossLanguageDefinitionFile } from "./utils/crossLanguageDef.js";
+import { getClassicalClientName } from "./modular/helpers/namingHelpers.js";
 
 export * from "./lib.js";
 
@@ -578,6 +579,9 @@ export async function $onEmit(context: EmitContext) {
         commonBuilders.push(buildTsSrcCjsConfig);
         if (option.generateSample) {
           commonBuilders.push(buildTsSampleConfig);
+        }
+        if (isAzureFlavor) {
+          commonBuilders.push(buildTsLintConfig);
         }
       }
 

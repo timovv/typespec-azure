@@ -1,10 +1,10 @@
-import { beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach } from "vitest";
 
 import { resolvePath } from "@typespec/compiler";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { MultiPartClient } from "./generated/payload/multipart/src/index.js";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import fs from "node:fs";
 
 describe("Multipart Client", () => {
   let client: MultiPartClient;

@@ -16,7 +16,6 @@ model ErrorDetail {
 model ApiError {
   /** A machine readable error code */
   code: string;
-
   detail?: ErrorDetail;
 }
 @get op bar(): Foo | ApiError;
@@ -90,7 +89,6 @@ model ErrorDetail {
 model ApiError {
   /** A machine readable error code */
   code: string;
-
   detail?: ErrorDetail;
 }
 @get op bar(): Foo | ApiError;

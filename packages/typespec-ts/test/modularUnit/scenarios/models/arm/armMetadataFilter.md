@@ -24,7 +24,9 @@ using Azure.ResourceManager;
 using Azure.ClientGenerator.Core;
 
 @armProviderNamespace
-@service(#{ title: "Test ARM Service" })
+@service(#{
+  title: "Test ARM Service",
+})
 @versioned(Versions)
 namespace Microsoft.Test;
 
@@ -76,7 +78,7 @@ export interface PrivateLinkParameters {
 
 In ARM mode, a `@path` property that carries both `Lifecycle.Read` AND `Lifecycle.Create`
 visibility flags must NOT be stripped by the metadata filter, because the filter only removes
-properties that are _exclusively_ read-only (i.e. `visibility.length === 1 && Read`).
+properties that are *exclusively* read-only (i.e. `visibility.length === 1 && Read`).
 
 ## TypeSpec
 
@@ -96,7 +98,9 @@ using Azure.ResourceManager;
 using Azure.ClientGenerator.Core;
 
 @armProviderNamespace
-@service(#{ title: "Test ARM Service" })
+@service(#{
+  title: "Test ARM Service",
+})
 @versioned(Versions)
 namespace Microsoft.Test;
 
@@ -139,7 +143,7 @@ export interface ParamBagReadCreate {
 
 # ARM metadata filter should strip @path property with exclusively Read visibility
 
-In ARM mode, a `@path` property that has _only_ `Lifecycle.Read` visibility should be
+In ARM mode, a `@path` property that has *only* `Lifecycle.Read` visibility should be
 stripped by the metadata filter. Such a property is purely decorative/read-only metadata
 (e.g. an ARM resource system-assigned `id`) and must not appear in the model interface.
 
@@ -161,7 +165,9 @@ using Azure.ResourceManager;
 using Azure.ClientGenerator.Core;
 
 @armProviderNamespace
-@service(#{ title: "Test ARM Service" })
+@service(#{
+  title: "Test ARM Service",
+})
 @versioned(Versions)
 namespace Microsoft.Test;
 
@@ -204,7 +210,7 @@ export interface ParamBagReadOnly {}
 
 In ARM mode, a `@path` property that carries `Lifecycle.Read`, `Lifecycle.Update`, AND
 `Lifecycle.Create` visibility flags must NOT be stripped. Only properties that are
-_exclusively_ read-only (`visibility.length === 1 && Read`) are filtered out.
+*exclusively* read-only (`visibility.length === 1 && Read`) are filtered out.
 
 ## TypeSpec
 
@@ -224,7 +230,9 @@ using Azure.ResourceManager;
 using Azure.ClientGenerator.Core;
 
 @armProviderNamespace
-@service(#{ title: "Test ARM Service" })
+@service(#{
+  title: "Test ARM Service",
+})
 @versioned(Versions)
 namespace Microsoft.Test;
 

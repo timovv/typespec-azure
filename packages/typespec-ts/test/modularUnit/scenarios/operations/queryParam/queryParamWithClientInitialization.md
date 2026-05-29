@@ -59,6 +59,7 @@ model SavingsPlanModel extends Azure.ResourceManager.Foundations.ProxyResource {
     SegmentName = "savingsPlans",
     NamePattern = ""
   >;
+
   sku: ResourceSku;
 
   @doc("The resource-specific properties for this resource.")
@@ -91,8 +92,7 @@ interface SavingsPlanModels {
   >;
 }
 
-@@clientInitialization(
-  Microsoft.BillingBenefits,
+@@clientInitialization(Microsoft.BillingBenefits,
   {
     parameters: ExpandParameter,
   }
@@ -187,10 +187,12 @@ export function _getSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getDeserialize(result: PathUncheckedResponse): Promise<SavingsPlanModel> {
@@ -291,6 +293,7 @@ model SavingsPlanModel extends Azure.ResourceManager.Foundations.ProxyResource {
     SegmentName = "savingsPlans",
     NamePattern = ""
   >;
+
   sku: ResourceSku;
 
   @doc("The resource-specific properties for this resource.")
@@ -323,8 +326,7 @@ interface SavingsPlanModels {
   >;
 }
 
-@@clientInitialization(
-  Microsoft.BillingBenefits,
+@@clientInitialization(Microsoft.BillingBenefits,
   {
     parameters: ExpandParameter,
   }
@@ -417,10 +419,12 @@ export function _getSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getDeserialize(result: PathUncheckedResponse): Promise<SavingsPlanModel> {

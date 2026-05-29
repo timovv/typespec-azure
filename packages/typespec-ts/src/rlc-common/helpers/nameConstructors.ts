@@ -55,7 +55,11 @@ export function getResponseBaseName(
   statusCode: string
 ) {
   return normalizeName(
-    `${operationGroup}_${normalizeName(operationName, NameType.Interface, true)}_${statusCode}`,
+    `${operationGroup}_${normalizeName(
+      operationName,
+      NameType.Interface,
+      true
+    )}_${statusCode}`,
     NameType.Interface
   );
 }

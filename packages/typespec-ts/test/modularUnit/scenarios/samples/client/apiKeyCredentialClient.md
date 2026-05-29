@@ -13,7 +13,9 @@ import "@typespec/versioning";
 using TypeSpec.Http;
 using TypeSpec.Rest;
 using TypeSpec.Versioning;
-@service(#{ title: "Demo Service" })
+@service(#{
+  title: "Demo Service",
+})
 @versioned(Versions)
 @useAuth(ApiKeyAuth<ApiKeyLocation.header, "api-key">)
 namespace DemoService;
@@ -24,9 +26,7 @@ enum Versions {
 }
 
 @doc("show example demo")
-op read(name: string): {
-  @body body: {};
-};
+op read(name: string):  { @body body: {}};
 ```
 
 This is the tspconfig.yaml.

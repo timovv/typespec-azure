@@ -1,5 +1,5 @@
-import { SdkContext } from "../utils/interfaces.js";
 import { ModularEmitterOptions } from "./interfaces.js";
+import { SdkContext } from "../utils/interfaces.js";
 
 let CASING: "camel" | "snake" = "snake";
 

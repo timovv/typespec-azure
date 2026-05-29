@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { AlternateTypeClient } from "./generated/azure/client-generator-core/alternate-type/src/index.js";
 

@@ -1,31 +1,31 @@
 import {
-  SdkClientType,
-  SdkServiceOperation
-} from "@azure-tools/typespec-client-generator-core";
-import { NoTarget } from "@typespec/compiler";
-import { join } from "path/posix";
-import { Project, SourceFile } from "ts-morph";
-import { useContext } from "../contextManager.js";
-import { resolveReference } from "../framework/reference.js";
-import { reportDiagnostic } from "../lib.js";
-import {
-  isAzurePackage,
   NameType,
-  normalizeName
+  normalizeName,
+  isAzurePackage
 } from "../rlc-common/index.js";
-import { getModularClientOptions } from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
-import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
-import { partitionAndEmitExports } from "./buildSubpathIndex.js";
+import { Project, SourceFile } from "ts-morph";
 import { getClassicalClientName } from "./helpers/namingHelpers.js";
-import { isLroOnlyOperation } from "./helpers/operationHelpers.js";
 import { ModularEmitterOptions } from "./interfaces.js";
+import { resolveReference } from "../framework/reference.js";
 import {
   CloudSettingHelpers,
   MultipartHelpers,
   PagingHelpers,
   PlatformTypeHelpers
 } from "./static-helpers-metadata.js";
+import {
+  SdkClientType,
+  SdkServiceOperation
+} from "@azure-tools/typespec-client-generator-core";
+import { getModularClientOptions } from "../utils/clientUtils.js";
+import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
+import { join } from "path/posix";
+import { useContext } from "../contextManager.js";
+import { reportDiagnostic } from "../lib.js";
+import { NoTarget } from "@typespec/compiler";
+import { isLroOnlyOperation } from "./helpers/operationHelpers.js";
+import { SdkContext } from "../utils/interfaces.js";
+import { partitionAndEmitExports } from "./buildSubpathIndex.js";
 
 export function buildRootIndex(
   context: SdkContext,
@@ -186,6 +186,7 @@ function exportFileContentsType(
 ) {
   const hasMultipartFileParts = context.sdkPackage.models.some((x) =>
     x.properties.some(
+      // eslint-disable-next-line
       (y) => y.kind === "property" && y.multipartOptions?.isFilePart
     )
   );
@@ -281,7 +282,9 @@ function exportRestoreHelpers(
   isTopLevel: boolean = false
 ) {
   const helperFile = project.getSourceFile(
-    `${srcPath}/${subfolder && subfolder !== "" ? subfolder + "/" : ""}restorePollerHelpers.ts`
+    `${srcPath}/${
+      subfolder && subfolder !== "" ? subfolder + "/" : ""
+    }restorePollerHelpers.ts`
   );
   if (!helperFile) {
     return;
@@ -332,7 +335,7 @@ function exportModules(
   }
 ) {
   const subfolder = options.subfolder ?? "";
-  let folders: string[];
+  let folders = [];
   if (options.recursive) {
     folders = project
       .getDirectories()

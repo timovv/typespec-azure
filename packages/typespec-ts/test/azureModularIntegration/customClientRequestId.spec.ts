@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { PipelinePolicy } from "@azure/core-rest-pipeline";
 import { XmsClientRequestIdClient } from "./generated/azure/special-headers/client-request-id/src/index.js";

@@ -1,10 +1,7 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
 import { readdirSync, readFileSync, statSync, writeFileSync } from "fs";
-import { load as loadYaml } from "js-yaml";
 import path from "path";
-import { format } from "prettier";
-import { prettierTypeScriptOptions } from "../../src/lib.js";
 import {
   emitModularClientContextFromTypeSpec,
   emitModularClientFromTypeSpec,
@@ -15,6 +12,9 @@ import {
   emitTestsFromTypeSpec
 } from "../util/emitUtil.js";
 import { assertEqualContent, ExampleJson } from "../util/testUtil.js";
+import { format } from "prettier";
+import { prettierTypeScriptOptions } from "../../src/lib.js";
+import { load as loadYaml } from "js-yaml";
 
 const SCENARIOS_LOCATION = "./test/modularUnit/scenarios";
 

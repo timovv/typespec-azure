@@ -7,7 +7,7 @@ import {
   normalizeName,
   ReservedName
 } from "./helpers/nameUtils.js";
-import { PathMetadata, PathParameter, Paths } from "./interfaces.js";
+import { Paths, PathParameter, PathMetadata } from "./interfaces.js";
 
 export const REST_CLIENT_RESERVED: ReservedName[] = [
   { name: "path", reservedFor: [NameType.Property, NameType.OperationGroup] },
@@ -74,7 +74,9 @@ function generateOperationDeclaration(
   method: string,
   pathParams: PathParameter[] = []
 ): string {
-  const pathParamNames = `${pathParams.length > 0 ? `${pathParams.map((p) => p.name)},` : ""}`;
+  const pathParamNames = `${
+    pathParams.length > 0 ? `${pathParams.map((p) => p.name)},` : ""
+  }`;
   return `"${operationName}": (${pathParamNames} options) => {
       return client.path("${path}", ${pathParamNames}).${method}(options);
     }`;

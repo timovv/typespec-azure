@@ -29,6 +29,7 @@ export { RestError, isRestError } from "@azure/core-rest-pipeline";
 model Test {
   prop: string;
 }
+
 ```
 
 The config would be like:
@@ -79,7 +80,9 @@ using TypeSpec.Http;
 using TypeSpec.Versioning;
 
 #suppress "@azure-tools/typespec-azure-core/auth-required" "for test"
-@service(#{ title: "Azure TypeScript Testing" })
+@service(#{
+  title: "Azure TypeScript Testing"
+})
 namespace Azure.TypeScript.Testing;
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "for test"
@@ -140,7 +143,10 @@ using TypeSpec.Http;
 using TypeSpec.Versioning;
 
 #suppress "@azure-tools/typespec-azure-core/auth-required" "for test"
-@service(#{ title: "Azure TypeScript Testing" })
+
+@service(#{
+  title: "Azure TypeScript Testing"
+})
 namespace Azure.TypeScript.Testing;
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "for test"
@@ -201,7 +207,9 @@ using TypeSpec.Http;
 using TypeSpec.Versioning;
 
 #suppress "@azure-tools/typespec-azure-core/auth-required" "for test"
-@service(#{ title: "Azure TypeScript Testing" })
+@service(#{
+  title: "Azure TypeScript Testing"
+})
 namespace Azure.TypeScript.Testing;
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "for test"
@@ -262,17 +270,18 @@ using TypeSpec.Http;
 using TypeSpec.Versioning;
 
 #suppress "@azure-tools/typespec-azure-core/auth-required" "for test"
-@service(#{ title: "Azure TypeScript Testing" })
+@service(#{
+  title: "Azure TypeScript Testing"
+})
 namespace Azure.TypeScript.Testing;
 
-@doc("Translation Language Values")
-enum TranslationLanguageValues {
-  @doc("English descriptions")
-  English: "English",
-
-  @doc("Chinese descriptions")
-  Chinese: "Chinese",
-}
+  @doc("Translation Language Values")
+  enum TranslationLanguageValues {
+    @doc("English descriptions")
+    English: "English",
+    @doc("Chinese descriptions")
+    Chinese: "Chinese",
+  }
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "for test"
 model InputOutputModel {
   prop: TranslationLanguageValues.English;
@@ -327,12 +336,13 @@ export type TranslationLanguageValues = "English" | "Chinese";
 ```tsp
 @doc("The configuration for a streaming chat completion request.")
 model StreamingChatCompletionOptions {
-  @doc("Indicates whether the completion is a streaming or non-streaming completion.")
-  stream: true;
+    @doc("Indicates whether the completion is a streaming or non-streaming completion.")
+    stream: true;
 }
 @route("/createStreaming")
-@post
-op createStreaming(...StreamingChatCompletionOptions): void;
+@post op createStreaming(
+    ...StreamingChatCompletionOptions
+): void;
 ```
 
 ## Operations
@@ -351,11 +361,13 @@ export function _createStreamingSend(
   context: Client,
   options: CreateStreamingOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/createStreaming").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    body: { stream: true },
-  });
+  return context
+    .path("/createStreaming")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      body: { stream: true },
+    });
 }
 
 export async function _createStreamingDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -382,14 +394,12 @@ export async function createStreaming(
 
 ```tsp
 model Foo {
-  prop1: plainDate;
-  prop2: plainTime;
-  prop3: utcDateTime;
-  prop4: offsetDateTime;
+    prop1: plainDate;
+    prop2: plainTime;
+    prop3: utcDateTime;
+    prop4: offsetDateTime;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models interface Foo
@@ -454,12 +464,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -506,10 +518,12 @@ export function _readSend(
   prop: Date,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { prop: prop.toUTCString(), ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { prop: prop.toUTCString(), ...options.requestOptions?.headers },
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -537,15 +551,12 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(DateTimeKnownEncoding.rfc3339)
-  prop1: utcDateTime;
-
-  @encode(DateTimeKnownEncoding.rfc3339)
-  prop2: offsetDateTime;
+    @encode(DateTimeKnownEncoding.rfc3339)
+    prop1: utcDateTime;
+    @encode(DateTimeKnownEncoding.rfc3339)
+    prop2: offsetDateTime;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -590,12 +601,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -623,15 +636,12 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(DateTimeKnownEncoding.rfc7231)
-  prop1: utcDateTime;
-
-  @encode(DateTimeKnownEncoding.rfc7231)
-  prop2: offsetDateTime;
+    @encode(DateTimeKnownEncoding.rfc7231)
+    prop1: utcDateTime;
+    @encode(DateTimeKnownEncoding.rfc7231)
+    prop2: offsetDateTime;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -676,12 +686,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -709,12 +721,10 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(DateTimeKnownEncoding.unixTimestamp, int64)
-  prop1: utcDateTime;
+    @encode(DateTimeKnownEncoding.unixTimestamp, int64)
+    prop1: utcDateTime;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -758,12 +768,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -791,11 +803,9 @@ export async function read(
 
 ```tsp
 model Foo {
-  prop1: duration;
+    prop1: duration;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -831,12 +841,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -864,12 +876,10 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(DurationKnownEncoding.ISO8601)
-  prop1: duration;
+    @encode(DurationKnownEncoding.ISO8601)
+    prop1: duration;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -905,12 +915,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -938,15 +950,12 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(DurationKnownEncoding.seconds, float32)
-  prop1: duration;
-
-  @encode(DurationKnownEncoding.seconds, int64)
-  prop2: duration;
+    @encode(DurationKnownEncoding.seconds, float32)
+    prop1: duration;
+    @encode(DurationKnownEncoding.seconds, int64)
+    prop2: duration;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -983,12 +992,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -1016,11 +1027,9 @@ export async function read(
 
 ```tsp
 model Foo {
-  prop1: bytes;
+    prop1: bytes;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -1077,12 +1086,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -1110,12 +1121,10 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(BytesKnownEncoding.base64)
-  prop1: bytes;
+    @encode(BytesKnownEncoding.base64)
+    prop1: bytes;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -1172,12 +1181,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -1205,12 +1216,10 @@ export async function read(
 
 ```tsp
 model Foo {
-  @encode(BytesKnownEncoding.base64url)
-  prop1: bytes;
+    @encode(BytesKnownEncoding.base64url)
+    prop1: bytes;
 }
-op read(@body body: Foo): {
-  @body body: Foo;
-};
+op read(@body body: Foo): { @body body: Foo };
 ```
 
 ## Models Foo
@@ -1267,12 +1276,14 @@ export function _readSend(
   body: Foo,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: fooSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: fooSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -1300,20 +1311,18 @@ export async function read(
 
 ```tsp
 model Pet {
-  name: string;
-  weight?: float32;
+    name: string;
+    weight?: float32;
 }
 model Cat extends Pet {
-  kind: "cat";
-  meow: int32;
+    kind: "cat";
+    meow: int32;
 }
 model Dog extends Pet {
-  kind: "dog";
-  bark: string;
+    kind: "dog";
+    bark: string;
 }
-op read(): {
-  @body body: Cat | Dog;
-};
+op read(): { @body body: Cat | Dog };
 ```
 
 ## Models
@@ -1382,20 +1391,18 @@ export function _readResponseDeserializer(item: any): _ReadResponse {
 
 ```tsp
 model Pet {
-  name: string;
-  weight?: float32;
+    name: string;
+    weight?: float32;
 }
 model Cat extends Pet {
-  kind: "cat";
-  meow: int32;
+    kind: "cat";
+    meow: int32;
 }
 model Dog extends Pet {
-  kind: "dog";
-  bark: string;
+    kind: "dog";
+    bark: string;
 }
-op read(): {
-  @body body: Cat;
-};
+op read(): { @body body: Cat };
 ```
 
 ## Models
@@ -1453,10 +1460,12 @@ export function _readSend(
   context: Client,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Cat> {
@@ -1483,18 +1492,16 @@ export async function read(
 
 ```tsp
 model Animal {
-  name: string;
+    name: string;
 }
 model Pet extends Animal {
-  weight?: float32;
+    weight?: float32;
 }
 model Cat extends Pet {
-  kind: "cat";
-  meow: int32;
+    kind: "cat";
+    meow: int32;
 }
-op read(): {
-  @body body: Cat;
-};
+op read(): { @body body: Cat };
 ```
 
 ## Models
@@ -1562,10 +1569,12 @@ export function _readSend(
   context: Client,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Cat> {
@@ -1593,21 +1602,19 @@ export async function read(
 ```tsp
 @discriminator("kind")
 model Pet {
-  kind: string;
-  name: string;
-  weight?: float32;
+    kind: string;
+    name: string;
+    weight?: float32;
 }
 model Cat extends Pet {
-  kind: "cat";
-  meow: int32;
+    kind: "cat";
+    meow: int32;
 }
 model PSDog extends Pet {
-  kind: "dog";
-  bark: string;
+    kind: "dog";
+    bark: string;
 }
-op read(@body body: PSDog): {
-  @body body: PSDog;
-};
+op read(@body body: PSDog): { @body body: PSDog };
 ```
 
 ## Models
@@ -1699,12 +1706,14 @@ export function _readSend(
   body: PSDog,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: psDogSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: psDogSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<PSDog> {
@@ -1733,21 +1742,19 @@ export async function read(
 ```tsp
 @discriminator("kind")
 model Pet {
-  kind: string;
-  name: string;
-  weight?: float32;
+    kind: string;
+    name: string;
+    weight?: float32;
 }
 model Cat extends Pet {
-  kind: "cat";
-  meow: int32;
+    kind: "cat";
+    meow: int32;
 }
 model Dog extends Pet {
-  kind: "dog";
-  bark: string;
+    kind: "dog";
+    bark: string;
 }
-op read(): {
-  @body body: Pet;
-};
+op read(): { @body body: Pet };
 ```
 
 ## Models
@@ -1838,10 +1845,12 @@ export function _readSend(
   context: Client,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<PetUnion> {
@@ -1869,27 +1878,25 @@ export async function read(
 ```tsp
 @discriminator("kind")
 model Pet {
-  kind: string;
-  name: string;
-  weight?: float32;
+    kind: string;
+    name: string;
+    weight?: float32;
 }
 model Cat extends Pet {
-  kind: "cat";
-  meow: int32;
+    kind: "cat";
+    meow: int32;
 }
 @discriminator("type")
 model Dog extends Pet {
-  kind: "dog";
-  type: string;
-  bark: string;
+    kind: "dog";
+    type: string;
+    bark: string;
 }
 model Gold extends Dog {
-  type: "gold";
-  friends: Pet[];
+    type: "gold";
+    friends: Pet[];
 }
-op read(): {
-  @body body: Pet;
-};
+op read(): { @body body: Pet };
 ```
 
 ## Models
@@ -2018,10 +2025,12 @@ export function _readSend(
   context: Client,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<PetUnion> {
@@ -2055,9 +2064,7 @@ model Foo {
 model Bar {
   foo: Foo;
 }
-op read(): {
-  @body body: Foo;
-};
+op read(): { @body body: Foo };
 ```
 
 ## Models
@@ -2113,10 +2120,12 @@ export function _readSend(
   context: Client,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Foo> {
@@ -2145,7 +2154,9 @@ export async function read(
 import "@typespec/http";
 import "@typespec/rest";
 
-@service(#{ title: "Widget Service" })
+@service(#{
+  title: "Widget Service",
+})
 namespace DemoService;
 
 using TypeSpec.Http;
@@ -2208,11 +2219,13 @@ export function _getSend(
   body: string,
   options: GetOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: contentType,
-    body: body,
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: contentType,
+      body: body,
+    });
 }
 
 export async function _getDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -2243,7 +2256,9 @@ export async function get(
 import "@typespec/http";
 import "@typespec/rest";
 
-@service(#{ title: "Widget Service" })
+@service(#{
+  title: "Widget Service",
+})
 namespace DemoService;
 
 using TypeSpec.Http;
@@ -2256,10 +2271,10 @@ union SchemaContentTypeValues {
   protobuf: "text/vnd.ms.protobuf",
 }
 
-op get(@header("test-header") testHeader: SchemaContentTypeValues, @body body: string): {
-  @header("test-header") testHeader: SchemaContentTypeValues;
-  @statusCode _: 204;
-};
+op get(
+  @header("test-header") testHeader: SchemaContentTypeValues,
+  @body body: string,
+): { @header("test-header") testHeader: SchemaContentTypeValues; @statusCode _: 204; };
 ```
 
 The config would be like:
@@ -2294,16 +2309,18 @@ export type SchemaContentTypeValues =
 import "@typespec/http";
 import "@typespec/rest";
 
-@service(#{ title: "Widget Service" })
+@service(#{
+  title: "Widget Service",
+})
 namespace DemoService;
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
 
-op get(@header("test-header") testHeader: "A" | "B", @body body: string): {
-  @header("test-header") testHeader: "A" | "B";
-  @statusCode _: 204;
-};
+op get(
+  @header("test-header") testHeader: "A" | "B",
+  @body body: string,
+): { @header("test-header") testHeader: "A" | "B"; @statusCode _: 204; };
 ```
 
 The config would be like:
@@ -2340,12 +2357,14 @@ export function _getSend(
   body: string,
   options: GetOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "text/plain",
-    headers: { "test-header": testHeader, ...options.requestOptions?.headers },
-    body: body,
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "text/plain",
+      headers: { "test-header": testHeader, ...options.requestOptions?.headers },
+      body: body,
+    });
 }
 
 export async function _getDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -2374,13 +2393,13 @@ export async function get(
 
 ```tsp
 model B<Parameter> {
-  prop1: string;
-  prop2: Parameter;
+    prop1: string;
+    prop2: Parameter;
 }
 model A is B<string> {
-  @query
-  name: string;
-}
+    @query
+    name: string;
+};
 op read(@bodyRoot body: A): void;
 ```
 
@@ -2421,7 +2440,7 @@ model B {
 model A extends B {
   @query
   name: string;
-}
+};
 op read(@bodyRoot body: A): void;
 ```
 
@@ -2471,10 +2490,10 @@ export function aSerializer(item: A): any {
 ## TypeSpec
 
 ```tsp
-model A {
+model A  {
   @visibility(Lifecycle.Read)
   exactVersion?: string;
-}
+};
 op read(@body body: A): void;
 ```
 
@@ -2502,10 +2521,10 @@ export function aSerializer(_item: A): any {
 ## TypeSpec
 
 ```tsp
-model A {
+model A  {
   @visibility(Lifecycle.Read, Lifecycle.Create)
   exactVersion?: string;
-}
+};
 op read(@body body: A): void;
 ```
 
@@ -2538,13 +2557,11 @@ export function aSerializer(item: A): any {
 
 ```tsp
 model Vegetables {
-  ...Record<int64 | string>;
-  carrots: int64;
-  beans: int64;
+    ...Record<int64 | string>;
+    carrots: int64;
+    beans: int64;
 }
-op post(@body body: Vegetables): {
-  @body body: Vegetables;
-};
+op post(@body body: Vegetables): { @body body: Vegetables };
 ```
 
 The config would be like:
@@ -2587,9 +2604,7 @@ model Vegetables {
   carrots: int64;
   beans: int64;
 }
-op post(@body body: Vegetables): {
-  @body body: Vegetables;
-};
+op post(@body body: Vegetables): { @body body: Vegetables };
 ```
 
 Should ingore the warning `@azure-tools/typespec-ts/compatible-additional-properties`:
@@ -2663,13 +2678,11 @@ export function _vegetablesAdditionalPropertyDeserializer(
 model Base {
   foo: int32;
 }
-model A extends Base {
+model A extends Base{
   ...Record<int32>;
-  prop: int32;
+  prop: int32
 }
-op post(@body body: A): {
-  @body body: A;
-};
+op post(@body body: A): { @body body: A };
 ```
 
 The config would be like:
@@ -2725,9 +2738,9 @@ export function baseSerializer(item: Base): any {
 ```tsp
 @discriminator("kind")
 model Pet {
-  kind: string;
-  name: string;
-  weight?: float32;
+    kind: string;
+    name: string;
+    weight?: float32;
 }
 
 @discriminator("type")
@@ -2918,12 +2931,14 @@ export function _readSend(
   body: Client_1,
   options: ReadOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: clientSerializer(body),
-  });
+  return context
+    .path("/")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: clientSerializer(body),
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<Client_1> {

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
 import {
   InterfaceDeclarationStructure,
   OptionalKind,
@@ -9,17 +8,18 @@ import {
   PropertySignatureStructure,
   StructureKind
 } from "ts-morph";
-import { getImportSpecifier } from "./helpers/importsUtil.js";
-import {
-  getImportModuleName,
-  getResponseBaseName,
-  getResponseTypeName
-} from "./helpers/nameConstructors.js";
 import {
   ResponseHeaderSchema,
   ResponseMetadata,
   RLCModel
 } from "./interfaces.js";
+import * as path from "path";
+import {
+  getImportModuleName,
+  getResponseBaseName,
+  getResponseTypeName
+} from "./helpers/nameConstructors.js";
+import { getImportSpecifier } from "./helpers/importsUtil.js";
 
 let hasErrorResponse = false;
 export function buildResponseTypes(model: RLCModel) {

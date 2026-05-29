@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { MethodSubscriptionIdClient } from "./generated/azure/resource-manager/method-subscription-id/src/index.js";
 

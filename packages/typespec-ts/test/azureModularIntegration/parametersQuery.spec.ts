@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from "vitest";
+import { assert, describe, it, beforeEach } from "vitest";
 
 import { QueryClient } from "./generated/parameters/query/src/index.js";
 

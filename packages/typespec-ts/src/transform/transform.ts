@@ -1,10 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { SdkClient } from "@azure-tools/typespec-client-generator-core";
-import { getDoc } from "@typespec/compiler";
-import { getServers } from "@typespec/http";
-import * as path from "path";
 import {
   buildRuntimeImports,
   Imports,
@@ -22,6 +18,10 @@ import {
   transformSampleGroups,
   UrlInfo
 } from "../rlc-common/index.js";
+import { SdkClient } from "@azure-tools/typespec-client-generator-core";
+import { getDoc } from "@typespec/compiler";
+import { getServers } from "@typespec/http";
+import * as path from "path";
 import { SdkContext } from "../utils/interfaces.js";
 import {
   getDefaultService,
@@ -182,7 +182,7 @@ export function transformUrlInfo(
     }
   }
   // Set the default value if missing endpoint parameter
-  if (endpoint === undefined && urlParameters.length === 0) {
+  if (endpoint == undefined && urlParameters.length === 0) {
     endpoint = "{endpointParam}";
     urlParameters.push({
       name: "endpointParam",

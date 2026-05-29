@@ -3,10 +3,10 @@
 
 import {
   PackageCommonInfoConfig,
-  commonPackageDependencies,
-  getCommonPackageDevDependencies,
+  getPackageCommonInfo,
   getCommonPackageScripts,
-  getPackageCommonInfo
+  getCommonPackageDevDependencies,
+  commonPackageDependencies
 } from "./packageCommon.js";
 
 /**

@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { SpreadClient } from "./generated/parameters/spread/src/index.js";
 describe("SpreadClient Client", () => {
@@ -67,10 +67,7 @@ describe("SpreadClient Client", () => {
       "bar",
       "foo",
       [1, 2],
-      {
-        optionalInt: 1,
-        optionalStringList: ["foo", "bar"]
-      }
+      { optionalInt: 1, optionalStringList: ["foo", "bar"] }
     );
     assert.isUndefined(result);
   });

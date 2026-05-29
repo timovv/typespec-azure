@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach } from "vitest";
 
 import { PathClient } from "./generated/azure/client-generator-core/api-version/path/src/index.js";
 

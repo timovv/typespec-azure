@@ -1,10 +1,10 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import { stringToUint8Array } from "@azure/core-util";
 import {
   CollectionsModelProperty,
   NullableClient
 } from "./generated/type/property/nullable/src/index.js";
+import { stringToUint8Array } from "@azure/core-util";
 
 describe("NullableProperties Modular Client", () => {
   let client: NullableClient;

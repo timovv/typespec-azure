@@ -1,9 +1,4 @@
 import {
-  getHttpOperationWithCache,
-  isApiVersion,
-  SdkClient
-} from "@azure-tools/typespec-client-generator-core";
-import {
   ApiVersionInfo,
   ApiVersionPosition,
   extractDefinedPosition,
@@ -11,13 +6,18 @@ import {
   SchemaContext,
   UrlInfo
 } from "../rlc-common/index.js";
-import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
+import {
+  getHttpOperationWithCache,
+  isApiVersion,
+  SdkClient
+} from "@azure-tools/typespec-client-generator-core";
 import { SdkContext } from "../utils/interfaces.js";
 import {
   getDefaultApiVersionString,
   getSchemaForType,
   trimUsage
 } from "../utils/modelUtils.js";
+import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 
 export function transformApiVersionInfo(
   client: SdkClient,
@@ -65,7 +65,7 @@ export function getOperationApiVersion(
   const locations = new Set<ApiVersionPosition>();
   const required = new Set<boolean>();
   dpgContext.hasApiVersionInClient = true;
-  let hasApiVersionInOperation: boolean;
+  let hasApiVersionInOperation = true;
   for (const op of listOperationsUnderRLCClient(client)) {
     hasApiVersionInOperation = false;
     const route = getHttpOperationWithCache(dpgContext, op);

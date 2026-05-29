@@ -7,6 +7,7 @@ Should generate optional body in option parameter.
 This is tsp definition.
 
 ```tsp
+
 import "@typespec/http";
 import "@typespec/rest";
 import "@typespec/versioning";
@@ -35,19 +36,22 @@ model CloudHsmClusterProperties {
   statusMessage?: string;
 }
 
-model CloudHsmCluster is Azure.ResourceManager.TrackedResource<CloudHsmClusterProperties> {
+model CloudHsmCluster
+  is Azure.ResourceManager.TrackedResource<CloudHsmClusterProperties> {
   ...ResourceNameParameter<
     Resource = CloudHsmCluster,
     KeyName = "cloudHsmClusterName",
     SegmentName = "cloudHsmClusters",
     NamePattern = "^[a-zA-Z0-9-]{3,23}$"
   >;
+
   identity?: Azure.ResourceManager.CommonTypes.ManagedServiceIdentity;
 }
 
 model BackupRequestProperties extends BackupRestoreRequestBaseProperties {}
 
 model BackupRestoreRequestBaseProperties {
+
   azureStorageBlobContainerUri: url;
 
   @secret
@@ -59,7 +63,9 @@ model BackupResult {
 }
 
 model BackupResultProperties {
+
   azureStorageBlobContainerUri?: url;
+
   backupId?: string;
 }
 
@@ -76,7 +82,9 @@ interface CloudHsmClusters {
     OptionalRequestBody = true
   >;
 }
-@@clientName(CloudHsmClusters.backup::parameters.body, "backupRequestProperties");
+@@clientName(CloudHsmClusters.backup::parameters.body,
+  "backupRequestProperties"
+);
 ```
 
 The config would be like:
@@ -167,14 +175,16 @@ export function _backupSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: !options?.backupRequestProperties
-      ? options?.backupRequestProperties
-      : backupRequestPropertiesSerializer(options?.backupRequestProperties),
-  });
+  return context
+    .path(path)
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: !options?.backupRequestProperties
+        ? options?.backupRequestProperties
+        : backupRequestPropertiesSerializer(options?.backupRequestProperties),
+    });
 }
 
 export async function _backupDeserialize(result: PathUncheckedResponse): Promise<BackupResult> {
@@ -255,6 +265,7 @@ model BodyParameter {
 }
 @doc("This is a model with all http request decorator.")
 model CompositeRequest {
+
   @path
   name: string;
 
@@ -276,9 +287,7 @@ model CompositeRequest {
 }
 
 @doc("show example demo")
-op read(...CompositeRequest): {
-  @body body: {};
-};
+op read(...CompositeRequest): { @body body: {}};
 ```
 
 ## Example
@@ -367,9 +376,7 @@ model CompositeRequest {
 }
 
 @doc("show example demo")
-op read(...CompositeRequest): {
-  @body body: {};
-};
+op read(...CompositeRequest): { @body body: {}};
 ```
 
 ## Example

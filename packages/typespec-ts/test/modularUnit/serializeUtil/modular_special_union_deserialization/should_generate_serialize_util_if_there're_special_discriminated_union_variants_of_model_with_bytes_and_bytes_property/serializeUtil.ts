@@ -1,10 +1,10 @@
 import { stringToUint8Array } from "@azure/core-util";
-import { WidgetData, WidgetData0, WidgetData1 } from "../models/models.js";
 import {
   WidgetData0Output,
   WidgetData1Output,
   WidgetDataOutput
 } from "../rest/index.js";
+import { WidgetData0, WidgetData1, WidgetData } from "../models/models.js";
 
 /** deserialize function for WidgetData0 */
 function deserializeWidgetData0(obj: WidgetData0Output): WidgetData0 {

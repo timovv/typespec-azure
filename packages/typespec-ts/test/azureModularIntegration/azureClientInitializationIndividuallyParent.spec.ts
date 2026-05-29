@@ -1,12 +1,12 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import {
-  IndividuallyParentNestedWithHeaderClient,
-  IndividuallyParentNestedWithMixedClient,
-  IndividuallyParentNestedWithMultipleClient,
-  IndividuallyParentNestedWithParamAliasClient,
   IndividuallyParentNestedWithPathClient,
-  IndividuallyParentNestedWithQueryClient
+  IndividuallyParentNestedWithQueryClient,
+  IndividuallyParentNestedWithHeaderClient,
+  IndividuallyParentNestedWithMultipleClient,
+  IndividuallyParentNestedWithMixedClient,
+  IndividuallyParentNestedWithParamAliasClient
 } from "./generated/azure/client-generator-core/client-initialization/individuallyParent/src/index.js";
 
 describe("Azure ClientGeneratorCore IndividuallyParent Client Initialization", () => {

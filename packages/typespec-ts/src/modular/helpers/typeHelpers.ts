@@ -1,3 +1,4 @@
+import { NameType, normalizeName } from "../../rlc-common/index.js";
 import {
   SdkBodyParameter,
   SdkCredentialParameter,
@@ -6,13 +7,12 @@ import {
   SdkModelType,
   SdkType
 } from "@azure-tools/typespec-client-generator-core";
-import { NameType, normalizeName } from "../../rlc-common/index.js";
-import { SdkContext } from "../../utils/interfaces.js";
 import {
   getPropertyWithOverrides,
   ModelOverrideOptions
 } from "../serialization/serializeUtils.js";
 import { getAllAncestors, getAllProperties } from "./operationHelpers.js";
+import { SdkContext } from "../../utils/interfaces.js";
 
 export function getDirectSubtypes(type: SdkModelType) {
   if (!type.discriminatedSubtypes) {

@@ -1,4 +1,4 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
 import { emitResponsesFromTypeSpec } from "../util/emitUtil.js";
 import { assertEqualContent } from "../util/testUtil.js";

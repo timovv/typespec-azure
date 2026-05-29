@@ -1,15 +1,15 @@
 import { NameType } from "../rlc-common/index.js";
 
-import path from "path/posix";
-import { useContext } from "../contextManager.js";
+import { ModularEmitterOptions } from "./interfaces.js";
+import { getClassicalLayerPrefix } from "./helpers/namingHelpers.js";
+import { SdkContext } from "../utils/interfaces.js";
 import {
   getClientHierarchyMap,
   getModularClientOptions
 } from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
 import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
-import { getClassicalLayerPrefix } from "./helpers/namingHelpers.js";
-import { ModularEmitterOptions } from "./interfaces.js";
+import { useContext } from "../contextManager.js";
+import path from "path/posix";
 
 /**
  * Computes the relative path prefix (e.g. `./src` or `./src/generated`) from
@@ -75,7 +75,11 @@ function buildExportsForMultiClient(
           if (prefixKey === "") {
             continue;
           }
-          const subApiPath = `api/${getClassicalLayerPrefix(prefixes, NameType.File, "/")}`;
+          const subApiPath = `api/${getClassicalLayerPrefix(
+            prefixes,
+            NameType.File,
+            "/"
+          )}`;
 
           packageInfo.exports[
             `./${subfolder ? subfolder + "/" : ""}${subApiPath}`

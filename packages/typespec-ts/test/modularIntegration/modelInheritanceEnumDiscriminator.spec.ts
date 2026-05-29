@@ -1,9 +1,9 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import {
   EnumDiscriminatorClient,
-  Golden,
-  Snake
+  Snake,
+  Golden
 } from "./generated/type/model/inheritance/enum-discriminator/src/index.js";
 
 describe("EnumDiscriminatorClient Rest Client", () => {

@@ -10,7 +10,9 @@ import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 
-@service(#{ title: "KeyVault Service" })
+@service(#{
+  title: "KeyVault Service"
+})
 namespace KeyVault;
 
 // Original operation with outContentType parameter
@@ -18,11 +20,13 @@ namespace KeyVault;
 @get
 op getSecretOriginal(
   @path secretName: string,
-  @query @clientName("outContentType") outContentType?: string,
+  @query @clientName("outContentType") outContentType?: string
 ): void;
 
 // Override operation without outContentType parameter
-op getSecret(@path secretName: string): void;
+op getSecret(
+  @path secretName: string,
+): void;
 
 @@override(KeyVault.getSecretOriginal, KeyVault.getSecret);
 ```
@@ -107,13 +111,18 @@ import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 
-@service(#{ title: "Override Service" })
+@service(#{
+  title: "Override Service"
+})
 namespace Override;
 
 // Original operation with separate query parameters
 @route("/group")
 @get
-op groupOriginal(@query param1: string, @query param2: string): void;
+op groupOriginal(
+  @query param1: string,
+  @query param2: string,
+): void;
 
 // Override model to group parameters
 model GroupParametersOptions {
@@ -122,7 +131,9 @@ model GroupParametersOptions {
 }
 
 // Override operation with grouped parameters
-op groupCustomized(options: GroupParametersOptions): void;
+op groupCustomized(
+  options: GroupParametersOptions,
+): void;
 
 @@override(Override.groupOriginal, Override.groupCustomized);
 ```
@@ -229,7 +240,9 @@ import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 
-@service(#{ title: "Override Service" })
+@service(#{
+  title: "Override Service"
+})
 namespace Override;
 
 // Original operation with multiple optional parameters
@@ -303,13 +316,15 @@ export function _removeOptionalOriginalSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: {
-      ...(options?.param4 !== undefined ? { param4: options?.param4 } : {}),
-      ...options.requestOptions?.headers,
-    },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: {
+        ...(options?.param4 !== undefined ? { param4: options?.param4 } : {}),
+        ...options.requestOptions?.headers,
+      },
+    });
 }
 
 export async function _removeOptionalOriginalDeserialize(
@@ -346,7 +361,9 @@ import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 
-@service(#{ title: "Override Service" })
+@service(#{
+  title: "Override Service"
+})
 namespace Override;
 
 // Original operation with required header and query parameters
@@ -418,15 +435,17 @@ export function _changeOptionalityOriginalSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: {
-      ...(options?.requiredHeader !== undefined
-        ? { "required-header": options?.requiredHeader }
-        : {}),
-      ...options.requestOptions?.headers,
-    },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: {
+        ...(options?.requiredHeader !== undefined
+          ? { "required-header": options?.requiredHeader }
+          : {}),
+        ...options.requestOptions?.headers,
+      },
+    });
 }
 
 export async function _changeOptionalityOriginalDeserialize(

@@ -3,13 +3,11 @@
 ## TypeSpec
 
 ```tsp
-op read(
-  @path pathParam: string,
-  @query("query-name") queryName: "query",
-  @query("optional-query-name") optionalQueryName?: "optionalQuery",
-  @query("key-version") keyVersion?: string,
-  @body parameters: string,
-): OkResponse;
+op read(@path pathParam: string,
+    @query("query-name") queryName: "query",
+    @query("optional-query-name") optionalQueryName?: "optionalQuery",
+    @query("key-version") keyVersion?: string,
+    @body parameters: string): OkResponse;
 ```
 
 ## Operations
@@ -45,11 +43,13 @@ export function _readSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "text/plain",
-    body: parameters,
-  });
+  return context
+    .path(path)
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "text/plain",
+      body: parameters,
+    });
 }
 
 export async function _readDeserialize(result: PathUncheckedResponse): Promise<void> {

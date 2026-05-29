@@ -2,13 +2,13 @@
 // Licensed under the MIT License.
 
 import {
-  InterfaceDeclarationStructure,
+  OptionalKind,
   MethodSignatureStructure,
-  OptionalKind
+  InterfaceDeclarationStructure
 } from "ts-morph";
 import { PathMetadata, Paths } from "../interfaces.js";
-import { NameType, normalizeName } from "./nameUtils.js";
 import { buildMethodDefinitions } from "./operationHelpers.js";
+import { NameType, normalizeName } from "./nameUtils.js";
 
 export function generateMethodShortcuts(
   paths: Paths

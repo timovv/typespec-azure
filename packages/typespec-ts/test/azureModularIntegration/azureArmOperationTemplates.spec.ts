@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { OperationTemplatesClient } from "./generated/azure/resource-manager/operation-templates/src/index.js";
 

@@ -1,7 +1,7 @@
-import { NoTarget, Program } from "@typespec/compiler";
 import * as fsextra from "fs-extra";
 import { readdir, rm } from "fs/promises";
 import { resolve } from "path";
+import { NoTarget, Program } from "@typespec/compiler";
 import { reportDiagnostic } from "../lib.js";
 
 export async function clearDirectory(

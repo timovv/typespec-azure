@@ -4,11 +4,11 @@
 import { RLCModel } from "../interfaces.js";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: to fix the handlebars issue
-import { readFileSync } from "fs";
 import hbs from "handlebars";
-import { getClientName } from "../helpers/nameConstructors.js";
 import { NameType, normalizeName } from "../helpers/nameUtils.js";
 import { isAzurePackage } from "../helpers/packageUtil.js";
+import { getClientName } from "../helpers/nameConstructors.js";
+import { readFileSync } from "fs";
 
 const azureReadmeRLCTemplate = `# {{ clientDescriptiveName }} library for JavaScript
 

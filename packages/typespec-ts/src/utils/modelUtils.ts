@@ -1,12 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { getUnionAsEnum } from "@azure-tools/typespec-azure-core";
 import {
-  getDefaultApiVersion,
-  getWireName,
-  isApiVersion
-} from "@azure-tools/typespec-client-generator-core";
+  ArraySchema,
+  DictionarySchema,
+  NameType,
+  ObjectSchema,
+  Schema,
+  SchemaContext,
+  isArraySchema,
+  normalizeName
+} from "../rlc-common/index.js";
 import {
   Discriminator,
   EncodeData,
@@ -49,6 +53,7 @@ import {
   isUnknownType,
   listServices
 } from "@typespec/compiler";
+import { GetSchemaOptions, SdkContext } from "./interfaces.js";
 import {
   HttpOperation,
   HttpOperationHeaderParameter,
@@ -65,24 +70,19 @@ import {
   isStatusCode
 } from "@typespec/http";
 import {
-  ArraySchema,
-  DictionarySchema,
-  NameType,
-  ObjectSchema,
-  Schema,
-  SchemaContext,
-  isArraySchema,
-  normalizeName
-} from "../rlc-common/index.js";
-import { GetSchemaOptions, SdkContext } from "./interfaces.js";
-import {
   KnownMediaType,
   hasMediaType,
   isMediaTypeMultipartFormData
 } from "./mediaTypes.js";
+import {
+  getDefaultApiVersion,
+  getWireName,
+  isApiVersion
+} from "@azure-tools/typespec-client-generator-core";
+import { getUnionAsEnum } from "@azure-tools/typespec-azure-core";
 
-import { reportDiagnostic } from "../lib.js";
 import { getModelNamespaceName } from "./namespaceUtils.js";
+import { reportDiagnostic } from "../lib.js";
 
 export const BINARY_TYPE_UNION =
   "string | Uint8Array | ReadableStream<Uint8Array> | NodeJS.ReadableStream";
@@ -1229,13 +1229,21 @@ function getSchemaForRecordModel(
         schema.outputValueTypeName = `${valueType.outputTypeName}`;
       }
     } else if (isUnknownType(indexer.value!)) {
-      schema.typeName = `Record<string, ${valueType.typeName ?? valueType.type}>`;
+      schema.typeName = `Record<string, ${
+        valueType.typeName ?? valueType.type
+      }>`;
       if (usage && usage.includes(SchemaContext.Output)) {
-        schema.outputTypeName = `Record<string, ${valueType.outputTypeName ?? valueType.type}>`;
+        schema.outputTypeName = `Record<string, ${
+          valueType.outputTypeName ?? valueType.type
+        }>`;
       }
     } else {
-      schema.typeName = `Record<string, ${getTypeName(valueType, [SchemaContext.Input])}>`;
-      schema.outputTypeName = `Record<string, ${getTypeName(valueType, [SchemaContext.Output])}>`;
+      schema.typeName = `Record<string, ${getTypeName(valueType, [
+        SchemaContext.Input
+      ])}>`;
+      schema.outputTypeName = `Record<string, ${getTypeName(valueType, [
+        SchemaContext.Output
+      ])}>`;
     }
     schema.usage = usage;
     return schema;
@@ -1746,7 +1754,7 @@ function isAzureCoreFoundationsNamespace(
   ) {
     t = t.namespace;
   }
-  return namespaces.length === 0;
+  return namespaces.length == 0;
 }
 
 // Check if the schema is an anonymous object
@@ -1883,6 +1891,16 @@ export function getEffectiveSchemaType(
   // If type is an anonymous model, tries to find a named model that has the same properties
   let effective: Model | undefined = undefined;
   if (type.kind === "Union") {
+    const nonNullOptions = [...type.variants.values()]
+      .map((x) => x.type)
+      .filter((t) => !isNullType(t));
+    if (
+      nonNullOptions.length === 1 &&
+      nonNullOptions[0]?.kind === "Model" &&
+      nonNullOptions[0]?.name === ""
+    ) {
+      effective = getEffectiveModelType(program, nonNullOptions[0]);
+    }
     return type as any;
   } else if (type.name === "") {
     effective = getEffectiveModelType(program, type, (property) =>

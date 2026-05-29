@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { assert, describe, it, beforeEach } from "vitest";
 
 import { ClientDocClient } from "./generated/azure/client-generator-core/client-doc/src/index.js";
 

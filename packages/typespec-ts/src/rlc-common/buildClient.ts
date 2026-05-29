@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
 import {
   InterfaceDeclarationStructure,
   OptionalKind,
@@ -12,15 +11,16 @@ import {
   VariableStatementStructure,
   WriterFunction
 } from "ts-morph";
+import * as path from "path";
+import { NameType, normalizeName } from "./helpers/nameUtils.js";
 import { buildMethodShortcutImplementation } from "./buildMethodShortcuts.js";
-import { getImportSpecifier } from "./helpers/importsUtil.js";
+import { RLCModel, File, PathParameter } from "./interfaces.js";
 import {
   getClientName,
   getImportModuleName
 } from "./helpers/nameConstructors.js";
-import { NameType, normalizeName } from "./helpers/nameUtils.js";
+import { getImportSpecifier } from "./helpers/importsUtil.js";
 import { isAzurePackage } from "./helpers/packageUtil.js";
-import { File, PathParameter, RLCModel } from "./interfaces.js";
 
 function getClientOptionsInterface(
   model: RLCModel,
@@ -201,7 +201,9 @@ export function buildClient(model: RLCModel): File | undefined {
       ? paths.length - 1 - paths.lastIndexOf("src")
       : 0;
 
-  const loggerPath = `${parentPath > 0 ? "../".repeat(parentPath) : "./"}logger`;
+  const loggerPath = `${
+    parentPath > 0 ? "../".repeat(parentPath) : "./"
+  }logger`;
   clientFile.addImportDeclarations([
     {
       isTypeOnly: true,

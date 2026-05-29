@@ -1,10 +1,10 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import OperationTemplatesClientFactory, {
   OperationTemplatesClient,
   getLongRunningPoller,
-  isUnexpected,
-  paginate
+  paginate,
+  isUnexpected
 } from "./generated/azure/resource-manager/operation-templates/src/index.js";
 
 describe("Azure ARM Operation Templates Rest Client", () => {

@@ -1,11 +1,11 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import {
   HeaderParamClient,
-  MixedParamsClient,
   MultipleParamsClient,
-  ParamAliasClient,
+  MixedParamsClient,
   PathParamClient,
+  ParamAliasClient,
   QueryParamClient
 } from "./generated/azure/client-generator-core/client-initialization/default/src/index.js";
 

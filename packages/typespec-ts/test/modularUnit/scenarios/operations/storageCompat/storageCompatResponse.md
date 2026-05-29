@@ -183,7 +183,6 @@ export async function getItem(
 
 When `enable-storage-compat: true` and `include-headers-in-response: true` are set,
 an operation returning no body but with response headers and an error model should:
-
 1. Generate the error enrichment (`error.details`) in the deserializer
 2. Generate exception headers deserialization
 3. Include `parsedHeaders` in the storage-compat operation return
@@ -203,17 +202,15 @@ model StorageError {
   @header("x-ms-error-code") errorCode: string;
 }
 
-op setTags(@path id: string):
-  | {
-      @header("x-ms-request-id")
-      requestId?: string;
+op setTags(@path id: string): {
+  @header("x-ms-request-id")
+  requestId?: string;
 
-      @header("x-ms-version")
-      version: string;
+  @header("x-ms-version")
+  version: string;
 
-      @statusCode _: 204;
-    }
-  | StorageError;
+  @statusCode _: 204;
+} | StorageError;
 ```
 
 ## Operations
@@ -296,17 +293,13 @@ model Widget {
 op download(
   @header("x-request-id")
   requestId?: string,
-):
-  | {
-      @statusCode statusCode: 200 | 206;
-
-      @header("x-ms-client-request-id")
-      clientRequestId?: string;
-
-      @body
-      body: bytes;
-    }
-  | Error;
+): {
+  @statusCode statusCode: 200 | 206;
+  @header("x-ms-client-request-id")
+  clientRequestId?: string;  
+  @body
+  body: bytes;
+} | Error;
 ```
 
 ## Operations

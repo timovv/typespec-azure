@@ -1,7 +1,4 @@
-import {
-  SdkClientType,
-  SdkServiceOperation
-} from "@azure-tools/typespec-client-generator-core";
+import { NameType, normalizeName } from "../../rlc-common/index.js";
 import {
   FunctionDeclarationStructure,
   InterfaceDeclarationStructure,
@@ -10,20 +7,23 @@ import {
   SourceFile,
   StructureKind
 } from "ts-morph";
-import { addDeclaration } from "../../framework/declaration.js";
-import { resolveReference } from "../../framework/reference.js";
-import { refkey } from "../../framework/refkey.js";
-import { NameType, normalizeName } from "../../rlc-common/index.js";
-import { getModularClientOptions } from "../../utils/clientUtils.js";
-import { SdkContext } from "../../utils/interfaces.js";
-import { ServiceOperation } from "../../utils/operationUtil.js";
-import { AzurePollingDependencies } from "../external-dependencies.js";
-import {
-  PagingHelpers,
-  SimplePollerHelpers
-} from "../static-helpers-metadata.js";
 import { getClassicalLayerPrefix } from "./namingHelpers.js";
 import { getOperationFunction } from "./operationHelpers.js";
+import { SdkContext } from "../../utils/interfaces.js";
+import {
+  SdkClientType,
+  SdkServiceOperation
+} from "@azure-tools/typespec-client-generator-core";
+import { getModularClientOptions } from "../../utils/clientUtils.js";
+import { ServiceOperation } from "../../utils/operationUtil.js";
+import { refkey } from "../../framework/refkey.js";
+import { resolveReference } from "../../framework/reference.js";
+import { addDeclaration } from "../../framework/declaration.js";
+import {
+  SimplePollerHelpers,
+  PagingHelpers
+} from "../static-helpers-metadata.js";
+import { AzurePollingDependencies } from "../external-dependencies.js";
 
 interface OperationDeclarationInfo {
   // the operation function
@@ -67,7 +67,10 @@ export function getClassicalOperation(
     .filter((i) => {
       return (
         i.getModuleSpecifierValue() ===
-        `${"../".repeat(layer + 2)}api/${normalizeName(rlcClientName, NameType.File)}.js`
+        `${"../".repeat(layer + 2)}api/${normalizeName(
+          rlcClientName,
+          NameType.File
+        )}.js`
       );
     });
   if (!hasClientContextImport || hasClientContextImport.length === 0) {
@@ -226,7 +229,12 @@ export function getClassicalOperation(
     );
   }
 
-  const functionName = `_get${getClassicalLayerPrefix(prefixes, NameType.Interface, "", layer)}`;
+  const functionName = `_get${getClassicalLayerPrefix(
+    prefixes,
+    NameType.Interface,
+    "",
+    layer
+  )}`;
   if (layer === prefixes.length - 1) {
     const functionDeclaration: FunctionDeclarationStructure = {
       kind: StructureKind.Function,
@@ -292,8 +300,13 @@ export function getClassicalOperation(
               } else {
                 // Regular LRO operation
                 ret.push(
-                  `${normalizeName(beginName, NameType.Method)}: async (${classicalParamStr}) => {
-                    const poller = ${operationInfo?.declarationRefKey}(${apiParamStr});
+                  `${normalizeName(
+                    beginName,
+                    NameType.Method
+                  )}: async (${classicalParamStr}) => {
+                    const poller = ${operationInfo?.declarationRefKey}(${
+                      apiParamStr
+                    });
                     await poller.submitted();
                     return ${getSimplePollerReference}(poller);
                   }`
@@ -303,7 +316,9 @@ export function getClassicalOperation(
                     beginAndWaitName,
                     NameType.Method
                   )}: async (${classicalParamStr}) => {
-                    return await ${operationInfo?.declarationRefKey}(${apiParamStr});
+                    return await ${operationInfo?.declarationRefKey}(${
+                      apiParamStr
+                    });
                   }`
                 );
               }

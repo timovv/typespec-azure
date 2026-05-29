@@ -1,10 +1,10 @@
-import { SdkContext } from "@azure-tools/typespec-client-generator-core";
-import { EmitContext } from "@typespec/compiler";
 import { Project, SourceFile } from "ts-morph";
-import { ExternalDependencies } from "./framework/dependency.js";
-import { Binder } from "./framework/hooks/binder.js";
-import { SdkTypeContext } from "./framework/hooks/sdkTypes.js";
 import { RlcMetaTree } from "./metaTree.js";
+import { EmitContext } from "@typespec/compiler";
+import { SdkContext } from "@azure-tools/typespec-client-generator-core";
+import { SdkTypeContext } from "./framework/hooks/sdkTypes.js";
+import { Binder } from "./framework/hooks/binder.js";
+import { ExternalDependencies } from "./framework/dependency.js";
 
 /**
  * Contexts Object Guidelines

@@ -1,9 +1,9 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
+import { BytesClient } from "./generated/encode/bytes/src/index.js";
 import { stringToUint8Array, uint8ArrayToString } from "@azure/core-util";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { BytesClient } from "./generated/encode/bytes/src/index.js";
 describe("EncodeBytesClient Modular Client", () => {
   let client: BytesClient;
 

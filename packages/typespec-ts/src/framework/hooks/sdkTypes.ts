@@ -1,3 +1,4 @@
+import { Operation, Type, getNamespaceFullName } from "@typespec/compiler";
 import {
   SdkClientType,
   SdkHttpOperation,
@@ -7,18 +8,17 @@ import {
   SdkType,
   getClientType
 } from "@azure-tools/typespec-client-generator-core";
-import { Operation, Type, getNamespaceFullName } from "@typespec/compiler";
 import { provideContext, useContext } from "../../contextManager.js";
 
-import { reportDiagnostic } from "../../lib.js";
 import { visitPackageTypes } from "../../modular/emitModels.js";
+import { SdkContext } from "../../utils/interfaces.js";
 import {
   getAllAncestors,
   getAllProperties
 } from "../../modular/helpers/operationHelpers.js";
 import { normalizeModelPropertyName } from "../../modular/type-expressions/get-type-expression.js";
+import { reportDiagnostic } from "../../lib.js";
 import { NameType, normalizeName } from "../../rlc-common/index.js";
-import { SdkContext } from "../../utils/interfaces.js";
 
 export const emitQueue: Set<SdkType> = new Set<SdkType>();
 export const flattenPropertyModelMap: Map<SdkModelPropertyType, SdkModelType> =
@@ -61,7 +61,7 @@ export function useSdkTypes() {
     if (!sdkType) {
       throw new Error(
         `SdkType not found for type: ${type.kind} ${
-          "name" in type && typeof type.name === "string" ? type.name : ""
+          "name" in type && typeof type.name == "string" ? type.name : ""
         } ${
           "namespace" in type && type.namespace
             ? ` in ${getNamespaceFullName(type.namespace)}`

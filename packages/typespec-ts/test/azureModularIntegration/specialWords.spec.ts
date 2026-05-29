@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { assert, describe, it, beforeEach } from "vitest";
 
 import { SpecialWordsClient } from "./generated/special-words/src/index.js";
 

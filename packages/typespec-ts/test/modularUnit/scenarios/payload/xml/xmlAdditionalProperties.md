@@ -11,7 +11,6 @@ model BlobMetadata {
   @Xml.attribute
   @Xml.name("Encrypted")
   encrypted?: string;
-
   ...Record<string>;
 }
 
@@ -74,7 +73,6 @@ model BlobMetadata {
   @Xml.attribute
   @Xml.name("Encrypted")
   encrypted?: string;
-
   ...Record<string>;
 }
 

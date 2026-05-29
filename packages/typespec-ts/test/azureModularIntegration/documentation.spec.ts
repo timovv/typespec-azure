@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach } from "vitest";
 
 import { DocumentationClient } from "./generated/documentation/src/index.js";
 

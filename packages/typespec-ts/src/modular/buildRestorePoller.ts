@@ -1,22 +1,22 @@
+import { SourceFile } from "ts-morph";
+import { isLroOnlyOperation } from "./helpers/operationHelpers.js";
+import { ModularEmitterOptions } from "./interfaces.js";
+import path from "path";
+import { buildLroDeserDetailMap } from "./buildOperations.js";
+import { getClassicalClientName } from "./helpers/namingHelpers.js";
+import { NameType, normalizeName } from "../rlc-common/index.js";
+import { resolveReference } from "../framework/reference.js";
+import { AzurePollingDependencies } from "./external-dependencies.js";
+import { PollingHelpers } from "./static-helpers-metadata.js";
 import {
   SdkClientType,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import path from "path";
-import { SourceFile } from "ts-morph";
-import { useContext } from "../contextManager.js";
-import { useDependencies } from "../framework/hooks/useDependencies.js";
-import { resolveReference } from "../framework/reference.js";
-import { NameType, normalizeName } from "../rlc-common/index.js";
+import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
 import { getModularClientOptions } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
-import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
-import { buildLroDeserDetailMap } from "./buildOperations.js";
-import { AzurePollingDependencies } from "./external-dependencies.js";
-import { getClassicalClientName } from "./helpers/namingHelpers.js";
-import { isLroOnlyOperation } from "./helpers/operationHelpers.js";
-import { ModularEmitterOptions } from "./interfaces.js";
-import { PollingHelpers } from "./static-helpers-metadata.js";
+import { useDependencies } from "../framework/hooks/useDependencies.js";
+import { useContext } from "../contextManager.js";
 
 export function buildRestorePoller(
   context: SdkContext,
@@ -36,7 +36,9 @@ export function buildRestorePoller(
   }
   const srcPath = emitterOptions.modularOptions.sourceRoot;
   const filePath = path.join(
-    `${srcPath}/${subfolder && subfolder !== "" ? subfolder + "/" : ""}restorePollerHelpers.ts`
+    `${srcPath}/${
+      subfolder && subfolder !== "" ? subfolder + "/" : ""
+    }restorePollerHelpers.ts`
   );
   const restorePollerFile = project.createSourceFile(filePath, undefined, {
     overwrite: true

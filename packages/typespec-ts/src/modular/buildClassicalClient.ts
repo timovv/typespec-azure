@@ -5,6 +5,7 @@ import {
   SourceFile,
   StructureKind
 } from "ts-morph";
+import { ModularEmitterOptions } from "./interfaces.js";
 import { NameType, normalizeName } from "../rlc-common/index.js";
 import {
   buildUserAgentOptions,
@@ -14,35 +15,34 @@ import {
   getClassicalClientName,
   getClientName
 } from "./helpers/namingHelpers.js";
-import { ModularEmitterOptions } from "./interfaces.js";
 
+import { SdkContext } from "../utils/interfaces.js";
+import { getDocsFromDescription } from "./helpers/docsHelpers.js";
+import { getOperationFunction } from "./helpers/operationHelpers.js";
+import {
+  getModularClientOptions,
+  isRLCMultiEndpoint
+} from "../utils/clientUtils.js";
+import { resolveReference } from "../framework/reference.js";
+import { useDependencies } from "../framework/hooks/useDependencies.js";
 import {
   InitializedByFlags,
   SdkClientType,
   SdkServiceMethod,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import { useContext } from "../contextManager.js";
-import { useDependencies } from "../framework/hooks/useDependencies.js";
-import { resolveReference } from "../framework/reference.js";
-import { refkey } from "../framework/refkey.js";
-import {
-  getModularClientOptions,
-  isRLCMultiEndpoint
-} from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
 import {
   getMethodHierarchiesMap,
   isTenantLevelOperation
 } from "../utils/operationUtil.js";
-import { AzurePollingDependencies } from "./external-dependencies.js";
-import { getPagingLROMethodName } from "./helpers/classicalOperationHelpers.js";
-import { getDocsFromDescription } from "./helpers/docsHelpers.js";
-import { getOperationFunction } from "./helpers/operationHelpers.js";
+import { useContext } from "../contextManager.js";
+import { refkey } from "../framework/refkey.js";
 import {
   PagingHelpers,
   SimplePollerHelpers
 } from "./static-helpers-metadata.js";
+import { AzurePollingDependencies } from "./external-dependencies.js";
+import { getPagingLROMethodName } from "./helpers/classicalOperationHelpers.js";
 
 export function buildClassicalClient(
   dpgContext: SdkContext,
@@ -74,7 +74,10 @@ export function buildClassicalClient(
   clientFile.addExportDeclaration({
     isTypeOnly: true,
     namedExports: [`${classicalClientName}OptionalParams`],
-    moduleSpecifier: `./api/${normalizeName(modularClientName, NameType.File)}Context.js`
+    moduleSpecifier: `./api/${normalizeName(
+      modularClientName,
+      NameType.File
+    )}Context.js`
   });
 
   const clientClass = clientFile.addClass({
@@ -344,8 +347,14 @@ function buildClientOperationGroups(
     } else {
       // The `rawGroupName` is used to any places where we need normalized name twice so we need to keep the raw as PascalCase.
       const rawGroupName = normalizeName(prefixes[0] ?? "", NameType.Interface);
-      const operationName = `_get${normalizeName(rawGroupName, NameType.OperationGroup)}Operations`;
-      const propertyType = `${normalizeName(rawGroupName, NameType.OperationGroup)}Operations`;
+      const operationName = `_get${normalizeName(
+        rawGroupName,
+        NameType.OperationGroup
+      )}Operations`;
+      const propertyType = `${normalizeName(
+        rawGroupName,
+        NameType.OperationGroup
+      )}Operations`;
       // The `groupName` is used to any places where we don't need normalized name again
       const groupName = normalizeName(rawGroupName, NameType.Property);
       const existProperty = clientClass.getProperties().filter((p) => {
@@ -400,9 +409,11 @@ function addChildClient(
       ${parentParams
         .filter((p) => !p.name.includes("options"))
         .map((p) => `this._clientParams.${p.name}`)
-        .join(
-          ","
-        )}${parentParams.filter((p) => !p.name.includes("options")).length > 0 ? "," : ""}
+        .join(",")}${
+        parentParams.filter((p) => !p.name.includes("options")).length > 0
+          ? ","
+          : ""
+      }
       ${diffParams
         .filter((p) => p.name !== "options")
         .map((p) => `${p.name}`)

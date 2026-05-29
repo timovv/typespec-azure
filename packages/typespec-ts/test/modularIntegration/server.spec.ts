@@ -1,7 +1,7 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import { MultipleClient } from "./generated/server/path/multiple/src/index.js";
 import { SingleClient } from "./generated/server/path/single/src/index.js";
+import { MultipleClient } from "./generated/server/path/multiple/src/index.js";
 import { NotVersionedClient } from "./generated/server/versions/not-versioned/src/index.js";
 import { VersionedClient } from "./generated/server/versions/versioned/src/index.js";
 describe("Single Server Path Client", () => {

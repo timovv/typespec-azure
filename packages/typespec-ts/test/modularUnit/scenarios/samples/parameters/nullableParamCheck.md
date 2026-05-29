@@ -19,9 +19,7 @@ model Widget {
 }
 
 @doc("show example demo")
-op read(@bodyRoot body: Widget): {
-  @body body: {};
-};
+op read(@bodyRoot body: Widget): { @body body: {}};
 ```
 
 ## Example
@@ -99,9 +97,7 @@ model Widget {
 }
 
 @doc("show example demo")
-op read(@bodyRoot body: Widget): {
-  @body body: {};
-};
+op read(@bodyRoot body: Widget): { @body body: {}};
 ```
 
 ## config
@@ -179,9 +175,7 @@ op read(
   @query nullableQueryArray?: string[] | null,
   @query nullableQueryString?: string | null,
   @header nullableHeader?: string | null,
-): {
-  @body body: {};
-};
+): { @body body: {} };
 ```
 
 ## Example

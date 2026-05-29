@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
 import { Project, SourceFile } from "ts-morph";
-import { getImportModuleName } from "./helpers/nameConstructors.js";
 import { NameType, normalizeName } from "./helpers/nameUtils.js";
 import {
   hasCsvCollection,
@@ -19,6 +17,8 @@ import {
 } from "./helpers/operationHelpers.js";
 import { isAzurePackage } from "./helpers/packageUtil.js";
 import { RLCModel } from "./interfaces.js";
+import * as path from "path";
+import { getImportModuleName } from "./helpers/nameConstructors.js";
 
 export function buildIndexFile(model: RLCModel) {
   const multiClient = Boolean(model.options?.multiClient),

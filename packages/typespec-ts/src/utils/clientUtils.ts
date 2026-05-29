@@ -1,10 +1,10 @@
 import {
   InitializedByFlags,
-  listAllServiceNamespaces,
-  listClients,
   SdkClient,
   SdkClientType,
-  SdkServiceOperation
+  SdkServiceOperation,
+  listAllServiceNamespaces,
+  listClients
 } from "@azure-tools/typespec-client-generator-core";
 import {
   getNamespaceFullName,
@@ -14,9 +14,9 @@ import {
   Namespace,
   Operation
 } from "@typespec/compiler";
+import { SdkContext } from "./interfaces.js";
 import { ModularClientOptions } from "../modular/interfaces.js";
 import { NameType, normalizeName } from "../rlc-common/index.js";
-import { SdkContext } from "./interfaces.js";
 
 export function getRLCClients(
   dpgContext: SdkContext,
@@ -35,7 +35,9 @@ export function getRLCClients(
       return {
         ...client,
         services: services,
-        crossLanguageDefinitionId: `${getNamespaceFullName(services[0]!)}.${client.name}`
+        crossLanguageDefinitionId: `${getNamespaceFullName(
+          services[0]!
+        )}.${client.name}`
       };
     });
   } else {
@@ -59,7 +61,9 @@ export function getRLCClients(
           subClients: [],
           clientPath: clientName,
           arm: Boolean(dpgContext.arm),
-          crossLanguageDefinitionId: `${getNamespaceFullName(service)}.${clientName}`,
+          crossLanguageDefinitionId: `${getNamespaceFullName(
+            service
+          )}.${clientName}`,
           subOperationGroups: []
         };
       });
@@ -78,7 +82,9 @@ export function getRLCClients(
       subClients: [],
       clientPath: clientName,
       arm: Boolean(dpgContext.arm),
-      crossLanguageDefinitionId: `${getNamespaceFullName(service)}.${clientName}`,
+      crossLanguageDefinitionId: `${getNamespaceFullName(
+        service
+      )}.${clientName}`,
       subOperationGroups: []
     };
   });

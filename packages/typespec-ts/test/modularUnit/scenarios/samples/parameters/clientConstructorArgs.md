@@ -36,7 +36,10 @@ namespace MachineLearningServices;
 interface Indexes {
   @route("/{name}/versions/{version}")
   @put
-  createOrUpdate(@path name: string, @path version: string): void;
+  createOrUpdate(
+    @path name: string,
+    @path version: string,
+  ): void;
 }
 ```
 
@@ -174,18 +177,16 @@ Sample generation should handle required parameters for client constructors corr
 ## TypeSpec
 
 ```tsp
-@service(#{ title: "Text Translation Service" })
-@server(
-  "{endpoint}",
-  "Text Translation Service endpoint",
-  {
+@service(#{
+  title: "Text Translation Service",
+})
+@server("{endpoint}", "Text Translation Service endpoint", {
     @doc("""
       Supported Text Translation endpoints (protocol and hostname, for example:
           https://api.cognitive.microsofttranslator.com).
       """)
-    endpoint: url,
-  }
-)
+  endpoint: url,
+})
 namespace TextTranslation;
 model InputTextItem {
   @doc("The text to translate")

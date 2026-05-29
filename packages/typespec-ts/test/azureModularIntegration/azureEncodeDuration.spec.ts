@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { DurationClient } from "./generated/azure/encode/duration/src/index.js";
 

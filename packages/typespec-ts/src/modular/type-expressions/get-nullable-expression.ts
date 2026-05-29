@@ -1,8 +1,8 @@
 import { SdkNullableType } from "@azure-tools/typespec-client-generator-core";
 import { resolveReference } from "../../framework/reference.js";
-import { SdkContext } from "../../utils/interfaces.js";
-import { EmitTypeOptions, getTypeExpression } from "./get-type-expression.js";
+import { getTypeExpression, EmitTypeOptions } from "./get-type-expression.js";
 import { shouldEmitInline } from "./utils.js";
+import { SdkContext } from "../../utils/interfaces.js";
 
 export function getNullableExpression(
   context: SdkContext,

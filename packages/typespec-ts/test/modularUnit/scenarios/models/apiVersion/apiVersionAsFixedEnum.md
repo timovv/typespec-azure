@@ -13,7 +13,9 @@ import "@typespec/http";
 using TypeSpec.Versioning;
 using TypeSpec.Http;
 
-@service(#{ title: "Microsoft.Contoso management service" })
+@service(#{
+  title: "Microsoft.Contoso management service",
+})
 @versioned(Microsoft.Contoso.Versions)
 namespace Microsoft.Contoso;
 
@@ -65,13 +67,15 @@ export function _fooSend(
   context: Client,
   options: FooOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: {
-      "api-version": context.apiVersion ?? "2021-10-01-preview",
-      ...options.requestOptions?.headers,
-    },
-  });
+  return context
+    .path("/")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: {
+        "api-version": context.apiVersion ?? "2021-10-01-preview",
+        ...options.requestOptions?.headers,
+      },
+    });
 }
 
 export async function _fooDeserialize(result: PathUncheckedResponse): Promise<void> {

@@ -16,7 +16,9 @@ using TypeSpec.Rest;
 using TypeSpec.Versioning;
 using Azure.ClientGenerator.Core;
 
-@service(#{ title: "Demo Service" })
+@service(#{
+  title: "Demo Service",
+})
 @versioned(Versions)
 @useAuth(ApiKeyAuth<ApiKeyLocation.header, "api-key">)
 namespace DemoService;
@@ -28,13 +30,9 @@ enum Versions {
 @route("b")
 namespace Sub {
   @route("foo")
-  op foo(): {
-    @body body: {};
-  };
+  op foo(): { @body body: {}};
   @route("bar")
-  op bar(): {
-    @body body: {};
-  };
+  op bar(): { @body body: {}};
 }
 
 @client({
@@ -44,6 +42,7 @@ namespace Sub {
 interface ClientA {
   foo is Sub.foo;
 }
+
 
 @client({
   name: "BClient",

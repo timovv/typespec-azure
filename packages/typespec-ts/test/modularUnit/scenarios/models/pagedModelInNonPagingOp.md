@@ -34,7 +34,6 @@ model TestProperties {
 model UsageListResult {
   @nextLink
   nextLink?: string;
-
   @pageItems
   value?: Usage[];
 }

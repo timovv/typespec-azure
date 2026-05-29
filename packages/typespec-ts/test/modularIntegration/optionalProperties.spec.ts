@@ -1,7 +1,7 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import { stringToUint8Array } from "@azure/core-util";
 import { OptionalClient } from "./generated/type/property/optionality/src/index.js";
+import { stringToUint8Array } from "@azure/core-util";
 
 describe("OptionalProperties Modular Client", () => {
   let client: OptionalClient;

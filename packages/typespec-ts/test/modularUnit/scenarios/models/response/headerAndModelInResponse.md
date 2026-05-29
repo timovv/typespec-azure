@@ -14,9 +14,7 @@ model User {
   email: string;
 }
 
-op getUser(): User & {
-  @header requestId: string;
-};
+op getUser(): User & {@header requestId: string};
 ```
 
 ## Models

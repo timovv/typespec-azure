@@ -1,10 +1,9 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
 import {
   bearerTokenAuthenticationPolicyName,
   PipelinePolicy
 } from "@azure/core-rest-pipeline";
-import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
 import {
   createUnion,
   UnionContext,
@@ -12,6 +11,7 @@ import {
   validToken
 } from "./generated/authentication/union/src/api/index.js";
 import { UnionClient } from "./generated/authentication/union/src/index.js";
+import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
 
 describe("UnionContext in API Layer", () => {
   let context: UnionContext;

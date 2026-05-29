@@ -1,15 +1,15 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
-import { Diagnostic } from "@typespec/compiler";
 import { ok } from "assert";
-import {
-  emitModularModelsFromTypeSpec,
-  emitModularOperationsFromTypeSpec
-} from "../util/emitUtil.js";
+import { Diagnostic } from "@typespec/compiler";
 import {
   createDpgContextTestHelper,
   createRLCEmitterTestHost
 } from "../util/testUtil.js";
+import {
+  emitModularModelsFromTypeSpec,
+  emitModularOperationsFromTypeSpec
+} from "../util/emitUtil.js";
 
 describe("Diagnostic reporting tests", () => {
   it("should not crash when emitter encounters error conditions", async () => {

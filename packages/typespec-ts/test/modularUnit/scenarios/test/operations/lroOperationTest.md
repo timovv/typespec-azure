@@ -23,7 +23,9 @@ using Azure.ClientGenerator.Core;
 
 /** Microsoft.Contoso Resource Provider management API. */
 @armProviderNamespace
-@service(#{ title: "Microsoft.Contoso management service" })
+@service(#{
+  title: "Microsoft.Contoso management service",
+})
 @versioned(Microsoft.Contoso.Versions)
 namespace Microsoft.Contoso;
 
@@ -45,7 +47,6 @@ model Employee is TrackedResource<EmployeeProperties> {
 model EmployeeProperties {
   /** Age of employee */
   age?: int32;
-
   /** City of employee */
   city?: string;
 }
@@ -172,7 +173,9 @@ using Azure.ResourceManager;
 
 /** Microsoft.Contoso Resource Provider management API. */
 @armProviderNamespace
-@service(#{ title: "Microsoft.Contoso management service" })
+@service(#{
+  title: "Microsoft.Contoso management service",
+})
 @versioned(Microsoft.Contoso.Versions)
 namespace Microsoft.Contoso;
 
@@ -194,12 +197,10 @@ model Employee is TrackedResource<EmployeeProperties> {
 model EmployeeProperties {
   /** Age of employee */
   age?: int32;
-
   /** City of employee */
   city?: string;
-
   /** Profile of employee */
-  profile?: string;
+  profile?: string,
 }
 
 @armResourceOperations

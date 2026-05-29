@@ -9,12 +9,12 @@ import {
   SdkModelType,
   SdkServiceResponseHeader
 } from "@azure-tools/typespec-client-generator-core";
-import { useContext } from "../../contextManager.js";
-import { resolveReference } from "../../framework/reference.js";
 import { refkey } from "../../framework/refkey.js";
+import { resolveReference } from "../../framework/reference.js";
+import { shouldEmitInline } from "./utils.js";
+import { useContext } from "../../contextManager.js";
 import { SdkContext } from "../../utils/interfaces.js";
 import { MultipartHelpers } from "../static-helpers-metadata.js";
-import { shouldEmitInline } from "./utils.js";
 
 export interface ModelExpressionOptions extends EmitTypeOptions {
   skipPolymorphicUnion?: boolean;

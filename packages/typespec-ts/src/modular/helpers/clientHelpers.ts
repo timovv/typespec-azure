@@ -1,3 +1,9 @@
+import { ModularEmitterOptions } from "../interfaces.js";
+import {
+  OptionalKind,
+  ParameterDeclarationStructure,
+  StatementedNode
+} from "ts-morph";
 import {
   SdkClientType,
   SdkCredentialParameter,
@@ -6,24 +12,18 @@ import {
   SdkMethodParameter,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import {
-  OptionalKind,
-  ParameterDeclarationStructure,
-  StatementedNode
-} from "ts-morph";
-import { ModularEmitterOptions } from "../interfaces.js";
 
-import { resolveReference } from "../../framework/reference.js";
 import {
   NameType,
   normalizeName,
   PackageFlavor
 } from "../../rlc-common/index.js";
 import { SdkContext } from "../../utils/interfaces.js";
-import { CloudSettingHelpers } from "../static-helpers-metadata.js";
-import { getTypeExpression } from "../type-expressions/get-type-expression.js";
 import { getClassicalClientName } from "./namingHelpers.js";
+import { getTypeExpression } from "../type-expressions/get-type-expression.js";
 import { isCredentialType } from "./typeHelpers.js";
+import { CloudSettingHelpers } from "../static-helpers-metadata.js";
+import { resolveReference } from "../../framework/reference.js";
 
 interface ClientParameterOptions {
   onClientOnly?: boolean;
@@ -198,7 +198,7 @@ export function buildGetClientEndpointParam(
   client: SdkClientType<SdkServiceOperation>
 ): { endpointParamName: string; assignedOptionalParams?: Set<string> } {
   const assignedOptionalParams = new Set<string>();
-  let coreEndpointParam: string;
+  let coreEndpointParam = "";
   if (dpgContext.rlcOptions?.flavor === "azure") {
     const cloudSettingSuffix = dpgContext.arm
       ? ` ?? ${resolveReference(CloudSettingHelpers.getArmEndpoint)}(options.cloudSetting)`

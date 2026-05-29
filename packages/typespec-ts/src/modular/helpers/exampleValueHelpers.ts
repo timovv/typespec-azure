@@ -1,40 +1,40 @@
 import {
-  isReadOnly,
-  SdkClientInitializationType,
-  SdkClientType,
-  SdkExampleValue,
   SdkHttpOperationExample,
   SdkHttpParameterExampleValue,
+  SdkExampleValue,
+  SdkClientInitializationType,
+  SdkClientType,
+  SdkServiceOperation,
   SdkModelPropertyType,
-  SdkServiceOperation
+  isReadOnly
 } from "@azure-tools/typespec-client-generator-core";
-import { join } from "path";
-import { SourceFile } from "ts-morph";
-import { useContext } from "../../contextManager.js";
-import { resolveReference } from "../../framework/reference.js";
 import {
   isAzurePackage,
   NameType,
   normalizeName
 } from "../../rlc-common/index.js";
-import { getSubscriptionId } from "../../transform/transfromRLCOptions.js";
-import {
-  hasKeyCredential,
-  hasTokenCredential
-} from "../../utils/credentialUtils.js";
+import { resolveReference } from "../../framework/reference.js";
 import { SdkContext } from "../../utils/interfaces.js";
-import {
-  getMethodHierarchiesMap,
-  ServiceOperation
-} from "../../utils/operationUtil.js";
 import {
   AzureIdentityDependencies,
   AzureTestDependencies
 } from "../external-dependencies.js";
-import { getClientParametersDeclaration } from "./clientHelpers.js";
-import { getClassicalClientName } from "./namingHelpers.js";
-import { getOperationFunction } from "./operationHelpers.js";
+import {
+  hasKeyCredential,
+  hasTokenCredential
+} from "../../utils/credentialUtils.js";
 import { isSpreadBodyParameter } from "./typeHelpers.js";
+import { getClassicalClientName } from "./namingHelpers.js";
+import {
+  getMethodHierarchiesMap,
+  ServiceOperation
+} from "../../utils/operationUtil.js";
+import { getSubscriptionId } from "../../transform/transfromRLCOptions.js";
+import { SourceFile } from "ts-morph";
+import { useContext } from "../../contextManager.js";
+import { join } from "path";
+import { getOperationFunction } from "./operationHelpers.js";
+import { getClientParametersDeclaration } from "./clientHelpers.js";
 
 /**
  * Common interfaces for both samples and tests
@@ -103,7 +103,9 @@ export function getCredentialSampleValue(
       // Support DefaultAzureCredential for Azure packages
       return {
         ...defaultSetting,
-        value: `new ${resolveReference(AzureIdentityDependencies.DefaultAzureCredential)}()`
+        value: `new ${resolveReference(
+          AzureIdentityDependencies.DefaultAzureCredential
+        )}()`
       };
     } else if (keyCredential) {
       // Support ApiKeyCredential for non-Azure packages
@@ -402,7 +404,7 @@ export function prepareCommonParameters(
     result.push(credentialValue);
   }
 
-  const subscriptionIdValue = `${envType}.SUBSCRIPTION_ID || "<SUBSCRIPTION_ID>"`;
+  let subscriptionIdValue = `${envType}.SUBSCRIPTION_ID || "<SUBSCRIPTION_ID>"`;
   let isSubscriptionIdAdded = false;
 
   // Process required parameters
@@ -616,7 +618,7 @@ export function generateMethodCall(
   // Prepare operation-level parameters
   const methodParamValues = parameters.filter((p) => !p.onClient);
 
-  let methodParams: string[];
+  let methodParams: string[] = [];
 
   // If dpgContext is provided, reorder parameters according to function signature
   if (dpgContext) {
@@ -679,7 +681,9 @@ export function createSourceFile(
   fileName: string
 ): SourceFile {
   const project = useContext("outputProject");
-  const operationPrefix = `${options.classicalMethodPrefix ?? ""} ${method.oriName ?? method.name}`;
+  const operationPrefix = `${options.classicalMethodPrefix ?? ""} ${
+    method.oriName ?? method.name
+  }`;
   const baseFolder =
     type === "sample" ? "samples-dev" : join("test", "generated");
   const folder = join(
@@ -696,9 +700,7 @@ export function createSourceFile(
   return project.createSourceFile(
     join(folder, `${normalizedFileName}${fileExtension}`),
     "",
-    {
-      overwrite: true
-    }
+    { overwrite: true }
   );
 }
 

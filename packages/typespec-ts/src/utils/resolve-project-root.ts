@@ -1,6 +1,6 @@
-import { existsSync } from "fs";
-import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
+import { existsSync } from "fs";
 
 /**
  * Recursively finds the nearest package.json file starting from the specified directory.

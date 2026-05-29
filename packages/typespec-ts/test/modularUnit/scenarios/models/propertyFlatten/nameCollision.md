@@ -425,7 +425,6 @@ This is tsp definition.
 model FooProperties {
   name: string;
   prop1: string;
-
   @Azure.ClientGenerator.Core.Legacy.flattenProperty
   prop2: string;
 }

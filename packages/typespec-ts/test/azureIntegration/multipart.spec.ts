@@ -1,12 +1,12 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { resolvePath } from "@typespec/compiler";
-import { readFile } from "fs/promises";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
 import MultiPartClientFactory, {
   MultiPartClient
 } from "./generated/payload/multipart/src/index.js";
+import { resolve } from "path";
+import { readFile } from "fs/promises";
+import { fileURLToPath } from "url";
 describe("MultiPartClient Rest Client", () => {
   let client: MultiPartClient;
 

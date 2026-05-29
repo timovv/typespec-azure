@@ -19,7 +19,9 @@ import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.Http;
 using Azure.ClientGenerator.Core;
 
-@service(#{ title: "Test Service" })
+@service(#{
+  title: "Test Service"
+})
 namespace TestService;
 
 model CommonHeaders {
@@ -65,14 +67,16 @@ export function _getBlobSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: {
-      ...(options?.requestId !== undefined ? { "x-ms-request-id": options?.requestId } : {}),
-      accept: "application/json",
-      ...options.requestOptions?.headers,
-    },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: {
+        ...(options?.requestId !== undefined ? { "x-ms-request-id": options?.requestId } : {}),
+        accept: "application/json",
+        ...options.requestOptions?.headers,
+      },
+    });
 }
 ```
 

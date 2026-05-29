@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { assert, describe, it, beforeEach } from "vitest";
 
 import { ClientDefaultValueClient } from "./generated/azure/client-generator-core/client-default-value/src/index.js";
 

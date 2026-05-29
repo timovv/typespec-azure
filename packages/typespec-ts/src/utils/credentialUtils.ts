@@ -1,7 +1,7 @@
-import { SdkClientInitializationType } from "@azure-tools/typespec-client-generator-core";
 import { NoTarget, Program } from "@typespec/compiler";
 import { Authentication, HttpAuth } from "@typespec/http";
 import { reportDiagnostic } from "../lib.js";
+import { SdkClientInitializationType } from "@azure-tools/typespec-client-generator-core";
 
 /**
  * Get supported HTTP authentication schemes and filter out unsupported ones.

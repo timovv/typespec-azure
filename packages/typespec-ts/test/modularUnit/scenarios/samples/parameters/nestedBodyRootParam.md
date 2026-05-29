@@ -12,18 +12,12 @@ This is tsp definition.
 model StopParameters {
   @doc("The link index.")
   linkIndex: string;
-
   @doc("The category.")
   category: string;
 }
 
 @doc("Stop with nested body root.")
-op stop(
-  @path name: string,
-  body: {
-    @bodyRoot stopParameters: StopParameters;
-  },
-): {
+op stop(@path name: string, body: { @bodyRoot stopParameters: StopParameters }): {
   @body body: {};
 };
 ```

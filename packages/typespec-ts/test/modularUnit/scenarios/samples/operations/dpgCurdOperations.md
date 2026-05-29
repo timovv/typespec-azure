@@ -19,7 +19,9 @@ using Azure.Core;
 using Azure.Core.Traits;
 
 @useAuth(AadOauth2Auth<["https://contoso.azure.com/.default"]>)
-@service(#{ title: "Contoso Widget Manager" })
+@service(#{
+  title: "Contoso Widget Manager",
+})
 @versioned(Contoso.WidgetManager.Versions)
 namespace Azure.Contoso.WidgetManager;
 
@@ -39,6 +41,7 @@ model WidgetSuite {
 
   @doc("The ID of the widget's manufacturer.")
   manufacturerId: string;
+
 }
 
 interface Widgets {

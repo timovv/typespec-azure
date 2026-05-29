@@ -6,8 +6,10 @@ Api operations should handle contentTypes has binary data
 
 ```tsp
 @route("/uploadFileViaBody")
-@post
-op uploadFileViaBody(@header contentType: "application/octet-stream", @body body: bytes): void;
+@post op uploadFileViaBody(
+  @header contentType: "application/octet-stream",
+  @body body: bytes
+): void;
 ```
 
 ## Operations
@@ -27,11 +29,13 @@ export function _uploadFileViaBodySend(
   body: Uint8Array,
   options: UploadFileViaBodyOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/uploadFileViaBody").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/octet-stream",
-    body: body,
-  });
+  return context
+    .path("/uploadFileViaBody")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/octet-stream",
+      body: body,
+    });
 }
 
 export async function _uploadFileViaBodyDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -62,10 +66,9 @@ export async function uploadFileViaBody(
 scalar BinaryBytes extends bytes;
 
 @route("/uploadFileViaBody")
-@post
-op uploadFileViaBody(
+@post op uploadFileViaBody(
   @header contentType: "application/octet-stream",
-  @body body: BinaryBytes,
+  @body body: BinaryBytes
 ): void;
 ```
 
@@ -86,11 +89,13 @@ export function _uploadFileViaBodySend(
   body: Uint8Array,
   options: UploadFileViaBodyOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/uploadFileViaBody").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/octet-stream",
-    body: body,
-  });
+  return context
+    .path("/uploadFileViaBody")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/octet-stream",
+      body: body,
+    });
 }
 
 export async function _uploadFileViaBodyDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -120,11 +125,11 @@ export async function uploadFileViaBody(
 @route("/uploadFile")
 @post
 op uploadFile(
-  @header contentType: "multipart/form-data",
-  @multipartBody body: {
-    name: HttpPart<string>;
-    file: HttpPart<bytes>;
-  },
+    @header contentType: "multipart/form-data",
+    @multipartBody body: {
+        name: HttpPart<string>;
+        file: HttpPart<bytes>;
+    }
 ): void;
 ```
 
@@ -177,11 +182,13 @@ export function _uploadFileSend(
   },
   options: UploadFileOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/uploadFile").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "multipart/form-data",
-    body: _uploadFileRequestSerializer(body),
-  });
+  return context
+    .path("/uploadFile")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "multipart/form-data",
+      body: _uploadFileRequestSerializer(body),
+    });
 }
 
 export async function _uploadFileDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -219,7 +226,7 @@ op uploadFiles(
   @header contentType: "multipart/form-data",
   @multipartBody body: {
     files: HttpPart<BinaryBytes>[];
-  },
+  }
 ): void;
 ```
 
@@ -271,11 +278,13 @@ export function _uploadFilesSend(
   },
   options: UploadFilesOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/uploadFiles").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "multipart/form-data",
-    body: _uploadFilesRequestSerializer(body),
-  });
+  return context
+    .path("/uploadFiles")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "multipart/form-data",
+      body: _uploadFilesRequestSerializer(body),
+    });
 }
 
 export async function _uploadFilesDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -331,10 +340,12 @@ export function _downloadFileSend(
   context: Client,
   options: DownloadFileOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/downloadFile").post({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/octet-stream", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/downloadFile")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/octet-stream", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _downloadFileDeserialize(result: PathUncheckedResponse): Promise<Uint8Array> {
@@ -389,10 +400,12 @@ export function _downloadFileSend(
   context: Client,
   options: DownloadFileOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/downloadFile").post({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/octet-stream", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/downloadFile")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/octet-stream", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _downloadFileDeserialize(result: PathUncheckedResponse): Promise<Uint8Array> {
@@ -422,10 +435,9 @@ Api operations should handle contentTypes has default value
 
 ```tsp
 @route("/uploadFileViaBody")
-@post
-op uploadFileViaBody(
+@post op uploadFileViaBody(
   @header contentType: string = "application/octet-stream",
-  @body body: bytes,
+  @body body: bytes
 ): void;
 ```
 
@@ -447,11 +459,13 @@ export function _uploadFileViaBodySend(
   body: Uint8Array,
   options: UploadFileViaBodyOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/uploadFileViaBody").post({
-    ...operationOptionsToRequestParameters(options),
-    contentType: contentType,
-    body: body,
-  });
+  return context
+    .path("/uploadFileViaBody")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      contentType: contentType,
+      body: body,
+    });
 }
 
 export async function _uploadFileViaBodyDeserialize(result: PathUncheckedResponse): Promise<void> {
@@ -481,7 +495,7 @@ export async function uploadFileViaBody(
 ```tsp
 model ApiVersionParameter {
   @query
-  `api-version`: string;
+  "api-version": string;
 }
 op test(...ApiVersionParameter): string;
 ```
@@ -513,10 +527,12 @@ export function _testSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _testDeserialize(result: PathUncheckedResponse): Promise<string> {
@@ -611,7 +627,7 @@ export class TestingClient {
 ```tsp
 model ApiVersionParameter {
   @query
-  `api-version`: string;
+  "api-version": string;
 }
 op test(...ApiVersionParameter): string;
 ```
@@ -652,10 +668,12 @@ export function _testSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _testDeserialize(result: PathUncheckedResponse): Promise<string> {
@@ -750,7 +768,7 @@ export class TestingClient {
 ```tsp
 model ApiVersionParameter {
   @query
-  `api-version`: string;
+  "api-version": string;
 }
 @route("/test")
 op test(...ApiVersionParameter): string;
@@ -775,10 +793,12 @@ export function _test1Send(
   context: Client,
   options: Test1OptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/test1").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/test1")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _test1Deserialize(result: PathUncheckedResponse): Promise<string> {
@@ -812,10 +832,12 @@ export function _testSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _testDeserialize(result: PathUncheckedResponse): Promise<string> {
@@ -932,7 +954,9 @@ using OpenAPI;
 
 /** Microsoft.Contoso Resource Provider management API. */
 @armProviderNamespace
-@service(#{ title: "Microsoft.Contoso management service" })
+@service(#{
+  title: "Microsoft.Contoso management service",
+})
 @versioned(Microsoft.Contoso.Versions)
 namespace Microsoft.Contoso;
 
@@ -947,7 +971,8 @@ interface Operations extends Azure.ResourceManager.Operations {}
 
 @doc("FileShareSnapshot resource")
 @parentResource(FileShare)
-model FileShareSnapshot is Azure.ResourceManager.ProxyResource<FileShareSnapshotProperties> {
+model FileShareSnapshot
+  is Azure.ResourceManager.ProxyResource<FileShareSnapshotProperties> {
   ...ResourceNameParameter<
     Resource = FileShareSnapshot,
     KeyName = "name",
@@ -957,6 +982,7 @@ model FileShareSnapshot is Azure.ResourceManager.ProxyResource<FileShareSnapshot
 }
 model FileShareProperties {
   mountName?: string;
+
   hostName?: string;
 }
 
@@ -970,13 +996,14 @@ model FileShare is Azure.ResourceManager.TrackedResource<FileShareProperties> {
   name: string;
 }
 
+
 model FileShareSnapshotProperties {
   initiatorId?: string;
 }
 
 @armResourceOperations
 interface FileShareSnapshots {
-  updateFileShareSnapshot is ArmCustomPatchAsync<
+ updateFileShareSnapshot is ArmCustomPatchAsync<
     FileShareSnapshot,
     ResourceUpdateModel<FileShareSnapshot, FileShareSnapshotProperties>,
     BaseParameters<FileShareSnapshot>,
@@ -1043,11 +1070,13 @@ export function _updateFileShareSnapshotSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).patch({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    body: fileShareSnapshotUpdateSerializer(properties),
-  });
+  return context
+    .path(path)
+    .patch({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      body: fileShareSnapshotUpdateSerializer(properties),
+    });
 }
 
 export async function _updateFileShareSnapshotDeserialize(
@@ -1105,10 +1134,12 @@ export function _listSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path(path)
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _listDeserialize(

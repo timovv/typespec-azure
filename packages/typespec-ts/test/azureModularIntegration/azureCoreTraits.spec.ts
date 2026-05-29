@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { TraitsClient } from "./generated/azure/core/traits/src/index.js";
 

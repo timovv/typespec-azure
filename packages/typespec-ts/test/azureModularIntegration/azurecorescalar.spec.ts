@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { ScalarClient } from "./generated/azure/core/scalar/src/index.js";
 describe("Scalar Azure core Client", () => {

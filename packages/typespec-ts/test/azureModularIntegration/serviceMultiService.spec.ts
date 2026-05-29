@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from "vitest";
+import { assert, describe, it, beforeEach } from "vitest";
 
 import { Combined } from "./generated/service/multi-service/src/index.js";
 

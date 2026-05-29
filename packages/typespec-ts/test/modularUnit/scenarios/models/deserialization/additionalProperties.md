@@ -6,16 +6,14 @@ This is tsp definition.
 
 ```tsp
 model SimpleModel {
-  ...Record<string>;
-  propA: string;
-  propB: string;
+    ...Record<string>;
+    propA: string;
+    propB: string;
 }
 
 @route("/serialize")
 interface D {
-  bar(): {
-    @body body: SimpleModel;
-  };
+  op bar(): { @body body: SimpleModel };
 }
 ```
 
@@ -59,58 +57,48 @@ This is tsp definition.
 
 ```tsp
 model SimpleModel {
-  ...Record<string>;
-  propA: string;
-  propB: string;
+    ...Record<string>;
+    propA: string;
+    propB: string;
 }
 
 model EmptyModel {
-  ...Record<string>;
+    ...Record<string>;
 }
 
 model UnionModel {
-  ...Record<string>;
-  ...Record<int32>;
-  propA: string;
-  propB: string;
+    ...Record<string>;
+    ...Record<int32>;
+    propA: string;
+    propB: string;
 }
 
 model NameConflictModel {
-  ...Record<string>;
-  additionalProperties: Record<int32>;
-  propA: string;
-  propB: string;
+    ...Record<string>;
+    additionalProperties: Record<int32>;
+    propA: string;
+    propB: string;
 }
 
 model ObjectAdditionalPropsModel {
-  ...Record<string>;
-  additionalProperties: {};
-  propA: string;
-  propB: string;
+    ...Record<string>;
+    additionalProperties: {};
+    propA: string;
+    propB: string;
 }
 
 @route("/serialize")
 interface D {
   @route("bar")
-  bar(): {
-    @body body: SimpleModel;
-  };
+  op bar(): { @body body: SimpleModel };
   @route("baz")
-  baz(): {
-    @body body: EmptyModel;
-  };
+  op baz(): { @body body: EmptyModel };
   @route("bas")
-  bas(): {
-    @body body: UnionModel;
-  };
+  op bas(): { @body body: UnionModel };
   @route("bab")
-  bab(): {
-    @body body: NameConflictModel;
-  };
+  op bab(): { @body body: NameConflictModel };
   @route("obj")
-  obj(): {
-    @body body: ObjectAdditionalPropsModel;
-  };
+  op obj(): { @body body: ObjectAdditionalPropsModel };
 }
 ```
 

@@ -1,39 +1,39 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { FunctionDeclarationStructure, StructureKind } from "ts-morph";
 import {
-  isReadOnly,
   SdkModelPropertyType,
   SdkModelType,
   SdkPackage,
   SdkType,
   UsageFlags
 } from "@azure-tools/typespec-client-generator-core";
-import { NoTarget } from "@typespec/compiler";
-import { isMetadata } from "@typespec/http";
-import { FunctionDeclarationStructure, StructureKind } from "ts-morph";
-import { useDependencies } from "../../framework/hooks/useDependencies.js";
-import { resolveReference } from "../../framework/reference.js";
-import { refkey } from "../../framework/refkey.js";
-import { reportDiagnostic } from "../../lib.js";
-import { NameType } from "../../rlc-common/index.js";
 import { SdkContext } from "../../utils/interfaces.js";
-import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
-import {
-  getAdditionalPropertiesName,
-  normalizeModelName
-} from "../emitModels.js";
 import {
   getAllAncestors,
   getAllProperties
 } from "../helpers/operationHelpers.js";
-import { getAdditionalPropertiesType } from "../helpers/typeHelpers.js";
-import { XmlHelpers } from "../static-helpers-metadata.js";
-import { normalizeModelPropertyName } from "../type-expressions/get-type-expression.js";
+import {
+  normalizeModelName,
+  getAdditionalPropertiesName
+} from "../emitModels.js";
+import { NameType } from "../../rlc-common/index.js";
+import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
 import {
   isSupportedSerializeType,
   ModelSerializeOptions
 } from "./serializeUtils.js";
+import { XmlHelpers } from "../static-helpers-metadata.js";
+import { resolveReference } from "../../framework/reference.js";
+import { refkey } from "../../framework/refkey.js";
+import { reportDiagnostic } from "../../lib.js";
+import { NoTarget } from "@typespec/compiler";
+import { isMetadata } from "@typespec/http";
+import { normalizeModelPropertyName } from "../type-expressions/get-type-expression.js";
+import { isReadOnly } from "@azure-tools/typespec-client-generator-core";
+import { useDependencies } from "../../framework/hooks/useDependencies.js";
+import { getAdditionalPropertiesType } from "../helpers/typeHelpers.js";
 
 /**
  * Checks if a model type has XML serialization options defined

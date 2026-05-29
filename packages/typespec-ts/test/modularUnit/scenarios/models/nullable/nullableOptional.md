@@ -9,9 +9,7 @@ model TestModel {
   optionalBoolean?: boolean;
   requiredBoolean: boolean;
 }
-op test(): {
-  @body body: TestModel;
-};
+op test(): { @body body: TestModel };
 ```
 
 ## Models
@@ -52,9 +50,7 @@ model TestModel {
   optionalNullableBoolean?: boolean | null;
   requiredNullableBoolean: boolean | null;
 }
-op test(): {
-  @body body: TestModel;
-};
+op test(): { @body body: TestModel };
 ```
 
 ## config
@@ -102,9 +98,9 @@ model Widget {
 interface TestOperations {
   @post
   create(
-    @query optionalNullableQuery?: string | null,
-    @header optionalNullableHeader?: string | null,
-    @body optionalNullableBody?: Widget | null,
+    @query optionalNullableQuery?: string | null;
+    @header optionalNullableHeader?: string | null;
+    @body optionalNullableBody?: Widget | null;
   ): void;
 }
 ```
@@ -139,9 +135,9 @@ model Widget {
 interface TestOperations {
   @post
   create(
-    @query optionalNullableQuery?: string | null,
-    @header optionalNullableHeader?: string | null,
-    @body optionalNullableBody?: Widget | null,
+    @query optionalNullableQuery?: string | null;
+    @header optionalNullableHeader?: string | null;
+    @body optionalNullableBody?: Widget | null;
   ): void;
 }
 ```

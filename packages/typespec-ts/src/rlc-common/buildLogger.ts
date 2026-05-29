@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
-import { Project } from "ts-morph";
 import { RLCModel } from "./interfaces.js";
+import { Project } from "ts-morph";
+import * as path from "path";
 
 export function buildLogger(model: RLCModel) {
   if (!model.options) {
@@ -17,7 +17,7 @@ export function buildLogger(model: RLCModel) {
   const { srcPath, rlcSourceDir } = model;
   const { packageDetails } = model.options;
   const filePath = path.join(
-    model.options.sourceFrom === "Swagger"
+    model.options.sourceFrom == "Swagger"
       ? srcPath.substring(
           0,
           srcPath.includes("generated") && !srcPath.includes("src")

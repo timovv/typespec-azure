@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { NonResourceClient } from "./generated/azure/resource-manager/non-resource/src/index.js";
 describe("Azure Arm Non Resource Client", () => {

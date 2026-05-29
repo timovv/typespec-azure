@@ -1,16 +1,16 @@
+import { NameType } from "../rlc-common/index.js";
+import { SourceFile } from "ts-morph";
+import { getClassicalOperation } from "./helpers/classicalOperationHelpers.js";
+import { getClassicalLayerPrefix } from "./helpers/namingHelpers.js";
+import { ModularEmitterOptions } from "./interfaces.js";
+import { SdkContext } from "../utils/interfaces.js";
+import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
 import {
   SdkClientType,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import { SourceFile } from "ts-morph";
-import { useContext } from "../contextManager.js";
-import { NameType } from "../rlc-common/index.js";
 import { getModularClientOptions } from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
-import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
-import { getClassicalOperation } from "./helpers/classicalOperationHelpers.js";
-import { getClassicalLayerPrefix } from "./helpers/namingHelpers.js";
-import { ModularEmitterOptions } from "./interfaces.js";
+import { useContext } from "../contextManager.js";
 
 export function buildClassicOperationFiles(
   dpgContext: SdkContext,
@@ -31,7 +31,12 @@ export function buildClassicOperationFiles(
     if (prefixes.length > 0 && prefixKey !== "") {
       const classicOperationFileName =
         prefixes.length > 0
-          ? `${getClassicalLayerPrefix(prefixes, NameType.File, "/", prefixes.length - 1)}/index`
+          ? `${getClassicalLayerPrefix(
+              prefixes,
+              NameType.File,
+              "/",
+              prefixes.length - 1
+            )}/index`
           : // When the program has no operation groups defined all operations are put
             // into a nameless operation group. We'll call this operations.
             "index";
@@ -57,7 +62,12 @@ export function buildClassicOperationFiles(
       for (let layer = 0; layer < prefixes.length - 1; layer++) {
         const classicOperationFileName =
           prefixes.length > 0
-            ? `${getClassicalLayerPrefix(prefixes, NameType.File, "/", layer)}/index`
+            ? `${getClassicalLayerPrefix(
+                prefixes,
+                NameType.File,
+                "/",
+                layer
+              )}/index`
             : // When the program has no operation groups defined all operations are put
               // into a nameless operation group. We'll call this operations.
               "index";

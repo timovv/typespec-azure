@@ -5,9 +5,9 @@ import {
 import { ModularEmitterOptions } from "./interfaces.js";
 
 import { join } from "path";
-import { Node, SourceFile } from "ts-morph";
-import { useContext } from "../contextManager.js";
 import { getModularClientOptions } from "../utils/clientUtils.js";
+import { useContext } from "../contextManager.js";
+import { Node, SourceFile } from "ts-morph";
 
 export interface buildSubpathIndexFileOptions {
   exportIndex?: boolean;
@@ -28,7 +28,7 @@ export function buildSubpathIndexFile(
   const srcPath = emitterOptions.modularOptions.sourceRoot;
   // Skip to export these files because they are used internally.
   const skipFiles = ["pagingHelpers.ts", "pollingHelpers.ts"];
-  let folders: string[];
+  let folders = [];
   if (options.recursive) {
     folders = project
       .getDirectories()

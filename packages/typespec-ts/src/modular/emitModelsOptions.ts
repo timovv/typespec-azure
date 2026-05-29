@@ -2,16 +2,16 @@ import * as path from "path";
 
 import { ModularEmitterOptions } from "./interfaces.js";
 
+import { buildOperationOptions } from "./buildOperations.js";
+import { SdkContext } from "../utils/interfaces.js";
 import {
   SdkClientType,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import { useContext } from "../contextManager.js";
-import { NameType, normalizeName } from "../rlc-common/index.js";
-import { getModularClientOptions } from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
 import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
-import { buildOperationOptions } from "./buildOperations.js";
+import { getModularClientOptions } from "../utils/clientUtils.js";
+import { NameType, normalizeName } from "../rlc-common/index.js";
+import { useContext } from "../contextManager.js";
 
 // ====== UTILITIES ======
 

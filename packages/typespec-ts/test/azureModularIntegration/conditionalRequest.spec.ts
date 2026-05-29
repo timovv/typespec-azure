@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { ConditionalRequestClient } from "./generated/special-headers/conditional-request/src/index.js";
 

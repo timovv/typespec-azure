@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { File as RLCFile, RLCModel, RLCSampleGroup } from "./interfaces.js";
+import { RLCModel, RLCSampleGroup, File as RLCFile } from "./interfaces.js";
 import { sampleTemplate } from "./static/sampleTemplate.js";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: to fix the handlebars issue

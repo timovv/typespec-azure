@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { NamingClient } from "./generated/client/naming/src/index.js";
 describe("NameAndEncodedName Client", () => {

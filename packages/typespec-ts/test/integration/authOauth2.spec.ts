@@ -1,13 +1,13 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
+import Outh2ClientFactory, {
+  AuthOauth2Client
+} from "./generated/authentication/oauth2/src/index.js";
 import {
   bearerTokenAuthenticationPolicyName,
   PipelinePolicy
 } from "@azure/core-rest-pipeline";
 import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
-import Outh2ClientFactory, {
-  AuthOauth2Client
-} from "./generated/authentication/oauth2/src/index.js";
 
 describe("AuthOauth2Client Rest Client", () => {
   let client: AuthOauth2Client;

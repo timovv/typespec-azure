@@ -1,12 +1,12 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 
-import { OperationState } from "@azure/core-lro";
-import { assert } from "chai";
 import {
   StandardClient,
   User
 } from "./generated/azure/core/lro/standard/src/index.js";
+import { assert, expect } from "chai";
 import { restorePoller } from "./generated/azure/core/lro/standard/src/restorePollerHelpers.js";
+import { OperationState } from "@azure/core-lro";
 
 describe("LROStandardClient Classical Client", () => {
   let client: StandardClient;

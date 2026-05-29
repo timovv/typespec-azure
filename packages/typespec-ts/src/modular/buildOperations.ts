@@ -1,46 +1,46 @@
-import {
-  InterfaceDeclarationStructure,
-  SourceFile,
-  StructureKind
-} from "ts-morph";
+import { ModularEmitterOptions } from "./interfaces.js";
 import { NameType, normalizeName } from "../rlc-common/index.js";
 import {
-  getDeserializeExceptionHeadersPrivateFunction,
-  getDeserializeHeadersPrivateFunction,
+  SourceFile,
+  InterfaceDeclarationStructure,
+  StructureKind
+} from "ts-morph";
+import {
   getDeserializePrivateFunction,
+  getDeserializeHeadersPrivateFunction,
+  getDeserializeExceptionHeadersPrivateFunction,
   getExpectedStatuses,
   getOperationFunction,
   getOperationOptionsName,
   getSendPrivateFunction,
-  isLroAndPagingOperation,
-  isLroOnlyOperation
+  isLroOnlyOperation,
+  isLroAndPagingOperation
 } from "./helpers/operationHelpers.js";
-import { ModularEmitterOptions } from "./interfaces.js";
 
+import { OperationPathAndDeserDetails } from "./interfaces.js";
+import { SdkContext } from "../utils/interfaces.js";
+import { getDocsFromDescription } from "./helpers/docsHelpers.js";
+import { getOperationName } from "./helpers/namingHelpers.js";
+import {
+  getModularClientOptions,
+  isRLCMultiEndpoint
+} from "../utils/clientUtils.js";
+import { getTypeExpression } from "./type-expressions/get-type-expression.js";
 import {
   SdkClientType,
   SdkMethodParameter,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import { useContext } from "../contextManager.js";
-import { addDeclaration } from "../framework/declaration.js";
-import { useDependencies } from "../framework/hooks/useDependencies.js";
-import { resolveReference } from "../framework/reference.js";
-import { refkey } from "../framework/refkey.js";
-import {
-  getModularClientOptions,
-  isRLCMultiEndpoint
-} from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
 import {
   getMethodHierarchiesMap,
-  hasDualFormatSupport,
-  ServiceOperation
+  ServiceOperation,
+  hasDualFormatSupport
 } from "../utils/operationUtil.js";
-import { getDocsFromDescription } from "./helpers/docsHelpers.js";
-import { getOperationName } from "./helpers/namingHelpers.js";
-import { OperationPathAndDeserDetails } from "./interfaces.js";
-import { getTypeExpression } from "./type-expressions/get-type-expression.js";
+import { resolveReference } from "../framework/reference.js";
+import { useDependencies } from "../framework/hooks/useDependencies.js";
+import { addDeclaration } from "../framework/declaration.js";
+import { refkey } from "../framework/refkey.js";
+import { useContext } from "../contextManager.js";
 
 /**
  * This function creates a file under /api for each operation group.

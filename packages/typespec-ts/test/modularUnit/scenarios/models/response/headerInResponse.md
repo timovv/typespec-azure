@@ -106,10 +106,8 @@ include-headers-in-response: true
 ```
 
 ```tsp
-@delete op deleteUser(): {
-  @header("x-request-id") requestId: string;
-  @header("x-optional-header") optionalHeader?: string;
-};
+
+@delete op deleteUser(): { @header("x-request-id") requestId: string, @header("x-optional-header") optionalHeader?: string};
 ```
 
 ## Models

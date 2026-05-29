@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { RLCModel } from "./interfaces.js";
 import * as path from "path";
 import {
   FunctionDeclarationOverloadStructure,
@@ -8,9 +9,8 @@ import {
   Project,
   VariableDeclarationKind
 } from "ts-morph";
-import { getImportModuleName } from "./helpers/nameConstructors.js";
 import { hasUnexpectedHelper } from "./helpers/operationHelpers.js";
-import { RLCModel } from "./interfaces.js";
+import { getImportModuleName } from "./helpers/nameConstructors.js";
 export function buildIsUnexpectedHelper(model: RLCModel) {
   if (!hasUnexpectedHelper(model)) {
     return;

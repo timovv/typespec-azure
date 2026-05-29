@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { PageableClient, Pet } from "./generated/payload/pageable/src/index.js";
 

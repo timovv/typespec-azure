@@ -2,12 +2,6 @@
 // Licensed under the MIT License.
 
 import {
-  getHttpOperationWithCache,
-  SdkClient
-} from "@azure-tools/typespec-client-generator-core";
-import { getDoc, isVoidType } from "@typespec/compiler";
-import { HttpOperation, HttpOperationResponse } from "@typespec/http";
-import {
   getLroLogicalResponseName,
   Imports,
   OperationResponse,
@@ -16,7 +10,12 @@ import {
   Schema,
   SchemaContext
 } from "../rlc-common/index.js";
-import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
+import {
+  getHttpOperationWithCache,
+  SdkClient
+} from "@azure-tools/typespec-client-generator-core";
+import { getDoc, isVoidType } from "@typespec/compiler";
+import { HttpOperation, HttpOperationResponse } from "@typespec/http";
 import { SdkContext } from "../utils/interfaces.js";
 import {
   getBinaryType,
@@ -32,6 +31,7 @@ import {
   isBinaryPayload,
   sortedOperationResponses
 } from "../utils/operationUtil.js";
+import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 
 export function transformToResponseTypes(
   client: SdkClient,

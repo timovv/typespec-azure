@@ -1,33 +1,29 @@
-import { AutorestTestLibrary } from "@azure-tools/typespec-autorest/testing";
-import { AzureCoreTestLibrary } from "@azure-tools/typespec-azure-core/testing";
-import { AzureResourceManagerTestLibrary } from "@azure-tools/typespec-azure-resource-manager/testing";
-import { listAllServiceNamespaces } from "@azure-tools/typespec-client-generator-core";
-import { SdkTestLibrary } from "@azure-tools/typespec-client-generator-core/testing";
 import { EmitContext, Program } from "@typespec/compiler";
-import { createTestHost, TestHost } from "@typespec/compiler/testing";
-import { HttpTestLibrary } from "@typespec/http/testing";
-import { OpenAPITestLibrary } from "@typespec/openapi/testing";
+import { createTestHost } from "@typespec/compiler/testing";
+import { TestHost } from "@typespec/compiler/testing";
 import { RestTestLibrary } from "@typespec/rest/testing";
+import { HttpTestLibrary } from "@typespec/http/testing";
 import { VersioningTestLibrary } from "@typespec/versioning/testing";
 import { XmlTestLibrary } from "@typespec/xml/testing";
+import { AzureCoreTestLibrary } from "@azure-tools/typespec-azure-core/testing";
+import { SdkTestLibrary } from "@azure-tools/typespec-client-generator-core/testing";
+import { listAllServiceNamespaces } from "@azure-tools/typespec-client-generator-core";
+import { OpenAPITestLibrary } from "@typespec/openapi/testing";
+import { AutorestTestLibrary } from "@azure-tools/typespec-autorest/testing";
+import { AzureResourceManagerTestLibrary } from "@azure-tools/typespec-azure-resource-manager/testing";
+import { SdkContext } from "../../src/utils/interfaces.js";
 import { assert } from "chai";
-import path from "path";
 import { format } from "prettier";
-import { Project } from "ts-morph";
-import { provideContext } from "../../src/contextManager.js";
-import { provideBinder } from "../../src/framework/hooks/binder.js";
-import { provideSdkTypes } from "../../src/framework/hooks/sdkTypes.js";
-import { loadStaticHelpers } from "../../src/framework/load-static-helpers.js";
-import { createContextWithDefaultOptions } from "../../src/index.js";
 import { prettierTypeScriptOptions } from "../../src/lib.js";
+import { createContextWithDefaultOptions } from "../../src/index.js";
+import { provideContext } from "../../src/contextManager.js";
+import { Project } from "ts-morph";
+import { provideSdkTypes } from "../../src/framework/hooks/sdkTypes.js";
+import { provideBinder } from "../../src/framework/hooks/binder.js";
+import { loadStaticHelpers } from "../../src/framework/load-static-helpers.js";
+import path from "path";
+import { getDirname } from "../../src/utils/dirname.js";
 import {
-  AzureCoreDependencies,
-  AzureIdentityDependencies,
-  AzurePollingDependencies,
-  AzureTestDependencies
-} from "../../src/modular/external-dependencies.js";
-import {
-  CreateRecorderHelpers,
   MultipartHelpers,
   PagingHelpers,
   PlatformTypeHelpers,
@@ -35,10 +31,15 @@ import {
   SerializationHelpers,
   StorageCompatHelpers,
   UrlTemplateHelpers,
-  XmlHelpers
+  XmlHelpers,
+  CreateRecorderHelpers
 } from "../../src/modular/static-helpers-metadata.js";
-import { getDirname } from "../../src/utils/dirname.js";
-import { SdkContext } from "../../src/utils/interfaces.js";
+import {
+  AzureCoreDependencies,
+  AzureIdentityDependencies,
+  AzurePollingDependencies,
+  AzureTestDependencies
+} from "../../src/modular/external-dependencies.js";
 
 export interface ExampleJson {
   filename: string;
@@ -104,7 +105,11 @@ import "@typespec/versioning";
 import "@typespec/xml";
 ${needTCGC ? 'import "@azure-tools/typespec-client-generator-core";' : ""} 
 ${needAzureCore ? 'import "@azure-tools/typespec-azure-core";' : ""} 
-${needArmTemplate ? 'import "@azure-tools/typespec-azure-resource-manager";' : ""}
+${
+  needArmTemplate
+    ? 'import "@azure-tools/typespec-azure-resource-manager";'
+    : ""
+}
 
 using Rest; 
 using Http;

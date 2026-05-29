@@ -1,6 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import {
+  getLroLogicalResponseName,
+  getResponseTypeName,
+  NameType,
+  normalizeName,
+  OperationLroDetail,
+  OPERATION_LRO_HIGH_PRIORITY,
+  OPERATION_LRO_LOW_PRIORITY,
+  Paths,
+  ResponseMetadata,
+  ResponseTypes
+} from "../rlc-common/index.js";
 import { getLroMetadata } from "@azure-tools/typespec-azure-core";
 import {
   getDisablePageable,
@@ -25,38 +37,26 @@ import {
   Program,
   Type
 } from "@typespec/compiler";
-import { $ } from "@typespec/compiler/typekit";
 import {
   HttpOperation,
   HttpOperationParameter,
   HttpOperationResponse,
   HttpStatusCodesEntry
 } from "@typespec/http";
-import { resolveReference } from "../framework/reference.js";
-import { reportDiagnostic } from "../lib.js";
-import { SerializationHelpers } from "../modular/static-helpers-metadata.js";
-import {
-  getLroLogicalResponseName,
-  getResponseTypeName,
-  NameType,
-  normalizeName,
-  OPERATION_LRO_HIGH_PRIORITY,
-  OPERATION_LRO_LOW_PRIORITY,
-  OperationLroDetail,
-  Paths,
-  ResponseMetadata,
-  ResponseTypes
-} from "../rlc-common/index.js";
-import { listOperationsUnderRLCClient } from "./clientUtils.js";
 import { SdkContext } from "./interfaces.js";
 import {
-  isMediaTypeMultipart,
-  isMediaTypeXml,
   KnownMediaType,
-  knownMediaType
+  knownMediaType,
+  isMediaTypeXml,
+  isMediaTypeMultipart
 } from "./mediaTypes.js";
 import { isByteOrByteUnion } from "./modelUtils.js";
 import { getOperationNamespaceInterfaceName } from "./namespaceUtils.js";
+import { resolveReference } from "../framework/reference.js";
+import { SerializationHelpers } from "../modular/static-helpers-metadata.js";
+import { listOperationsUnderRLCClient } from "./clientUtils.js";
+import { $ } from "@typespec/compiler/typekit";
+import { reportDiagnostic } from "../lib.js";
 
 // Sorts the responses by status code
 export function sortedOperationResponses(responses: HttpOperationResponse[]) {

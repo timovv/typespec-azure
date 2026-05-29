@@ -1,17 +1,17 @@
+import { HelperFunctionDetails, PackageFlavor } from "../rlc-common/index.js";
 import {
   getHttpOperationWithCache,
   SdkClient
 } from "@azure-tools/typespec-client-generator-core";
-import { HelperFunctionDetails, PackageFlavor } from "../rlc-common/index.js";
-import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
-import { getCollectionFormat } from "../utils/modelUtils.js";
 import {
   extractPageDetails,
   getSpecialSerializeInfo,
   hasPagingOperations,
   hasPollingOperations
 } from "../utils/operationUtil.js";
+import { getCollectionFormat } from "../utils/modelUtils.js";
+import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 
 export function transformHelperFunctionDetails(
   client: SdkClient,

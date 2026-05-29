@@ -1,16 +1,16 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import {
   bearerTokenAuthenticationPolicyName,
   PipelinePolicy
 } from "@azure/core-rest-pipeline";
-import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
 import {
   createOAuth2,
   invalid,
   OAuth2Context,
   valid
 } from "./generated/authentication/oauth2/src/api/index.js";
+import { customBearerTokenAuthenticationPolicy } from "../util/customBearerTokenTestingPolicy.js";
 
 describe("OAuth2Context in API Layer", () => {
   let context: OAuth2Context;

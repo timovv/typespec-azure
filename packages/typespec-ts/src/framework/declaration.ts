@@ -1,16 +1,16 @@
 import {
-  ClassDeclaration,
-  ClassDeclarationStructure,
-  EnumDeclaration,
-  EnumDeclarationStructure,
-  FunctionDeclaration,
-  FunctionDeclarationStructure,
-  InterfaceDeclaration,
-  InterfaceDeclarationStructure,
   SourceFile,
+  ClassDeclarationStructure,
+  EnumDeclarationStructure,
+  FunctionDeclarationStructure,
+  InterfaceDeclarationStructure,
+  TypeAliasDeclarationStructure,
   StructureKind,
-  TypeAliasDeclaration,
-  TypeAliasDeclarationStructure
+  ClassDeclaration,
+  EnumDeclaration,
+  FunctionDeclaration,
+  InterfaceDeclaration,
+  TypeAliasDeclaration
 } from "ts-morph";
 import { useBinder } from "./hooks/binder.js";
 import { refkey as getRefKey } from "./refkey.js";

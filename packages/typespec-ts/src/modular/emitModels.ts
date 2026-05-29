@@ -1,24 +1,4 @@
 import {
-  isPagedResultModel,
-  isReadOnly,
-  listAllServiceNamespaces,
-  SdkArrayType,
-  SdkClientType,
-  SdkDictionaryType,
-  SdkEnumType,
-  SdkEnumValueType,
-  SdkHttpOperation,
-  SdkMethod,
-  SdkModelPropertyType,
-  SdkModelType,
-  SdkNullableType,
-  SdkServiceMethod,
-  SdkServiceOperation,
-  SdkType,
-  SdkUnionType,
-  UsageFlags
-} from "@azure-tools/typespec-client-generator-core";
-import {
   EnumDeclarationStructure,
   EnumMemberStructure,
   InterfaceDeclarationStructure,
@@ -33,6 +13,26 @@ import {
   NameType,
   normalizeName
 } from "../rlc-common/index.js";
+import {
+  SdkArrayType,
+  SdkModelPropertyType,
+  SdkClientType,
+  SdkDictionaryType,
+  SdkEnumType,
+  SdkEnumValueType,
+  SdkHttpOperation,
+  SdkMethod,
+  SdkModelType,
+  SdkNullableType,
+  SdkServiceMethod,
+  SdkServiceOperation,
+  SdkType,
+  SdkUnionType,
+  UsageFlags,
+  isPagedResultModel,
+  isReadOnly,
+  listAllServiceNamespaces
+} from "@azure-tools/typespec-client-generator-core";
 // import { isKey } from "@typespec/compiler";
 import {
   getExternalModel,
@@ -40,31 +40,8 @@ import {
   getMultipartFileTypeExpression
 } from "./type-expressions/get-model-expression.js";
 
-import { getNamespaceFullName, NoTarget } from "@typespec/compiler";
-import { isMetadata, isOrExtendsHttpFile, Visibility } from "@typespec/http";
-import path from "path";
-import { useContext } from "../contextManager.js";
-import { addDeclaration } from "../framework/declaration.js";
-import {
-  emitQueue,
-  flattenPropertyModelMap,
-  getAllOperationsFromClient,
-  pagedModelsUsedInNonPagingOps
-} from "../framework/hooks/sdkTypes.js";
-import { refkey } from "../framework/refkey.js";
-import { reportDiagnostic } from "../lib.js";
-import { getClientHierarchyMap } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
-import { isAzureCoreErrorType } from "../utils/modelUtils.js";
-import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
-import { getHeaderClientOptions } from "./helpers/clientOptionHelpers.js";
-import {
-  buildNonModelResponseTypeDeclaration,
-  checkWrapNonModelReturn,
-  getAllAncestors,
-  getAllProperties
-} from "./helpers/operationHelpers.js";
-import { getDirectSubtypes } from "./helpers/typeHelpers.js";
+import { addDeclaration } from "../framework/declaration.js";
 import {
   buildModelDeserializer,
   buildPropertyDeserializer
@@ -74,22 +51,45 @@ import {
   buildPropertySerializer
 } from "./serialization/buildSerializerFunction.js";
 import {
-  buildXmlModelDeserializer,
   buildXmlModelSerializer,
-  buildXmlObjectModelDeserializer,
+  buildXmlModelDeserializer,
   buildXmlObjectModelSerializer,
+  buildXmlObjectModelDeserializer,
   hasXmlSerialization
 } from "./serialization/buildXmlSerializerFunction.js";
+import path from "path";
+import { refkey } from "../framework/refkey.js";
+import { useContext } from "../contextManager.js";
+import { isMetadata, isOrExtendsHttpFile, Visibility } from "@typespec/http";
+import { isAzureCoreErrorType } from "../utils/modelUtils.js";
+import { getHeaderClientOptions } from "./helpers/clientOptionHelpers.js";
+import { isExtensibleEnum } from "./type-expressions/get-enum-expression.js";
 import {
   getAllDiscriminatedValues,
   getPropertyWithOverrides,
   isDiscriminatedUnion
 } from "./serialization/serializeUtils.js";
-import { isExtensibleEnum } from "./type-expressions/get-enum-expression.js";
+import { reportDiagnostic } from "../lib.js";
+import { getNamespaceFullName, NoTarget } from "@typespec/compiler";
 import {
   getTypeExpression,
   normalizeModelPropertyName
 } from "./type-expressions/get-type-expression.js";
+import {
+  emitQueue,
+  flattenPropertyModelMap,
+  getAllOperationsFromClient,
+  pagedModelsUsedInNonPagingOps
+} from "../framework/hooks/sdkTypes.js";
+import {
+  getAllAncestors,
+  getAllProperties,
+  buildNonModelResponseTypeDeclaration,
+  checkWrapNonModelReturn
+} from "./helpers/operationHelpers.js";
+import { getDirectSubtypes } from "./helpers/typeHelpers.js";
+import { getClientHierarchyMap } from "../utils/clientUtils.js";
+import { getMethodHierarchiesMap } from "../utils/operationUtil.js";
 
 type InterfaceStructure = OptionalKind<InterfaceDeclarationStructure> & {
   extends?: string[];
@@ -844,7 +844,7 @@ function addExtendedDictInfo(
   if (context.rlcOptions?.compatibilityMode) {
     const ancestors = getAllAncestors(model);
     const properties = getAllProperties(context, model, ancestors);
-    let anyType: boolean;
+    let anyType = true;
     if (!additionalPropertiesType) {
       // case 1: if additionalProperties is not defined, we should use any type
       anyType = true;
@@ -927,7 +927,11 @@ export function normalizeModelName(
     if (rawModelName) {
       return `${normalizeModelName(context, type.valueType as any, nameType, skipPolymorphicUnionSuffix, rawModelName)}Record`;
     }
-    return `Record<string, ${normalizeModelName(context, type.valueType as any, nameType)}>`;
+    return `Record<string, ${normalizeModelName(
+      context,
+      type.valueType as any,
+      nameType
+    )}>`;
   }
   if (
     type.kind !== "model" &&

@@ -1,6 +1,6 @@
 import { dirname, relative, resolve } from "path";
-import { SourceFile } from "ts-morph";
 import { useContext } from "../contextManager.js";
+import { SourceFile } from "ts-morph";
 
 /**
  * Adds a named import to a TypeScript source file if it does not already exist.

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
 import {
   InterfaceDeclarationStructure,
   Project,
@@ -9,14 +8,7 @@ import {
   SourceFile,
   StructureKind
 } from "ts-morph";
-import { getObjectInterfaceDeclaration } from "./buildObjectTypes.js";
-import { getImportSpecifier } from "./helpers/importsUtil.js";
-import {
-  getImportModuleName,
-  getParameterBaseName,
-  getParameterTypeName
-} from "./helpers/nameConstructors.js";
-import { getGeneratedWrapperTypes } from "./helpers/operationHelpers.js";
+import * as path from "path";
 import {
   ObjectSchema,
   ParameterMetadata,
@@ -25,6 +17,14 @@ import {
   Schema,
   SchemaContext
 } from "./interfaces.js";
+import {
+  getImportModuleName,
+  getParameterBaseName,
+  getParameterTypeName
+} from "./helpers/nameConstructors.js";
+import { getImportSpecifier } from "./helpers/importsUtil.js";
+import { getObjectInterfaceDeclaration } from "./buildObjectTypes.js";
+import { getGeneratedWrapperTypes } from "./helpers/operationHelpers.js";
 
 export function buildParameterTypes(model: RLCModel) {
   const project = new Project();

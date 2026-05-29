@@ -1,52 +1,52 @@
 import {
-  isReadOnly,
-  SdkClientInitializationType,
+  StructureKind,
+  FunctionDeclarationStructure,
+  SourceFile
+} from "ts-morph";
+import { resolveReference } from "../framework/reference.js";
+import { SdkContext } from "../utils/interfaces.js";
+import {
   SdkClientType,
-  SdkExampleValue,
   SdkHttpOperationExample,
   SdkHttpParameterExampleValue,
+  SdkServiceOperation,
+  SdkExampleValue,
+  SdkClientInitializationType,
   SdkModelPropertyType,
-  SdkServiceOperation
+  isReadOnly
 } from "@azure-tools/typespec-client-generator-core";
-import { NoTarget } from "@typespec/compiler";
-import { join } from "path";
-import {
-  FunctionDeclarationStructure,
-  SourceFile,
-  StructureKind
-} from "ts-morph";
-import { useContext } from "../contextManager.js";
-import { resolveReference } from "../framework/reference.js";
-import { reportDiagnostic } from "../index.js";
-import { AzureIdentityDependencies } from "../modular/external-dependencies.js";
 import {
   isAzurePackage,
   NameType,
   normalizeName
 } from "../rlc-common/index.js";
-import { getSubscriptionId } from "../transform/transfromRLCOptions.js";
+import { useContext } from "../contextManager.js";
+import { join } from "path";
+import { AzureIdentityDependencies } from "../modular/external-dependencies.js";
+import { reportDiagnostic } from "../index.js";
+import { NoTarget } from "@typespec/compiler";
+import {
+  buildPropertyNameMapper,
+  isSpreadBodyParameter
+} from "./helpers/typeHelpers.js";
+import { getClassicalClientName } from "./helpers/namingHelpers.js";
 import {
   hasKeyCredential,
   hasTokenCredential
 } from "../utils/credentialUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
 import {
   getMethodHierarchiesMap,
   isTenantLevelOperation,
   ServiceOperation
 } from "../utils/operationUtil.js";
+import { getSubscriptionId } from "../transform/transfromRLCOptions.js";
 import {
-  getClientParameterName,
-  getClientParameters,
   getClientParametersDeclaration,
-  hasDefaultValue
+  getClientParameters,
+  hasDefaultValue,
+  getClientParameterName
 } from "./helpers/clientHelpers.js";
-import { getClassicalClientName } from "./helpers/namingHelpers.js";
 import { getOperationFunction } from "./helpers/operationHelpers.js";
-import {
-  buildPropertyNameMapper,
-  isSpreadBodyParameter
-} from "./helpers/typeHelpers.js";
 import { ModelOverrideOptions } from "./serialization/serializeUtils.js";
 
 /**
@@ -118,7 +118,9 @@ function emitMethodSamples(
     return;
   }
   const project = useContext("outputProject");
-  const operationPrefix = `${options.classicalMethodPrefix ?? ""} ${method.oriName ?? method.name}`;
+  const operationPrefix = `${options.classicalMethodPrefix ?? ""} ${
+    method.oriName ?? method.name
+  }`;
   const sampleFolder = join(
     dpgContext.generationPathDetail?.rootDir ?? "",
     "samples-dev",
@@ -547,7 +549,9 @@ function getCredentialExampleValue(
       // Support DefaultAzureCredential for Azure packages
       return {
         ...defaultSetting,
-        value: `new ${resolveReference(AzureIdentityDependencies.DefaultAzureCredential)}()`
+        value: `new ${resolveReference(
+          AzureIdentityDependencies.DefaultAzureCredential
+        )}()`
       };
     } else if (keyCredential) {
       // Support ApiKeyCredential for non-Azure packages

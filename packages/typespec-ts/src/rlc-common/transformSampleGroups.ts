@@ -1,20 +1,20 @@
-import { getClientName } from "./helpers/nameConstructors.js";
-import { NameType, camelCase, normalizeName } from "./helpers/nameUtils.js";
-import { isAzurePackage } from "./helpers/packageUtil.js";
-import { buildSchemaObjectMap } from "./helpers/schemaHelpers.js";
 import { generateParameterTypeValue } from "./helpers/valueGenerationUtil.js";
+import { getClientName } from "./helpers/nameConstructors.js";
+import { normalizeName, NameType, camelCase } from "./helpers/nameUtils.js";
+import { buildSchemaObjectMap } from "./helpers/schemaHelpers.js";
 import {
-  OperationMethod,
-  OperationParameter,
-  PathMetadata,
-  Paths,
   RLCModel,
-  RLCSampleDetail,
   RLCSampleGroup,
-  SampleParameter,
+  Paths,
+  OperationMethod,
+  RLCSampleDetail,
   SampleParameters,
-  Schema
+  SampleParameter,
+  Schema,
+  PathMetadata,
+  OperationParameter
 } from "./interfaces.js";
+import { isAzurePackage } from "./helpers/packageUtil.js";
 
 /**
  * Transform the sample data based RLC detail e.g path, operations & schemas
@@ -406,7 +406,7 @@ function convertMethodLevelParameters(
         )
     );
   }
-  let value: string;
+  let value: string = `{}`;
   if (allSideAssignments.length > 0) {
     value = `{ ` + allSideAssignments.join(", ") + `}`;
   } else {

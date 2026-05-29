@@ -1,12 +1,12 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { uint8ArrayToString } from "@azure/core-util";
 import ContentNegotiationClientFactory, {
   ContentNegotiationClient
 } from "./generated/payload/content-negotiation/src/index.js";
 
-import { resolvePath } from "@typespec/compiler";
 import { readFileSync } from "fs";
+import { resolvePath } from "@typespec/compiler";
 import { fileURLToPath } from "url";
 
 const root = resolvePath(fileURLToPath(import.meta.url), "../../../temp");

@@ -1,10 +1,7 @@
 import {
-  emitNonModelResponseTypes,
-  emitTypes,
-  getModelsPath
-} from "../../src/modular/emitModels.js";
-import { buildApiOptions } from "../../src/modular/emitModelsOptions.js";
-import {
+  OperationParameter,
+  RLCOptions,
+  Schema,
   buildClient,
   buildClientDefinitions,
   buildPaginateHelper,
@@ -12,41 +9,44 @@ import {
   buildResponseTypes,
   buildRuntimeImports,
   buildSchemaTypes,
-  initInternalImports,
-  OperationParameter,
-  RLCOptions,
-  Schema
+  initInternalImports
 } from "../../src/rlc-common/index.js";
-import { transformUrlInfo } from "../../src/transform/transform.js";
+import {
+  emitTypes,
+  emitNonModelResponseTypes,
+  getModelsPath
+} from "../../src/modular/emitModels.js";
+import { buildApiOptions } from "../../src/modular/emitModelsOptions.js";
 import {
   compileTypeSpecFor,
   createDpgContextTestHelper,
   ExampleJson,
   rlcEmitterFor
 } from "./testUtil.js";
+import { transformUrlInfo } from "../../src/transform/transform.js";
 
-import { expectDiagnosticEmpty } from "@typespec/compiler/testing";
-import { useContext } from "../../src/contextManager.js";
-import { useBinder } from "../../src/framework/hooks/binder.js";
-import { renameClientName } from "../../src/index.js";
 import { buildClassicalClient } from "../../src/modular/buildClassicalClient.js";
 import { buildClientContext } from "../../src/modular/buildClientContext.js";
-import { transformModularEmitterOptions } from "../../src/modular/buildModularOptions.js";
 import { buildOperationFiles } from "../../src/modular/buildOperations.js";
-import { buildRootIndex } from "../../src/modular/buildRootIndex.js";
-import { buildSubpathIndexFile } from "../../src/modular/buildSubpathIndex.js";
-import { emitSamples } from "../../src/modular/emitSamples.js";
-import { emitTests } from "../../src/modular/emitTests.js";
-import { transformHelperFunctionDetails } from "../../src/transform/transformHelperFunctionDetails.js";
-import { transformToParameterTypes } from "../../src/transform/transformParameters.js";
-import { transformPaths } from "../../src/transform/transformPaths.js";
-import { transformToResponseTypes } from "../../src/transform/transformResponses.js";
-import { transformSchemas } from "../../src/transform/transformSchemas.js";
+import { transformModularEmitterOptions } from "../../src/modular/buildModularOptions.js";
+import { expectDiagnosticEmpty } from "@typespec/compiler/testing";
 import { getCredentialInfo } from "../../src/transform/transfromRLCOptions.js";
 import {
   getClientHierarchyMap,
   getRLCClients
 } from "../../src/utils/clientUtils.js";
+import { transformHelperFunctionDetails } from "../../src/transform/transformHelperFunctionDetails.js";
+import { transformPaths } from "../../src/transform/transformPaths.js";
+import { transformSchemas } from "../../src/transform/transformSchemas.js";
+import { transformToParameterTypes } from "../../src/transform/transformParameters.js";
+import { transformToResponseTypes } from "../../src/transform/transformResponses.js";
+import { useBinder } from "../../src/framework/hooks/binder.js";
+import { emitSamples } from "../../src/modular/emitSamples.js";
+import { emitTests } from "../../src/modular/emitTests.js";
+import { renameClientName } from "../../src/index.js";
+import { buildRootIndex } from "../../src/modular/buildRootIndex.js";
+import { useContext } from "../../src/contextManager.js";
+import { buildSubpathIndexFile } from "../../src/modular/buildSubpathIndex.js";
 
 export async function emitPageHelperFromTypeSpec(
   tspContent: string,
@@ -431,9 +431,6 @@ export async function emitModularModelsFromTypeSpec(
     dpgContext.rlcOptions!.wrapNonModelReturn =
       options["wrap-non-model-return"] === true;
   }
-  if (options["head-as-boolean"] !== undefined) {
-    dpgContext.rlcOptions!.headAsBoolean = options["head-as-boolean"] === true;
-  }
   if (options["treat-unknown-as-record"] !== undefined) {
     dpgContext.rlcOptions!.treatUnknownAsRecord =
       options["treat-unknown-as-record"] === true;
@@ -592,9 +589,6 @@ export async function emitModularOperationsFromTypeSpec(
   if (options["wrap-non-model-return"] !== undefined) {
     dpgContext.rlcOptions!.wrapNonModelReturn =
       options["wrap-non-model-return"] === true;
-  }
-  if (options["head-as-boolean"] !== undefined) {
-    dpgContext.rlcOptions!.headAsBoolean = options["head-as-boolean"] === true;
   }
   dpgContext.rlcOptions!.enableStorageCompat =
     options["enable-storage-compat"] === true;

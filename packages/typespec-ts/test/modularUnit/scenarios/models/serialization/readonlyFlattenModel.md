@@ -5,6 +5,7 @@
 This is tsp definition.
 
 ```tsp
+
 model SolutionProperties {
   @visibility(Lifecycle.Read)
   solutionId?: string;
@@ -15,14 +16,14 @@ model SolutionProperties {
   @visibility(Lifecycle.Read)
   content?: string;
 }
-model Solution {
+model Solution{
   @Azure.ClientGenerator.Core.Legacy.flattenProperty
   properties: SolutionProperties;
-
   @Azure.ClientGenerator.Core.Legacy.flattenProperty
   propertiesOptional?: SolutionProperties;
 }
-op test(@body body: Solution): void;
+op test(@body body:Solution):void;
+
 ```
 
 Enable the raw content with TCGC dependency.
@@ -88,21 +89,21 @@ export function _solutionPropertiesOptionalSerializer(_item: Solution): any {
 This is tsp definition.
 
 ```tsp
+
 model SolutionProperties {
   solutionId?: string;
   title?: string;
-
   @visibility(Lifecycle.Read)
   content?: string;
 }
-model Solution {
+model Solution{
   @Azure.ClientGenerator.Core.Legacy.flattenProperty
   properties: SolutionProperties;
-
   @Azure.ClientGenerator.Core.Legacy.flattenProperty
   propertiesOptional?: SolutionProperties;
 }
-op test(@body body: Solution): void;
+op test(@body body:Solution):void;
+
 ```
 
 Enable the raw content with TCGC dependency.

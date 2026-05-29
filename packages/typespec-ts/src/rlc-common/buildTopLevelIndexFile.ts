@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
-import { Project } from "ts-morph";
-import { getImportModuleName } from "./helpers/nameConstructors.js";
 import { NameType, normalizeName } from "./helpers/nameUtils.js";
-import { getRelativePartFromSrcPath } from "./helpers/pathUtils.js";
 import { RLCModel } from "./interfaces.js";
+import { Project } from "ts-morph";
+import * as path from "path";
+import { getRelativePartFromSrcPath } from "./helpers/pathUtils.js";
+import { getImportModuleName } from "./helpers/nameConstructors.js";
 
 const batchOutputFolder: [string, string, string][] = [];
 

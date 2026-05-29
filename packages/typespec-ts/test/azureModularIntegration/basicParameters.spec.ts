@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { BasicClient } from "./generated/parameters/basic/src/index.js";
 describe("BasicClient Client", () => {

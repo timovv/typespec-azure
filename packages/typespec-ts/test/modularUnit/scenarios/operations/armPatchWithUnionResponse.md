@@ -14,7 +14,9 @@ using Azure.Core;
 using Azure.ResourceManager;
 
 @armProviderNamespace
-@service(#{ title: "Test ARM Patch Service" })
+@service(#{
+  title: "Test ARM Patch Service"
+})
 namespace Microsoft.TestArmPatch;
 
 model PartnerTopicProperties {
@@ -97,12 +99,14 @@ export function _updateSend(
       allowReserved: options?.requestOptions?.skipUrlEncoding,
     },
   );
-  return context.path(path).patch({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "application/json",
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-    body: partnerTopicUpdateParametersSerializer(properties),
-  });
+  return context
+    .path(path)
+    .patch({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "application/json",
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+      body: partnerTopicUpdateParametersSerializer(properties),
+    });
 }
 
 export async function _updateDeserialize(

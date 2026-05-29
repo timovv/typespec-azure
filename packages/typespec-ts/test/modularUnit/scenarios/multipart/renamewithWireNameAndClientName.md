@@ -7,9 +7,10 @@ model MultiPartRequestWithWireName {
 }
 
 op withWireName(
-  @header contentType: "multipart/form-data",
-  @multipartBody body: MultiPartRequestWithWireName,
+    @header contentType: "multipart/form-data",
+    @multipartBody body: MultiPartRequestWithWireName,
 ): NoContentResponse;
+
 ```
 
 ## Models
@@ -49,8 +50,8 @@ model MultiPartRequest {
 @@clientName(MultiPartRequest.profileImage, "image");
 
 op withClientName(
-  @header contentType: "multipart/form-data",
-  @multipartBody body: MultiPartRequest,
+    @header contentType: "multipart/form-data",
+    @multipartBody body: MultiPartRequest,
 ): NoContentResponse;
 ```
 

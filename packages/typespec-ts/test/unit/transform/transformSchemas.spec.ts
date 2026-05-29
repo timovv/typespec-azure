@@ -1,4 +1,4 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
 import { ObjectSchema } from "../../../src/rlc-common/index.js";
 import { emitSchemasFromTypeSpec } from "../../util/emitUtil.js";

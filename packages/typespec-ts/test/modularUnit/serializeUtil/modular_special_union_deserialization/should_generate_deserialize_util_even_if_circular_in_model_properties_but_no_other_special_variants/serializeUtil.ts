@@ -1,5 +1,5 @@
-import { DogUnion, Gold, PetUnion } from "../models/models.js";
-import { DogOutput, GoldOutput, PetOutput } from "../rest/index.js";
+import { PetUnion, Gold, DogUnion } from "../models/models.js";
+import { PetOutput, GoldOutput, DogOutput } from "../rest/index.js";
 
 /** deserialize function for PetOutput */
 export function deserializePetUnion(obj: PetOutput): PetUnion {

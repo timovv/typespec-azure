@@ -1,8 +1,8 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
-import { Diagnostic } from "@typespec/compiler";
 import { emitClientFactoryFromTypeSpec } from "../util/emitUtil.js";
 import { assertEqualContent } from "../util/testUtil.js";
+import { Diagnostic } from "@typespec/compiler";
 
 describe("Client Factory generation", () => {
   describe("should handle url parameters", () => {

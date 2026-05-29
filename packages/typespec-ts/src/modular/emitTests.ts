@@ -1,22 +1,22 @@
-import { existsSync, rmSync } from "fs";
-import { join } from "path";
 import { SourceFile } from "ts-morph";
-import { resolveReference } from "../framework/reference.js";
-import { NameType, normalizeName } from "../rlc-common/index.js";
 import { SdkContext } from "../utils/interfaces.js";
+import { NameType, normalizeName } from "../rlc-common/index.js";
+import { join } from "path";
+import { existsSync, rmSync } from "fs";
+import { getClassicalClientName } from "./helpers/namingHelpers.js";
 import { ServiceOperation } from "../utils/operationUtil.js";
-import { AzureTestDependencies } from "./external-dependencies.js";
 import {
   buildParameterValueMap,
-  ClientEmitOptions,
-  createSourceFile,
-  generateMethodCall,
-  generateResponseAssertions,
+  prepareCommonParameters,
   getDescriptiveName,
+  ClientEmitOptions,
   iterateClientsAndMethods,
-  prepareCommonParameters
+  generateMethodCall,
+  createSourceFile,
+  generateResponseAssertions
 } from "./helpers/exampleValueHelpers.js";
-import { getClassicalClientName } from "./helpers/namingHelpers.js";
+import { AzureTestDependencies } from "./external-dependencies.js";
+import { resolveReference } from "../framework/reference.js";
 import { CreateRecorderHelpers } from "./static-helpers-metadata.js";
 
 /**
@@ -70,7 +70,9 @@ function emitMethodTests(
     return;
   }
 
-  const methodPrefix = `${options.classicalMethodPrefix ?? ""} ${method.oriName ?? method.name}`;
+  const methodPrefix = `${options.classicalMethodPrefix ?? ""} ${
+    method.oriName ?? method.name
+  }`;
   const fileName = normalizeName(`${methodPrefix} Test`, NameType.File);
   const sourceFile = createSourceFile(
     dpgContext,

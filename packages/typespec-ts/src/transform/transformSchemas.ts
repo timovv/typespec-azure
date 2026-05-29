@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+import { HttpOperation, getServers } from "@typespec/http";
+import { KnownMediaType, extractMediaTypes } from "../utils/mediaTypes.js";
+import { Model, Type } from "@typespec/compiler";
 import {
   SdkClient,
   getHttpOperationWithCache
 } from "@azure-tools/typespec-client-generator-core";
-import { Model, Type } from "@typespec/compiler";
-import { HttpOperation, getServers } from "@typespec/http";
-import { KnownMediaType, extractMediaTypes } from "../utils/mediaTypes.js";
 import {
   getBodyType,
   getDefaultService,
@@ -17,10 +17,10 @@ import {
   trimUsage
 } from "../utils/modelUtils.js";
 
-import { useContext } from "../contextManager.js";
 import { SchemaContext } from "../rlc-common/index.js";
-import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 import { SdkContext } from "../utils/interfaces.js";
+import { useContext } from "../contextManager.js";
+import { listOperationsUnderRLCClient } from "../utils/clientUtils.js";
 
 export function transformSchemas(client: SdkClient, dpgContext: SdkContext) {
   const program = dpgContext.program;

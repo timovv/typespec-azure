@@ -1,9 +1,9 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import { matrix } from "../util/matrix.js";
 import TypePropertyValueTypesClientFactory, {
   ValueTypesClient
 } from "./generated/type/property/value-types/src/index.js";
+import { matrix } from "../util/matrix.js";
 
 interface TypeDetail {
   type: string;

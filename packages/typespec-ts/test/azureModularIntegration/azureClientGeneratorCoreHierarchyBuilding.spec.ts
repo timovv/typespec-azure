@@ -1,9 +1,9 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import {
-  Dog,
   HierarchyBuildingClient,
-  Pet
+  Pet,
+  Dog
 } from "./generated/azure/client-generator-core/hierarchy-building/src/index.js";
 
 describe("Azure ClientGeneratorCore Hierarchy Building", () => {

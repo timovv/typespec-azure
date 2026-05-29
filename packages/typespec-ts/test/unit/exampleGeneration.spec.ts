@@ -1,4 +1,4 @@
-import { assert, describe, it } from "vitest";
+import { describe, it, assert } from "vitest";
 
 import { generateAssertionsForValue } from "../../src/modular/helpers/exampleValueHelpers.js";
 

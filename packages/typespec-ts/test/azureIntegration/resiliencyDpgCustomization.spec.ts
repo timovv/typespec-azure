@@ -1,11 +1,11 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import ServiceDrivenNewClientFactory, {
-  ServiceDrivenNewClient
-} from "./generated/resiliency/srv-driven-main/src/index.js";
 import ServiceDrivenOldClientFactory, {
   ServiceDrivenOldClient
 } from "./generated/resiliency/srv-driven-old/src/index.js";
+import ServiceDrivenNewClientFactory, {
+  ServiceDrivenNewClient
+} from "./generated/resiliency/srv-driven-main/src/index.js";
 describe("ResiliencyDevDrivenClient Rest Client", () => {
   let client11: ServiceDrivenOldClient;
   let client12: ServiceDrivenOldClient;

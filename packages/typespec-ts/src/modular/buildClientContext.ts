@@ -1,3 +1,4 @@
+import { ModularEmitterOptions } from "./interfaces.js";
 import {
   NameType,
   isAzurePackage,
@@ -11,8 +12,18 @@ import {
   getClientParameters,
   getClientParametersDeclaration
 } from "./helpers/clientHelpers.js";
-import { ModularEmitterOptions } from "./interfaces.js";
 
+import { SdkContext } from "../utils/interfaces.js";
+import { SourceFile } from "ts-morph";
+import {
+  getClassicalClientName,
+  getClientName
+} from "./helpers/namingHelpers.js";
+import { getDocsFromDescription } from "./helpers/docsHelpers.js";
+import { getTypeExpression } from "./type-expressions/get-type-expression.js";
+import { resolveReference } from "../framework/reference.js";
+import { useDependencies } from "../framework/hooks/useDependencies.js";
+import { buildEnumTypes, getApiVersionEnum } from "./emitModels.js";
 import {
   SdkClientType,
   SdkCredentialParameter,
@@ -21,23 +32,12 @@ import {
   SdkMethodParameter,
   SdkServiceOperation
 } from "@azure-tools/typespec-client-generator-core";
-import { NoTarget } from "@typespec/compiler";
-import { SourceFile } from "ts-morph";
+import { getModularClientOptions } from "../utils/clientUtils.js";
 import { useContext } from "../contextManager.js";
-import { useDependencies } from "../framework/hooks/useDependencies.js";
-import { resolveReference } from "../framework/reference.js";
 import { refkey } from "../framework/refkey.js";
 import { reportDiagnostic } from "../lib.js";
-import { getModularClientOptions } from "../utils/clientUtils.js";
-import { SdkContext } from "../utils/interfaces.js";
-import { buildEnumTypes, getApiVersionEnum } from "./emitModels.js";
-import { getDocsFromDescription } from "./helpers/docsHelpers.js";
-import {
-  getClassicalClientName,
-  getClientName
-} from "./helpers/namingHelpers.js";
+import { NoTarget } from "@typespec/compiler";
 import { CloudSettingHelpers } from "./static-helpers-metadata.js";
-import { getTypeExpression } from "./type-expressions/get-type-expression.js";
 
 /**
  * This function gets the path of the file containing the modular client context

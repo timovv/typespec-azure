@@ -1,9 +1,9 @@
+import { getAllAncestors } from "../helpers/operationHelpers.js";
 import {
   SdkModelPropertyType,
   SdkModelType,
   SdkType
 } from "@azure-tools/typespec-client-generator-core";
-import { getAllAncestors } from "../helpers/operationHelpers.js";
 import { getDirectSubtypes } from "../helpers/typeHelpers.js";
 
 /**
@@ -97,6 +97,7 @@ export function isSpecialUnionVariant(
         })
         ?.some(
           (p) =>
+            // eslint-disable-next-line
             (p.kind === "property" && p.name !== p.serializedName) ||
             isSpecialUnionVariant(p.type, [...variantStack, p.type])
         )) ||

@@ -1,11 +1,11 @@
 import {
-  FunctionDeclarationStructure,
-  InterfaceDeclarationStructure,
   Project,
-  StructureKind
+  StructureKind,
+  InterfaceDeclarationStructure,
+  FunctionDeclarationStructure
 } from "ts-morph";
-import { addDeclaration } from "./declaration.js";
 import { useBinder } from "./hooks/binder.js";
+import { addDeclaration } from "./declaration.js";
 import { resolveReference } from "./reference.js";
 
 // Create a new ts-morph project

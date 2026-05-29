@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { JsonClient } from "./generated/serialization/encoded-name/json/src/index.js";
 describe("NameAndEncodedName Client", () => {

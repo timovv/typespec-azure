@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { UsageFlags } from "@azure-tools/typespec-client-generator-core";
-import { transformModularEmitterOptions } from "../modular/buildModularOptions.js";
-import { NameType, normalizeName } from "../rlc-common/index.js";
 import { SdkContext } from "./interfaces.js";
+import { transformModularEmitterOptions } from "../modular/buildModularOptions.js";
 import { getMethodHierarchiesMap } from "./operationUtil.js";
+import { NameType, normalizeName } from "../rlc-common/index.js";
+import { UsageFlags } from "@azure-tools/typespec-client-generator-core";
 
 export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
   CrossLanguagePackageId: string;
@@ -64,7 +64,10 @@ export function generateCrossLanguageDefinitionFile(dpgContext: SdkContext): {
           prefixes[0] ?? "",
           NameType.Interface
         );
-        const propertyType = `${normalizeName(rawGroupName, NameType.OperationGroup)}Operations`;
+        const propertyType = `${normalizeName(
+          rawGroupName,
+          NameType.OperationGroup
+        )}Operations`;
         for (const operation of operations) {
           const { name } = operation;
           const operationName = `${packageName}!${propertyType}#${name}:member`;

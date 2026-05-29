@@ -1,3 +1,4 @@
+import { assert } from "vitest";
 // import { RenamedOperationClient } from "./generated/client/structure/renamed-operation/src/index.js";
 // // describe("Client Structure Renamed-Operation Rest Client", () => {
 //   let client: RenamedOperationClient;

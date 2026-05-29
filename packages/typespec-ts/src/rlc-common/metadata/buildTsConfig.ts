@@ -89,9 +89,7 @@ export function buildTsConfig(model: RLCModel) {
   const configFile = project.createSourceFile(
     filePath,
     JSON.stringify(tsConfig, null, 2),
-    {
-      overwrite: true
-    }
+    { overwrite: true }
   );
   return {
     path: filePath,
@@ -183,6 +181,23 @@ export function buildTsSampleConfig(model: RLCModel) {
             [clientPackageName]: ["../dist/esm"]
           }
         }
+      },
+      null,
+      2
+    )
+  };
+}
+
+/**
+ * Builds config/tsconfig.lint.json — used by eslint.config.mjs for type-aware linting
+ */
+export function buildTsLintConfig() {
+  return {
+    path: "config/tsconfig.lint.json",
+    content: JSON.stringify(
+      {
+        extends: "../../../../tsconfig.json",
+        include: ["../src", "../test"]
       },
       null,
       2

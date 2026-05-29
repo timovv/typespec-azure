@@ -1,5 +1,6 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
+import { UsageClient } from "./generated/type/model/usage/src/index.js";
 import {
   UsageContext,
   createUsage,
@@ -7,7 +8,6 @@ import {
   inputAndOutput,
   output
 } from "./generated/type/model/usage/src/api/index.js";
-import { UsageClient } from "./generated/type/model/usage/src/index.js";
 const EXPECTED_VALUE = "example-value";
 describe("UsageContext Classical Client", () => {
   let client: UsageClient;

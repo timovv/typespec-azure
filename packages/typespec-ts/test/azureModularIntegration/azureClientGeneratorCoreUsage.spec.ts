@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { UsageClient } from "./generated/azure/client-generator-core/usage/src/index.js";
 describe("Azure ClientGeneratorCore Usage Client", () => {

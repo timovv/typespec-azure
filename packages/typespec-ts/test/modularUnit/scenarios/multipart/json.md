@@ -4,7 +4,6 @@
 model Person {
   firstName: string;
   lastName: string;
-
   @encode("unixTimestamp", int32)
   dateOfBirth: utcDateTime;
 }
@@ -60,7 +59,6 @@ This TypeSpec represents a multipart request body with one part. That part consi
 model Person {
   firstName: string;
   lastName: string;
-
   @encode("unixTimestamp", int32)
   dateOfBirth: utcDateTime;
 }
@@ -122,7 +120,6 @@ This TypeSpec represents a multipart request with multiple JSON parts, each foll
 model Person {
   firstName: string;
   lastName: string;
-
   @encode("unixTimestamp", int32)
   dateOfBirth: utcDateTime;
 }

@@ -1,3 +1,4 @@
+import { FunctionDeclarationStructure, StructureKind } from "ts-morph";
 import {
   SdkArrayType,
   SdkDictionaryType,
@@ -7,19 +8,7 @@ import {
   SdkUnionType,
   UsageFlags
 } from "@azure-tools/typespec-client-generator-core";
-import { NoTarget } from "@typespec/compiler";
-import { FunctionDeclarationStructure, StructureKind } from "ts-morph";
-import { useContext } from "../../contextManager.js";
-import { resolveReference } from "../../framework/reference.js";
-import { refkey } from "../../framework/refkey.js";
-import { reportDiagnostic } from "../../lib.js";
-import { NameType, normalizeName } from "../../rlc-common/index.js";
 import { SdkContext } from "../../utils/interfaces.js";
-import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
-import {
-  getAdditionalPropertiesName,
-  normalizeModelName
-} from "../emitModels.js";
 import {
   getAllAncestors,
   getAllProperties,
@@ -27,16 +16,27 @@ import {
   getResponseMapping
 } from "../helpers/operationHelpers.js";
 import {
-  getAdditionalPropertiesType,
-  getDirectSubtypes
-} from "../helpers/typeHelpers.js";
-import { SerializationHelpers } from "../static-helpers-metadata.js";
+  getAdditionalPropertiesName,
+  normalizeModelName
+} from "../emitModels.js";
+import { NameType, normalizeName } from "../../rlc-common/index.js";
+import { isAzureCoreErrorType } from "../../utils/modelUtils.js";
 import {
   getAllDiscriminatedValues,
   isDiscriminatedUnion,
   isSupportedSerializeType,
   ModelSerializeOptions
 } from "./serializeUtils.js";
+import { SerializationHelpers } from "../static-helpers-metadata.js";
+import { refkey } from "../../framework/refkey.js";
+import { resolveReference } from "../../framework/reference.js";
+import {
+  getAdditionalPropertiesType,
+  getDirectSubtypes
+} from "../helpers/typeHelpers.js";
+import { reportDiagnostic } from "../../lib.js";
+import { NoTarget } from "@typespec/compiler";
+import { useContext } from "../../contextManager.js";
 
 export function buildPropertyDeserializer(
   context: SdkContext,

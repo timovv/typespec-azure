@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { OverloadClient } from "./generated/client/overload/src/index.js";
 describe("Client Overload Modular Client", () => {

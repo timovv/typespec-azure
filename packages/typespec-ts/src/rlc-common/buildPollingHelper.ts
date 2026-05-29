@@ -1,5 +1,5 @@
-import * as path from "path";
 import { OPERATION_LRO_HIGH_PRIORITY, RLCModel } from "./interfaces.js";
+import * as path from "path";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: to fix the handlebars issue
 import hbs from "handlebars";

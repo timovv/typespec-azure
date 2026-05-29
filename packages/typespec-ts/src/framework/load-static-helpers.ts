@@ -1,5 +1,4 @@
-import { NoTarget, Program } from "@typespec/compiler";
-import { readdir, readFile, stat } from "fs/promises";
+import { readdir, stat, readFile } from "fs/promises";
 import * as path from "path";
 import {
   ClassDeclaration,
@@ -10,11 +9,12 @@ import {
   SourceFile,
   TypeAliasDeclaration
 } from "ts-morph";
-import { reportDiagnostic } from "../lib.js";
-import { ModularEmitterOptions } from "../modular/interfaces.js";
-import { isAzurePackage } from "../rlc-common/index.js";
-import { resolveProjectRoot } from "../utils/resolve-project-root.js";
 import { refkey } from "./refkey.js";
+import { resolveProjectRoot } from "../utils/resolve-project-root.js";
+import { isAzurePackage } from "../rlc-common/index.js";
+import { ModularEmitterOptions } from "../modular/interfaces.js";
+import { NoTarget, Program } from "@typespec/compiler";
+import { reportDiagnostic } from "../lib.js";
 export const SourceFileSymbol = Symbol("SourceFile");
 export interface StaticHelperMetadata {
   name: string;

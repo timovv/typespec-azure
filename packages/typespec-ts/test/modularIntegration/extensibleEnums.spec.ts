@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { ExtensibleClient } from "./generated/type/enum/extensible/src/index.js";
 describe("ExtensibleEnums Rest Client", () => {

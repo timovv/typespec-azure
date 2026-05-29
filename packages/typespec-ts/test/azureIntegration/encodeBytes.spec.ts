@@ -1,12 +1,12 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
-import { uint8ArrayToString } from "@azure/core-util";
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import EncodeBytesClientFactory, {
   BytesClient
 } from "./generated/encode/bytes/src/index.js";
 import { buildCsvCollection } from "./generated/encode/bytes/src/serializeHelper.js";
+import { uint8ArrayToString } from "@azure/core-util";
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 describe("EncodeDatetimeClient Rest Client", () => {
   let client: BytesClient;

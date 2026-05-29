@@ -1,4 +1,4 @@
-import { assert, beforeEach, describe, it } from "vitest";
+import { describe, it, beforeEach, assert } from "vitest";
 
 import { RemovedClient } from "./generated/versioning/removed/v2preview/src/index.js";
 

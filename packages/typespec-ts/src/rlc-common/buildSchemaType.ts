@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
 import { Project } from "ts-morph";
+import * as path from "path";
 import {
   buildObjectAliases,
   buildObjectInterfaces,
   buildPolymorphicAliases
 } from "./buildObjectTypes.js";
-import { getImportSpecifier } from "./helpers/importsUtil.js";
 import { RLCModel, SchemaContext } from "./interfaces.js";
+import { getImportSpecifier } from "./helpers/importsUtil.js";
 
 /**
  * Generates types to represent schema definitions in the swagger

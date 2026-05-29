@@ -8,7 +8,6 @@ import {
   StructureKind,
   TypeAliasDeclarationStructure
 } from "ts-morph";
-import { getMultipartPartTypeName } from "./helpers/nameConstructors.js";
 import { NameType, normalizeName } from "./helpers/nameUtils.js";
 import {
   isArraySchema,
@@ -24,6 +23,7 @@ import {
   Schema,
   SchemaContext
 } from "./interfaces.js";
+import { getMultipartPartTypeName } from "./helpers/nameConstructors.js";
 
 /**
  * Generates interfaces for ObjectSchemas
@@ -544,7 +544,11 @@ export function getImmediateParentsNames(
                 ? parent.outputTypeName
                 : parent.typeName) ?? parent.name
             }`
-        : `${normalizeName(parent.name, NameType.Interface, true /** shouldGuard */)}${nameSuffix}`;
+        : `${normalizeName(
+            parent.name,
+            NameType.Interface,
+            true /** shouldGuard */
+          )}${nameSuffix}`;
 
       return isObjectSchema(parent) && isPolymorphicParent(parent)
         ? `${name}Parent`

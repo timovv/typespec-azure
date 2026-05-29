@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as path from "path";
 import {
   CallSignatureDeclarationStructure,
   InterfaceDeclarationStructure,
@@ -11,26 +10,27 @@ import {
   StructureKind,
   Writers
 } from "ts-morph";
+import * as path from "path";
 
-import { REST_CLIENT_RESERVED } from "./buildMethodShortcuts.js";
-import { getImportSpecifier } from "./helpers/importsUtil.js";
-import {
-  getClientName,
-  getImportModuleName
-} from "./helpers/nameConstructors.js";
-import {
-  CasingConvention,
-  NameType,
-  normalizeName,
-  pascalCase
-} from "./helpers/nameUtils.js";
 import {
   buildMethodDefinitions,
   getGeneratedWrapperTypes,
   getPathParamDefinitions
 } from "./helpers/operationHelpers.js";
-import { generateMethodShortcuts } from "./helpers/shortcutMethods.js";
 import { PathMetadata, Paths, RLCModel } from "./interfaces.js";
+import { generateMethodShortcuts } from "./helpers/shortcutMethods.js";
+import { REST_CLIENT_RESERVED } from "./buildMethodShortcuts.js";
+import {
+  CasingConvention,
+  NameType,
+  normalizeName
+} from "./helpers/nameUtils.js";
+import { pascalCase } from "./helpers/nameUtils.js";
+import {
+  getClientName,
+  getImportModuleName
+} from "./helpers/nameConstructors.js";
+import { getImportSpecifier } from "./helpers/importsUtil.js";
 
 export function buildClientDefinitions(model: RLCModel) {
   const options = {

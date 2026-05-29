@@ -1,11 +1,3 @@
-import { CompilerHost, NoTarget, Program } from "@typespec/compiler";
-import { dirname, join } from "path";
-import { format } from "prettier";
-import {
-  prettierJSONOptions,
-  prettierTypeScriptOptions,
-  reportDiagnostic
-} from "../lib.js";
 import {
   buildSchemaTypes,
   ContentBuilder,
@@ -13,6 +5,14 @@ import {
   isAzurePackage,
   RLCModel
 } from "../rlc-common/index.js";
+import { CompilerHost, Program, NoTarget } from "@typespec/compiler";
+import { dirname, join } from "path";
+import { format } from "prettier";
+import {
+  prettierJSONOptions,
+  prettierTypeScriptOptions,
+  reportDiagnostic
+} from "../lib.js";
 
 export async function emitModels(rlcModels: RLCModel, program: Program) {
   const schemaOutput = buildSchemaTypes(rlcModels);

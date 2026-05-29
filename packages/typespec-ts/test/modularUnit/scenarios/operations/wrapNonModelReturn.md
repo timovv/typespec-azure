@@ -39,10 +39,12 @@ export function _getSend(
   context: Client,
   options: GetOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/dns").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/dns")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getDeserialize(result: PathUncheckedResponse): Promise<GetResponse> {
@@ -100,10 +102,12 @@ export function _listDomainsSend(
   context: Client,
   options: ListDomainsOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/domains").post({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/domains")
+    .post({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _listDomainsDeserialize(
@@ -186,10 +190,12 @@ export function _getLogsSend(
   context: Client,
   options: GetLogsOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/logs").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/octet-stream", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/logs")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/octet-stream", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getLogsDeserialize(
@@ -247,10 +253,12 @@ export function _getSend(
   context: Client,
   options: GetOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/dns").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/dns")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getDeserialize(result: PathUncheckedResponse): Promise<string> {
@@ -310,10 +318,12 @@ export function _listSend(
   context: Client,
   options: ListOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/resources").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/resources")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _listDeserialize(result: PathUncheckedResponse): Promise<Resource[]> {
@@ -371,10 +381,12 @@ export function _getModelSend(
   context: Client,
   options: GetModelOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/models").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/models")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getModelDeserialize(result: PathUncheckedResponse): Promise<MyModel> {
@@ -415,12 +427,10 @@ model ApiError {
 
 @route("/logs")
 @get
-op getLogs():
-  | {
-      @header contentType: "application/octet-stream";
-      @body body: bytes;
-    }
-  | ApiError;
+op getLogs(): {
+  @header contentType: "application/octet-stream";
+  @body body: bytes;
+} | ApiError;
 ```
 
 ## Operations
@@ -466,12 +476,10 @@ model StorageError {
 
 @route("/blobs")
 @get
-op getBlob():
-  | {
-      @header contentType: "application/octet-stream";
-      @body body: bytes;
-    }
-  | StorageError;
+op getBlob(): {
+  @header contentType: "application/octet-stream";
+  @body body: bytes;
+} | StorageError;
 ```
 
 ## Operations
@@ -505,47 +513,47 @@ export async function _getBlobDeserialize(
 # skip: wrap-non-model-return wraps (string, boolean, string[], enum, any, model array,any object) response with body property
 
 Skip as need upgrade tcgc to next version https://github.com/Azure/typespec-azure/pull/4108/changes
-
 ## TypeSpec
 
 ```tsp
 model Test {
   name: string;
 }
-union EnumTest {
+union EnumTest  {
   one: "one",
   two: "two",
-  others: string,
+  others: string
 }
 
 interface testResponse {
   @route("/string")
   @get
-  getString(): string;
+  getString():string;
 
   @route("/boolean")
   @get
-  getBoolean(): boolean;
-
+  getBoolean():boolean;
+  
   @route("/stringArray")
   @get
-  getStringArray(): string[];
+  getStringArray():string[];
 
   @route("/any")
   @get
-  getAny(): unknown;
+  getAny():unknown;
 
   @route("/enum")
   @get
-  getEnum(@body body: EnumTest): EnumTest;
+  getEnum(@body body:EnumTest):EnumTest;
 
   @route("/modelArray")
   @get
-  getModelArray(): Test[];
-
+  getModelArray():Test[];
+  
   @route("/anyObject")
   @get
-  getAnyObject(): unknown;
+  getAnyObject():unknown;
+
 }
 ```
 
@@ -632,10 +640,12 @@ export function _getAnyObjectSend(
   context: Client,
   options: GetAnyObjectOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/anyObject").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/anyObject")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getAnyObjectDeserialize(
@@ -661,10 +671,12 @@ export function _getModelArraySend(
   context: Client,
   options: GetModelArrayOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/modelArray").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/modelArray")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getModelArrayDeserialize(result: PathUncheckedResponse): Promise<Test[]> {
@@ -689,11 +701,13 @@ export function _getEnumSend(
   body: EnumTest,
   options: GetEnumOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/enum").get({
-    ...operationOptionsToRequestParameters(options),
-    contentType: "text/plain",
-    body: body,
-  });
+  return context
+    .path("/enum")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      contentType: "text/plain",
+      body: body,
+    });
 }
 
 export async function _getEnumDeserialize(result: PathUncheckedResponse): Promise<GetEnumResponse> {
@@ -718,10 +732,12 @@ export function _getAnySend(
   context: Client,
   options: GetAnyOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/any").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/any")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getAnyDeserialize(result: PathUncheckedResponse): Promise<GetAnyResponse> {
@@ -745,10 +761,12 @@ export function _getStringArraySend(
   context: Client,
   options: GetStringArrayOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/stringArray").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "application/json", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/stringArray")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "application/json", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getStringArrayDeserialize(
@@ -778,10 +796,12 @@ export function _getBooleanSend(
   context: Client,
   options: GetBooleanOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/boolean").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/boolean")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getBooleanDeserialize(
@@ -807,10 +827,12 @@ export function _getStringSend(
   context: Client,
   options: GetStringOptionalParams = { requestOptions: {} },
 ): StreamableMethod {
-  return context.path("/string").get({
-    ...operationOptionsToRequestParameters(options),
-    headers: { accept: "text/plain", ...options.requestOptions?.headers },
-  });
+  return context
+    .path("/string")
+    .get({
+      ...operationOptionsToRequestParameters(options),
+      headers: { accept: "text/plain", ...options.requestOptions?.headers },
+    });
 }
 
 export async function _getStringDeserialize(
@@ -859,29 +881,27 @@ using Azure.ResourceManager;
 namespace Microsoft.Test;
 
 enum Versions {
-  v2024_01_01: "2024-01-01",
+    v2024_01_01: "2024-01-01",
 }
 
 scalar IkeSasDocument extends string;
 
 model VpnSiteLinkConnection is TrackedResource<{}> {
-  @key("vpnSiteLinkConnectionName")
-  @path
-  @segment("vpnSiteLinkConnections")
-  name: string;
+    @key("vpnSiteLinkConnectionName")
+    @path
+    @segment("vpnSiteLinkConnections")
+    name: string;
 }
 
 @armResourceOperations
 interface VpnSiteLinkConnections {
-  getIkeSas is ArmResourceActionAsync<
-    VpnSiteLinkConnection,
-    void,
-    {
-      @body body: IkeSasDocument;
-    },
-    LroHeaders = ArmLroLocationHeader<FinalResult = IkeSasDocument> &
-      Azure.Core.Foundations.RetryAfterHeader
-  >;
+    getIkeSas is ArmResourceActionAsync<
+        VpnSiteLinkConnection,
+        void,
+        { @body body: IkeSasDocument; },
+        LroHeaders = ArmLroLocationHeader<FinalResult = IkeSasDocument> &
+            Azure.Core.Foundations.RetryAfterHeader
+    >;
 }
 ```
 
@@ -934,232 +954,6 @@ export function getIkeSas(
 }
 ```
 
-# wrap-non-model-return wraps HEAD void response as boolean body property
-
-When both `wrap-non-model-return` and `head-as-boolean` are enabled and the operation is a HEAD request with no response body,
-the response is wrapped as `{ body: boolean }` to indicate resource existence (true = exists, false = not found).
-This matches AutoRest behavior for HEAD operations.
-
-## TypeSpec
-
-```tsp
-@route("/resource-groups/{resourceGroupName}")
-@head
-op checkExistence(@path resourceGroupName: string):
-  | {
-      @statusCode _: 204;
-    }
-  | {
-      @statusCode _: 404;
-    };
-```
-
-```yaml
-wrap-non-model-return: true
-head-as-boolean: true
-```
-
-## Models
-
-```ts models alias CheckExistenceResponse
-export type CheckExistenceResponse = { body: boolean };
-```
-
-## Operations
-
-```ts operations
-import { TestingContext as Client } from "./index.js";
-import { CheckExistenceResponse } from "../models/models.js";
-import { expandUrlTemplate } from "../static-helpers/urlTemplate.js";
-import { CheckExistenceOptionalParams } from "./options.js";
-import {
-  StreamableMethod,
-  PathUncheckedResponse,
-  createRestError,
-  operationOptionsToRequestParameters,
-} from "@azure-rest/core-client";
-
-export function _checkExistenceSend(
-  context: Client,
-  resourceGroupName: string,
-  options: CheckExistenceOptionalParams = { requestOptions: {} },
-): StreamableMethod {
-  const path = expandUrlTemplate(
-    "/resource-groups/{resourceGroupName}",
-    {
-      resourceGroupName: resourceGroupName,
-    },
-    {
-      allowReserved: options?.requestOptions?.skipUrlEncoding,
-    },
-  );
-  return context.path(path).head({ ...operationOptionsToRequestParameters(options) });
-}
-
-export async function _checkExistenceDeserialize(
-  result: PathUncheckedResponse,
-): Promise<CheckExistenceResponse> {
-  const expectedStatuses = ["204", "404"];
-  if (!expectedStatuses.includes(result.status)) {
-    throw createRestError(result);
-  }
-
-  return { body: result.status.startsWith("2") };
-}
-
-export async function checkExistence(
-  context: Client,
-  resourceGroupName: string,
-  options: CheckExistenceOptionalParams = { requestOptions: {} },
-): Promise<CheckExistenceResponse> {
-  const result = await _checkExistenceSend(context, resourceGroupName, options);
-  return _checkExistenceDeserialize(result);
-}
-```
-
-# wrap-non-model-return wraps HEAD void-only response as boolean body property
-
-When both `wrap-non-model-return` and `head-as-boolean` are enabled and the operation is a HEAD request returning only void (success only),
-the response is wrapped as `{ body: boolean }`.
-
-## TypeSpec
-
-```tsp
-@route("/resources/{resourceName}")
-@head
-op headResource(@path resourceName: string): void;
-```
-
-```yaml
-wrap-non-model-return: true
-head-as-boolean: true
-```
-
-## Models
-
-```ts models alias HeadResourceResponse
-export type HeadResourceResponse = { body: boolean };
-```
-
-## Operations
-
-```ts operations
-import { TestingContext as Client } from "./index.js";
-import { HeadResourceResponse } from "../models/models.js";
-import { expandUrlTemplate } from "../static-helpers/urlTemplate.js";
-import { HeadResourceOptionalParams } from "./options.js";
-import {
-  StreamableMethod,
-  PathUncheckedResponse,
-  createRestError,
-  operationOptionsToRequestParameters,
-} from "@azure-rest/core-client";
-
-export function _headResourceSend(
-  context: Client,
-  resourceName: string,
-  options: HeadResourceOptionalParams = { requestOptions: {} },
-): StreamableMethod {
-  const path = expandUrlTemplate(
-    "/resources/{resourceName}",
-    {
-      resourceName: resourceName,
-    },
-    {
-      allowReserved: options?.requestOptions?.skipUrlEncoding,
-    },
-  );
-  return context.path(path).head({ ...operationOptionsToRequestParameters(options) });
-}
-
-export async function _headResourceDeserialize(
-  result: PathUncheckedResponse,
-): Promise<HeadResourceResponse> {
-  const expectedStatuses = ["204", "404"];
-  if (!expectedStatuses.includes(result.status)) {
-    throw createRestError(result);
-  }
-
-  return { body: result.status.startsWith("2") };
-}
-
-export async function headResource(
-  context: Client,
-  resourceName: string,
-  options: HeadResourceOptionalParams = { requestOptions: {} },
-): Promise<HeadResourceResponse> {
-  const result = await _headResourceSend(context, resourceName, options);
-  return _headResourceDeserialize(result);
-}
-```
-
-# Non wrap HEAD void-only response as boolean (no body wrap)
-
-When `head-as-boolean` is true but `wrap-non-model-return` is false, the HEAD operation
-returns a plain `boolean` (not wrapped in `{ body: boolean }`).
-
-## TypeSpec
-
-```tsp
-@route("/resources/{resourceName}")
-@head
-op headResource(@path resourceName: string): void;
-```
-
-```yaml
-wrap-non-model-return: false
-head-as-boolean: true
-```
-
-## Operations
-
-```ts operations
-import { TestingContext as Client } from "./index.js";
-import { expandUrlTemplate } from "../static-helpers/urlTemplate.js";
-import { HeadResourceOptionalParams } from "./options.js";
-import {
-  StreamableMethod,
-  PathUncheckedResponse,
-  createRestError,
-  operationOptionsToRequestParameters,
-} from "@azure-rest/core-client";
-
-export function _headResourceSend(
-  context: Client,
-  resourceName: string,
-  options: HeadResourceOptionalParams = { requestOptions: {} },
-): StreamableMethod {
-  const path = expandUrlTemplate(
-    "/resources/{resourceName}",
-    {
-      resourceName: resourceName,
-    },
-    {
-      allowReserved: options?.requestOptions?.skipUrlEncoding,
-    },
-  );
-  return context.path(path).head({ ...operationOptionsToRequestParameters(options) });
-}
-
-export async function _headResourceDeserialize(result: PathUncheckedResponse): Promise<boolean> {
-  const expectedStatuses = ["204", "404"];
-  if (!expectedStatuses.includes(result.status)) {
-    throw createRestError(result);
-  }
-
-  return result.status.startsWith("2");
-}
-
-export async function headResource(
-  context: Client,
-  resourceName: string,
-  options: HeadResourceOptionalParams = { requestOptions: {} },
-): Promise<boolean> {
-  const result = await _headResourceSend(context, resourceName, options);
-  return _headResourceDeserialize(result);
-}
-```
-
 # HEAD void-only response as void body property
 
 ## TypeSpec
@@ -1172,7 +966,6 @@ op headResource(@path resourceName: string): void;
 
 ```yaml
 wrap-non-model-return: false
-head-as-boolean: false
 ```
 
 ## Operations
@@ -1236,7 +1029,6 @@ op headResource(@path resourceName: string): void;
 
 ```yaml
 wrap-non-model-return: true
-head-as-boolean: false
 ```
 
 ## Operations

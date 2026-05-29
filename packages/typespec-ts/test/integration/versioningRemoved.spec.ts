@@ -1,3 +1,4 @@
+import { assert } from "vitest";
 // import VersioningRemovedClientFactory, {
 //   VersioningRemovedClient
 // } from "./generated/versioning/removed/src/index.js";

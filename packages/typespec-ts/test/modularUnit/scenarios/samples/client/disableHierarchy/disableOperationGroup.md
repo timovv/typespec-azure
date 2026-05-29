@@ -17,17 +17,13 @@ namespace B {
     prop2: string;
   }
   interface C {
-    foo(@body body: A): {
-      @body body: {};
-    };
+    op foo(@body body: A):  { @body body: {}};
   }
 }
 
 @route("/d")
 interface D {
-  bar(@body body: A): {
-    @body body: {};
-  };
+  op bar(@body body: A):  { @body body: {}};
 }
 ```
 
