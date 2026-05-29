@@ -186,7 +186,6 @@ function exportFileContentsType(
 ) {
   const hasMultipartFileParts = context.sdkPackage.models.some((x) =>
     x.properties.some(
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
       (y) => y.kind === "property" && y.multipartOptions?.isFilePart
     )
   );
